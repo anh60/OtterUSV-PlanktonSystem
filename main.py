@@ -29,7 +29,7 @@ def writeLensPosition():
     print("Lens position stored")
 
 # Adjust lens position with stepper motor
-def focus(mm: int, LENS_POS):
+def focus(mm: int, CURRENT_POS):
     # Set direction
     if mm < 0:
         direction = stepper.BACKWARD
@@ -42,11 +42,11 @@ def focus(mm: int, LENS_POS):
         # Checking if lens is at min or max positions.
         print("Checking min/max pos")
         if mm < 0:
-            if LENS_POS == LENS_POS_MIN:
+            if CURRENT_POS == LENS_POS_MIN:
                 print("Minimum limit reached")
                 break
         else:
-            if LENS_POS == LENS_POS_MAX:
+            if CURRENT_POS == LENS_POS_MAX:
                 print("Maximum limit reached")
                 break
         
@@ -55,16 +55,16 @@ def focus(mm: int, LENS_POS):
         kit.stepper1.onestep(direction=direction)
 
         if mm < 0:
-            LENS_POS = LENS_POS + 1
+            CURRENT_POS = CURRENT_POS + 1
         else:
-            LENS_POS = LENS_POS - 1
+            CURRENT_POS = CURRENT_POS - 1
         
         #print("Lens position: ", LENS_POS)
         #sleep(0.003)
-    return LENS_POS
+    return CURRENT_POS
 
 readLensPosition()
-LENS_POS = focus(1000, LENS_POS)
+LENS_POS = focus(1000, 0)
 writeLensPosition()
 
 
