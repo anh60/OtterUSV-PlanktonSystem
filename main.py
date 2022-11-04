@@ -54,12 +54,8 @@ def focus(mm: int, LENS_POS):
         print("Lens position: ", LENS_POS)
         #sleep(0.003)
 
-#readLensPosition()
-
-#focus(-1000, LENS_POS)
-
-for i in range(100):
-	kit.stepper1.onestep(direction=stepper.BACKWARD)
+readLensPosition()
+focus(-1, LENS_POS)
 
 
 if __name__ == '__main__':
