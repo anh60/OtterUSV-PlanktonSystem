@@ -38,7 +38,8 @@ def focus(mm: int, LENS_POS):
 
     # Move lens
     for i in range(mm):
-        # Checking if lens is at min or max positions
+        # Checking if lens is at min or max positions.
+        print("Checking min/max pos")
         if mm < 0:
             if LENS_POS == LENS_POS_MIN:
                 print("Minimum limit reached")
@@ -49,13 +50,14 @@ def focus(mm: int, LENS_POS):
                 break
         
         # Move stepper motor
+        print("moving stepper")
         kit.stepper1.onestep(direction=direction)
         LENS_POS = LENS_POS + i
         print("Lens position: ", LENS_POS)
         #sleep(0.003)
 
 readLensPosition()
-focus(-1, LENS_POS)
+focus(1, LENS_POS)
 writeLensPosition()
 
 
