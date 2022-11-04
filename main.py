@@ -52,7 +52,12 @@ def focus(mm: int, LENS_POS):
         # Move stepper motor
         print("moving stepper")
         kit.stepper1.onestep(direction=direction)
-        LENS_POS = LENS_POS + i
+
+        if mm < 0:
+            LENS_POS = LENS_POS + 1
+        else:
+            LENS_POS = LENS_POS - 1
+        
         print("Lens position: ", LENS_POS)
         #sleep(0.003)
 
