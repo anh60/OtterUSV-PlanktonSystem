@@ -61,7 +61,7 @@ def focus(mm: int, LENS_POS):
         
         #print("Lens position: ", LENS_POS)
         #sleep(0.003)
-        return LENS_POS
+    return LENS_POS
 
 readLensPosition()
 LENS_POS = focus(1000, LENS_POS)
