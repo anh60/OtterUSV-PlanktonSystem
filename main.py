@@ -28,7 +28,7 @@ def focus(mm: int):
         kit.stepper1.onestep(direction=direction)
         #sleep(0.003)
 
-focus(-1000)
+focus(1000)
 
 
 if __name__ == '__main__':
