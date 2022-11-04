@@ -24,7 +24,7 @@ def readLensPosition():
 # Write new lens position to 'position.txt'
 def writeLensPosition():
     f = open('position.txt', 'w')
-    f.write(LENS_POS)
+    f.write(str(LENS_POS))
     f.close()
 
 # Adjust lens position with stepper motor
