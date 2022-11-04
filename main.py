@@ -19,6 +19,8 @@ def getLensPosition():
         f.write(LENS_POS)
         f.close()
         print("file not found, creating position.txt")
+    finally:
+        print("hmm")
 
 def focus(mm: int):
     if mm < 0:
