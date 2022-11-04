@@ -58,7 +58,7 @@ def focus(mm: int, POS):
     return POS
 
 LENS_POS = readLensPosition()
-LENS_POS = focus(1000, LENS_POS)
+LENS_POS = focus(-1000, LENS_POS)
 writeLensPosition(LENS_POS)
 
 
