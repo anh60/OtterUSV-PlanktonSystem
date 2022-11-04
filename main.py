@@ -49,9 +49,9 @@ def focus(mm: int, POS):
         # Move stepper motor
         kit.stepper1.onestep(direction=direction)
 
-        if mm < 0:
+        if direction == stepper.BACKWARD:   # CAMERA FORWARD
             POS = POS - 1
-        else:
+        elif direction == stepper.FORWARD:  # CAMERA BACKWARD
             POS = POS + 1
         
         #sleep(0.003)
