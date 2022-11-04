@@ -1,6 +1,9 @@
 import board
 from adafruit_motorkit import MotorKit
+
 kit = MotorKit(i2c=board.I2C())
+
+PUMP_RATE = 0.22    # ml/sec
 
 def pump(ml: int):
     if ml < 0:
