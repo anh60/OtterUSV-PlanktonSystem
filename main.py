@@ -41,7 +41,7 @@ def focus(mm: int, POS):
             if POS == LENS_POS_MIN:
                 print("Minimum limit reached")
                 break
-        else:
+        elif direction == stepper.FORWARD:
             if POS == LENS_POS_MAX:
                 print("Maximum limit reached")
                 break
