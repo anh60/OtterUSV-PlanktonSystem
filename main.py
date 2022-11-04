@@ -19,13 +19,14 @@ def readLensPosition():
     f = open('position.txt', 'r')
     LENS_POS = f.readline()
     f.close()
-    print("File read", LENS_POS)
+    print("Lens position read", LENS_POS)
 
 # Write new lens position to 'position.txt'
 def writeLensPosition():
     f = open('position.txt', 'w')
     f.write(str(LENS_POS))
     f.close()
+    print("Lens position stored")
 
 # Adjust lens position with stepper motor
 def focus(mm: int, LENS_POS):
@@ -58,7 +59,7 @@ def focus(mm: int, LENS_POS):
         else:
             LENS_POS = LENS_POS - 1
         
-        print("Lens position: ", LENS_POS)
+        #print("Lens position: ", LENS_POS)
         #sleep(0.003)
 
 readLensPosition()
