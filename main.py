@@ -1,23 +1,23 @@
 import board
-from adafruit_motorkit import MotorKit
 from adafruit_motor import stepper
 from time import sleep
 
-PUMP_RATE = 0.22    # ml/sec
-LENS_POS = 0 #Position of lens in millimeters relative to the IBIDI slide
-
 kit = MotorKit(i2c=board.I2C())
 
+LENS_POS = 0        # Position of lens in millimeters relative to the IBIDI slide
+PUMP_RATE = 0.22    # ml/sec
 
-def pump(ml: int):
-    if ml < 0:
-        kit.motor3.throttle = -0.5
-        ml *= -1
-    else:
-        kit.motor3.throttle = 0.5
-    sleep(ml / PUMP_RATE)
-    kit.motor3.throttle = None
-
+def getLensPosition():
+    try:
+        f = open('position.txt', 'r')
+        LENS_POS = f.readline()
+        f.close()
+        print("File read")
+    except:
+        f = open('position.txt', 'w')
+        f.write(LENS_POS)
+        f.close()
+        print("file not found, creating position.txt")
 
 def focus(mm: int):
     if mm < 0:
@@ -29,8 +29,7 @@ def focus(mm: int):
         kit.stepper1.onestep(direction=direction)
         #sleep(0.003)
 
-focus(-100)
-
+getLensPosition()
 
 if __name__ == '__main__':
     pass
