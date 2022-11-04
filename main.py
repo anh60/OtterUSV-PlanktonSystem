@@ -4,9 +4,7 @@ from adafruit_motor import stepper
 from time import sleep
 
 kit = MotorKit(i2c=board.I2C())
-
-# Position of lens relative to the IBIDI slide (millimeters)
-LENS_POS = 0   
+ 
 # Minimum allowed position (Ibidi slide side)   
 LENS_POS_MIN = 0
 # Maximum allowed position (Stepper motor side)
@@ -15,18 +13,17 @@ LENS_POS_MAX = 10000
 PUMP_RATE = 0.22    # ml/sec
 
 # Read and set lens position from 'position.txt'
-def readLensPosition():
+def readLensPosition(POS):
     f = open('position.txt', 'r')
-    LENS_POS = f.readline()
+    POS = f.readline()
     f.close()
-    print("Lens position read", LENS_POS)
+    return POS
 
 # Write new lens position to 'position.txt'
 def writeLensPosition(FINAL_POS):
     f = open('position.txt', 'w')
     f.write(str(FINAL_POS))
     f.close()
-    print("Lens position stored")
 
 # Adjust lens position with stepper motor
 def focus(mm: int, CURRENT_POS):
@@ -63,7 +60,7 @@ def focus(mm: int, CURRENT_POS):
         #sleep(0.003)
     return CURRENT_POS
 
-#readLensPosition()
+LENS_POS = readLensPosition()
 LENS_POS = focus(1000, LENS_POS)
 writeLensPosition(LENS_POS)
 
