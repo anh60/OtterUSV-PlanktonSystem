@@ -4,6 +4,7 @@ from adafruit_motor import stepper
 from time import sleep
 
 PUMP_RATE = 0.22    # ml/sec
+LENS_POS = 0 #Position of lens in millimeters relative to the IBIDI slide
 
 kit = MotorKit(i2c=board.I2C())
 
@@ -28,7 +29,7 @@ def focus(mm: int):
         kit.stepper1.onestep(direction=direction)
         #sleep(0.003)
 
-focus(1000)
+focus(-100)
 
 
 if __name__ == '__main__':
