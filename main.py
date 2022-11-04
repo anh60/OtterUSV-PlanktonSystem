@@ -28,7 +28,7 @@ def writeLensPosition():
     f.close()
 
 # Adjust lens position with stepper motor
-def focus(mm: int):
+def focus(mm: int, LENS_POS):
     # Set direction
     if mm < 0:
         direction = stepper.BACKWARD
@@ -50,7 +50,7 @@ def focus(mm: int):
 
 readLensPosition()
 
-focus(-1000)
+focus(-1000, LENS_POS)
 
 
 if __name__ == '__main__':
