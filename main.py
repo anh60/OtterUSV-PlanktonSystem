@@ -55,9 +55,9 @@ def focus(mm: int, CURRENT_POS):
         kit.stepper1.onestep(direction=direction)
 
         if mm < 0:
-            CURRENT_POS = CURRENT_POS + 1
-        else:
             CURRENT_POS = CURRENT_POS - 1
+        else:
+            CURRENT_POS = CURRENT_POS + 1
         
         #print("Lens position: ", LENS_POS)
         #sleep(0.003)
