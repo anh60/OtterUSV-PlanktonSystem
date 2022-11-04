@@ -13,7 +13,7 @@ LENS_POS_MAX = 10000
 PUMP_RATE = 0.22    # ml/sec
 
 # Read and set lens position from 'position.txt'
-def readLensPosition(POS):
+def readLensPosition():
     f = open('position.txt', 'r')
     POS = f.readline()
     f.close()
