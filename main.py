@@ -15,7 +15,7 @@ PUMP_RATE = 0.22    # ml/sec
 # Read and set lens position from 'position.txt'
 def readLensPosition():
     f = open('position.txt', 'r')
-    POS = f.readline()
+    POS = int(f.readline())
     f.close()
     return POS
 
