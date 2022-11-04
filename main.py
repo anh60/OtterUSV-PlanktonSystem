@@ -37,7 +37,7 @@ def focus(mm: int, POS):
     # Move lens
     for i in range(mm):
         # Checking if lens is at min or max positions.
-        if mm < 0:
+        if direction == stepper.BACKWARD:
             if POS == LENS_POS_MIN:
                 print("Minimum limit reached")
                 break
