@@ -58,8 +58,8 @@ def focus(mm: int, LENS_POS):
 
 #focus(-1000, LENS_POS)
 
-
-kit.stepper1.onestep(direction=stepper.BACKWARD)
+for i in range(100):
+	kit.stepper1.onestep(direction=stepper.BACKWARD)
 
 
 if __name__ == '__main__':
