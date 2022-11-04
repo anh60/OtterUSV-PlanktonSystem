@@ -6,9 +6,9 @@ from time import sleep
 kit = MotorKit(i2c=board.I2C())
  
 # Minimum allowed position (Ibidi slide side)   
-LENS_POS_MIN = 0
+CAM_POS_MIN = 0
 # Maximum allowed position (Stepper motor side)
-LENS_POS_MAX = 10000
+CAM_POS_MAX = 10000
 
 PUMP_RATE = 0.22    # ml/sec
 
@@ -26,23 +26,23 @@ def writeLensPosition(POS):
     f.close()
 
 # Adjust lens position with stepper motor
-def focus(mm: int, POS):
+def focus(steps, POS):
     # Set direction
-    if mm < 0:
+    if steps < 0:
         direction = stepper.BACKWARD # CAMERA FORWARD
-        mm *= -1
+        steps *= -1
     else:
         direction = stepper.FORWARD # CAMERA BACKWARD
 
     # Move lens
-    for i in range(mm):
+    for i in range(steps):
         # Checking if lens is at min or max positions.
         if direction == stepper.BACKWARD:
-            if POS == LENS_POS_MIN:
+            if POS == CAM_POS_MIN:
                 print("Minimum limit reached")
                 break
         elif direction == stepper.FORWARD:
-            if POS == LENS_POS_MAX:
+            if POS == CAM_POS_MAX:
                 print("Maximum limit reached")
                 break
         
@@ -50,17 +50,15 @@ def focus(mm: int, POS):
         kit.stepper1.onestep(direction=direction)
 
         if direction == stepper.BACKWARD:   # CAMERA FORWARD
-            POS = POS - 1
+            POS -= 1
         elif direction == stepper.FORWARD:  # CAMERA BACKWARD
-            POS = POS + 1
-        
-        #sleep(0.003)
+            POS += 1
+    
     return POS
 
 LENS_POS = readLensPosition()
-LENS_POS = focus(-1000, LENS_POS)
+LENS_POS = focus(1000, LENS_POS)
 writeLensPosition(LENS_POS)
-
 
 if __name__ == '__main__':
     pass
