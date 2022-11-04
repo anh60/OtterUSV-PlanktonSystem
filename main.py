@@ -22,9 +22,9 @@ def readLensPosition():
     print("Lens position read", LENS_POS)
 
 # Write new lens position to 'position.txt'
-def writeLensPosition():
+def writeLensPosition(FINAL_POS):
     f = open('position.txt', 'w')
-    f.write(str(LENS_POS))
+    f.write(str(FINAL_POS))
     f.close()
     print("Lens position stored")
 
@@ -63,9 +63,9 @@ def focus(mm: int, CURRENT_POS):
         #sleep(0.003)
     return CURRENT_POS
 
-readLensPosition()
+#readLensPosition()
 LENS_POS = focus(1000, 0)
-writeLensPosition()
+writeLensPosition(LENS_POS)
 
 
 if __name__ == '__main__':
