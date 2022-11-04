@@ -56,6 +56,7 @@ def focus(mm: int, LENS_POS):
 
 readLensPosition()
 focus(-1, LENS_POS)
+writeLensPosition()
 
 
 if __name__ == '__main__':
