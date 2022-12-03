@@ -1,5 +1,6 @@
 import serial
 
+# Bottom USB3.0 (blue)
 port = '/dev/ttyUSB0'
 
 # CONTROL SIGNALS
@@ -57,8 +58,4 @@ def sendCMD():
     else:
         print('IVALID COMMAND \n')
     ser.close()
-
-i = 1
-while(i == 1):
-    sendCMD()
 
