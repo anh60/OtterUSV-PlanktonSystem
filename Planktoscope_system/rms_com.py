@@ -3,7 +3,7 @@ import serial
 port = '/dev/ttyUSB0'
 
 # CONTROL SIGNALS
-CMD1 = '1'      # Fill reservoir
+CMD1 = 1      # Fill reservoir
 CMD2 = '2'      # Stop pump
 CMD3 = '3'      # Flush reservoir
 CMD4 = '4'      # Close valve
