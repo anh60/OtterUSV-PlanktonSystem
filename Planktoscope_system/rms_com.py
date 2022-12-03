@@ -8,6 +8,6 @@ while(i == 1):
     command = input('Enter command \n')
     ser.write(command.encode())
     status = ser.read()
-    print(status)
+    print(status.encode())
     ser.close()
 
