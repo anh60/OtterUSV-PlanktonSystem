@@ -49,7 +49,7 @@ def sendCMD():
     ser = serial.Serial(port, 9600)
     cmd = input('ENTER COMMAND \n')
     cmd = cmd.encode() 
-    if (cmd == commands[0].encode()):
+    if (cmd in commands.encode()):
         ser.write(cmd)
         sta = ser.read()
         msg = decodeSTA(sta.decode())
