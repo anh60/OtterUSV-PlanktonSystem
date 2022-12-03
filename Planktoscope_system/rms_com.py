@@ -61,5 +61,5 @@ def sendCMD():
             break
         else:
             print('IVALID COMMAND \n')
-    ser.close()
+        ser.close()
 
