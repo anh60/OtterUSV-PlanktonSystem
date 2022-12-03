@@ -1,3 +1,6 @@
+# Andreas Hølleland
+# 2022
+
 import serial
 
 # Bottom USB3.0 (blue)

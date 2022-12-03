@@ -1,4 +1,6 @@
-import board
+# Andreas Hølleland
+# 2022
+
 import focus_stepper as step
 import rms_com as rms
 
