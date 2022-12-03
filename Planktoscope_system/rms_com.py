@@ -51,7 +51,7 @@ def sendCMD():
     cmd = cmd.encode() 
 
     for i in commands:
-        if (cmd == i.encode()):
+        if (i.encode() == cmd):
             ser.write(cmd)
             sta = ser.read()
             msg = decodeSTA(sta.decode())
