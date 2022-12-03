@@ -49,16 +49,13 @@ def decodeSTA(sta):
 def sendCMD():
     ser = serial.Serial(port, 9600)
     cmd = input('ENTER COMMAND \n')
-
     if(cmd in commands):
-        print('Nice cmd!')
+        ser.write(cmd.encode())
+        sta = ser.read()
+        msg = decodeSTA(sta.decode())
+        print(msg,'\n')
     else:
-        print('Invalid cmd!')
-
-    ser.write(cmd.encode())
-    sta = ser.read()
-    msg = decodeSTA(sta.decode())
-    print(msg,'\n')
+        print('IVALID COMMAND \n')
     ser.close()
 
 i = 1
