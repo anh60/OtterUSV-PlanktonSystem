@@ -1,7 +1,10 @@
 import serial
-ser = serial.Serial('/dev/ttyUSB0',9600)
 
-command = input('Enter cmmand \n')
-ser.write(command.encode())
+port = '/dev/ttyUSB0'
 
-ser.close()
+i = 1
+while(i == 1):
+    ser = serial.Serial(port, 9600)
+    command = input('Enter command \n')
+    ser.write(command.encode())
+    ser.close()
