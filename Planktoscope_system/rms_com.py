@@ -25,6 +25,7 @@ ERR3 = '8';     # Valve already open
 ERR4 = '9';     # Valve already closed
 
 def decodeSTA(sta):
+    msg = '0'
     if   (sta == STA1):
         msg = 'IDLE'
     elif (sta == STA2):
