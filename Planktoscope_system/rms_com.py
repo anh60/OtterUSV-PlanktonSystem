@@ -12,11 +12,11 @@ CMD5 = '5'      # Request status
 commands = [CMD1, CMD2, CMD3, CMD4, CMD5]
 
 # STATUS SIGNALS
-STA1 = '1'      # Reservoir idle
-STA2 = '2'      # Reservoir full
-STA3 = '3'      # Pumping started
-STA4 = '4'      # Flushing started
-STA5 = '5'      # Internal leak detected
+STA1 = 1      # Reservoir idle
+STA2 = 2      # Reservoir full
+STA3 = 3      # Pumping started
+STA4 = 4      # Flushing started
+STA5 = 5      # Internal leak detected
 
 # ERROR SIGNALS
 ERR1 = '6';     # Pump already on
