@@ -28,6 +28,7 @@ ERR2 = '7';     # Pump already off
 ERR3 = '8';     # Valve already open
 ERR4 = '9';     # Valve already closed
 
+# Decode status signals to corresponding messages
 def decodeSTA(sta):
     msg = '0'
     if   (sta == STA1):
@@ -50,6 +51,7 @@ def decodeSTA(sta):
         msg = 'VALVE ALDREADY CLOSED'
     return msg
 
+# Transmit control signal and recieve status
 def sendCMD():
     i = 1
     while(i == 1):
