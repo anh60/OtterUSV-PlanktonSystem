@@ -3,7 +3,7 @@ import serial
 port = '/dev/ttyUSB0'
 
 # CONTROL SIGNALS
-CMD1 = 1      # Fill reservoir
+CMD1 = '1'      # Fill reservoir
 CMD2 = '2'      # Stop pump
 CMD3 = '3'      # Flush reservoir
 CMD4 = '4'      # Close valve
@@ -49,7 +49,7 @@ def sendCMD():
     ser = serial.Serial(port, 9600)
     cmd = input('ENTER COMMAND \n')
     cmd = cmd.encode() 
-    if (cmd in commands):
+    if (cmd in commands[0].encode):
         ser.write(cmd)
         sta = ser.read()
         msg = decodeSTA(sta.decode())
