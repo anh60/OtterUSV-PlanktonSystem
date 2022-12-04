@@ -28,6 +28,8 @@ ERR2 = '7';     # Pump already off
 ERR3 = '8';     # Valve already open
 ERR4 = '9';     # Valve already closed
 
+status = [STA1, STA2, STA3, STA4, STA5, ERR1, ERR2, ERR3, ERR4]
+
 # Decode status signals to corresponding messages
 def decodeSTA(sta):
     msg = '0'
@@ -55,17 +57,16 @@ def decodeSTA(sta):
 def sendCMD():
     i = 1
     while(i == 1):
-        ser = serial.Serial(port, 9600)
+        ser = serial.Serial(port, 9600, timeout = 1)
         cmd = input('ENTER COMMAND \n')
         if(cmd in commands):
             ser.write(cmd.encode())
-            if(ser.read() != -1):
-                sta = ser.read()
+            sta = ser.read()
+            if(sta in status):
                 msg = decodeSTA(sta.decode())
                 print(msg,'\n')
             else:
-                print('NO STATUS RECEIVED')
-
+                print('RMS NOT RESPONDING')
         elif(cmd == 'x'):
             break
         else:
