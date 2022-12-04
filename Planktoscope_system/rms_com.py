@@ -60,6 +60,7 @@ def sendCMD():
         if(cmd in commands):
             ser.write(cmd.encode())
             sta = ser.read()
+            print('yes')
             msg = decodeSTA(sta.decode())
             print(msg,'\n')
         elif(cmd == 'x'):
