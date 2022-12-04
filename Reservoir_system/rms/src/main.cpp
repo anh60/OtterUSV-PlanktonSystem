@@ -3,6 +3,8 @@
 * 2022
 */
 
+#include <Arduino.h>
+
 // GPIOs
 #define PUMP  2             // D2 - Pump relay
 #define VALVE 3             // D3 - Solenoid valve relay
