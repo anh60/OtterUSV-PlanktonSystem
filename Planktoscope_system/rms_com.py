@@ -59,10 +59,13 @@ def sendCMD():
         cmd = input('ENTER COMMAND \n')
         if(cmd in commands):
             ser.write(cmd.encode())
-            sta = ser.read()
-            print('yes')
-            msg = decodeSTA(sta.decode())
-            print(msg,'\n')
+            if(ser.read() != -1):
+                sta = ser.read()
+                msg = decodeSTA(sta.decode())
+                print(msg,'\n')
+            else:
+                print('NO STATUS RECEIVED')
+
         elif(cmd == 'x'):
             break
         else:
