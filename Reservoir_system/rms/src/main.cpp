@@ -121,7 +121,9 @@ void uartHandler() {
         status = prevStatus;
         break;
       case CMD6:
+        nextState = IDLE;
         status = STA1;
+        prevStatus = status;
         break;
     }
     Serial1.println(status);
