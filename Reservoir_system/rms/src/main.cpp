@@ -17,6 +17,7 @@ const char CMD2 = '2';      // Stop pump
 const char CMD3 = '3';      // Flush reservoir
 const char CMD4 = '4';      // Close valve
 const char CMD5 = '5';      // Request status
+const char CMD6 = '6';      // Force Idle state (communication problem)
 
 // STATUS SIGNALS
 const char STA1 = '1';      // Reservoir idle
@@ -71,10 +72,9 @@ void FSM() {
   }
 }
 
-// UART/RS232 communication
+// UART-RS232 communication
 void uartHandler() {
   if(Serial1.available() > 0){
-    prevStatus = status;
     char rx = Serial1.read();
     switch(rx){
       case CMD1:
@@ -84,6 +84,7 @@ void uartHandler() {
         else{
           nextState = PUMPING;
           status = STA3;
+          prevStatus = status;
         }
         break;
       case CMD2:
@@ -93,6 +94,7 @@ void uartHandler() {
         else{
           nextState = IDLE;
           status = STA1;
+          prevStatus = status;
         }
         break;
       case CMD3:
@@ -102,6 +104,7 @@ void uartHandler() {
         else{
           nextState = FLUSHING;
           status = STA4;
+          prevStatus = status;
         }
         break;
       case CMD4:
@@ -110,11 +113,15 @@ void uartHandler() {
         }
         else{
           nextState = IDLE;
-          status = STA1;          
+          status = STA1;
+          prevStatus = status;          
         }
         break;
-      default:
-        status = prevStatus;      
+      case CMD5:
+        status = prevStatus;
+        break;
+      case CMD6:
+        status = STA1;
         break;
     }
     Serial1.println(status);

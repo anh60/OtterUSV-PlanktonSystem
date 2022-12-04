@@ -12,6 +12,7 @@ CMD2 = '2'      # Stop pump
 CMD3 = '3'      # Flush reservoir
 CMD4 = '4'      # Close valve
 CMD5 = '5'      # Request status
+CMD6 = '6'      # Force Idle state (communication problem)
 
 commands = [CMD1, CMD2, CMD3, CMD4, CMD5]
 
@@ -66,6 +67,7 @@ def sendCMD():
                 msg = decodeSTA(sta.decode())
                 print(msg,'\n')
             else:
+                ser.write(CMD6.encode())        # Force RMS to idle state
                 print('RMS NOT RESPONDING')
         elif(cmd == 'x'):
             break
