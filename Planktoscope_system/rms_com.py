@@ -63,7 +63,7 @@ def sendCMD():
         if(cmd in commands):
             ser.write(cmd.encode())
             sta = ser.read()
-            if(sta in status):
+            if(sta.decode() in status):
                 msg = decodeSTA(sta.decode())
                 print(msg,'\n')
             else:
