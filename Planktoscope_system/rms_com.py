@@ -14,7 +14,7 @@ CMD4 = '4'      # Close valve
 CMD5 = '5'      # Request status
 CMD6 = '6'      # Force Idle state (communication problem)
 
-commands = [CMD1, CMD2, CMD3, CMD4, CMD5]
+commands = [CMD1, CMD2, CMD3, CMD4, CMD5, CMD6]
 
 # STATUS SIGNALS
 STA1 = '1'      # Reservoir idle
