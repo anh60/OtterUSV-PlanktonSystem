@@ -1,5 +1,7 @@
+#
 # Andreas Hølleland
 # 2022
+#
 
 import board
 from adafruit_motorkit import MotorKit
@@ -7,6 +9,8 @@ from adafruit_motor import stepper
 from time import sleep
 
 kit = MotorKit(i2c=board.I2C())
+
+posfile = '../data/position.txt'
 
 # Minimum allowed position (Ibidi slide side)   
 CAM_POS_MIN = 0
@@ -46,14 +50,14 @@ def focus(steps, POS):
 
 # Read and set lens position from 'position.txt'
 def readLensPosition():
-    f = open('position.txt', 'r')
+    f = open(posfile, 'r')
     POS = int(f.readline())
     f.close()
     return POS
 
 # Write new lens position to 'position.txt'
 def writeLensPosition(POS):
-    f = open('position.txt', 'w')
+    f = open(posfile, 'w')
     f.write(str(POS))
     f.close()
 
