@@ -126,16 +126,24 @@ void uartHandler() {
         prevStatus = status;
         break;
     }
-    Serial1.println(status);
   }
 }
 
 // Read level switch
 void readLevel(){
+  if(digitalRead(LEVEL) == 1){
+    nextState = IDLE;
+    status = STA2;
+  }
 }
 
 // Read water level sensor
 void readWater(){
+  if(digitalRead(WATER) == 1){
+    nextState = LEAK;
+    status = STA5;
+    prevStatus = status;
+  }
 }
 
 void setup() {
@@ -157,6 +165,9 @@ void setup() {
 }
 
 void loop() {
+  uartHandler();
+  readLevel();
+  readWater();
   FSM();
-  uartHandler();  
+  Serial1.println(status);
 }
