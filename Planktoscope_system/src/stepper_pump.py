@@ -11,5 +11,8 @@ from adafruit_motor import stepper
 
 kit = MotorKit(i2c=board.I2C())
 
+d = stepper.FORWARD
+s = stepper.DOUBLE
+
 while True:
-    kit.stepper1.onestep(direction=stepper.FORWARD, style=DOUBLE)
+    kit.stepper1.onestep(direction=d, style=s)
