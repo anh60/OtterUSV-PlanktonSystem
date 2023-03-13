@@ -10,6 +10,5 @@ from adafruit_motorkit import MotorKit
 
 kit = MotorKit(i2c=board.I2C())
 
-for i in range(100):
+while True:
     kit.stepper1.onestep()
-    time.sleep(0.01)
