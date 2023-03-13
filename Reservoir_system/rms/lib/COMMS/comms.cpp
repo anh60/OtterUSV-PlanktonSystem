@@ -10,58 +10,40 @@
 
 #define baud 9600
 
-char currStatus;
-char prevStatus;
+// CONTROL SIGNALS
+const uint8_t C_PUMP    = 0x01;     // Start pumping
+const uint8_t C_FLUSH   = 0x02;     // Start flushing
+const uint8_t C_STOP    = 0x03;     // Return to IDLE state
+const uint8_t C_STATUS  = 0x04;     // Request current status
 
 void comms_init(){
     Serial1.begin(baud);
-    currStatus = S_IDLE;
-    prevStatus = S_IDLE;
 }
 
-char get_status_msg(){
-    return currStatus;
-}
-
-void set_status_msg(char msg){
-    currStatus = msg;
+void transmit_status(){
+    Serial1.write(get_sys_state());
 }
 
 static void handle_msg_pump(){
-    if (get_state() == PUMPING){
-        currStatus = E_PUMPING;
-        return;
-    }
-    set_state(PUMPING);
-    currStatus = S_PUMPING;
-    prevStatus = currStatus;
+    set_sys_state(PUMP_BIT, 1);
+    set_sys_state(VALVE_BIT, 0);
 }
 
 static void handle_msg_flush(){
-    if (get_state() == FLUSHING){
-        currStatus = E_FLUSHING;
-        return;
-    }
-    set_state(FLUSHING);
-    currStatus = S_FLUSHING;
-    prevStatus = currStatus;
+    set_sys_state(PUMP_BIT, 0);
+    set_sys_state(VALVE_BIT, 1);
 }
 
 static void handle_msg_stop(){
-    if (get_state() == IDLE){
-        currStatus = E_IDLE;
-        return;
-    }
-    set_state(IDLE);
-    currStatus = S_IDLE;
-    prevStatus = currStatus;
+    set_sys_state(PUMP_BIT, 0);
+    set_sys_state(VALVE_BIT, 0);
 }
 
 static void handle_msg_status(){
-    currStatus = prevStatus;
+    transmit_status();
 }
 
-static void msg_handler(char msg){
+static void msg_handler(uint8_t msg){
     switch (msg)
     {
     case C_PUMP:
@@ -87,11 +69,7 @@ static void msg_handler(char msg){
 
 void check_ctrl_msg(){
     if(Serial1.available() > 0){
-        char rx = Serial1.read();
-        msg_handler(rx);
+        uint8_t msg = Serial1.read();
+        msg_handler(msg);
     }
-}
-
-void transmit_status(){
-    Serial1.println(currStatus);
 }
