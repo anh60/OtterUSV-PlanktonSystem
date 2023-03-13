@@ -16,3 +16,4 @@ s = stepper.DOUBLE
 
 while True:
     kit.stepper1.onestep(direction=d, style=s)
+    time.sleep(0.01)
