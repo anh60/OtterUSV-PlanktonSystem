@@ -23,4 +23,5 @@ def pump(ml: int):
     time.sleep(ml / PUMP_RATE)
     kit.motor3.throttle = None
 
-kit.motor3.throttle = 1.0
+while True:
+    kit.motor3.throttle = -1.0
