@@ -11,7 +11,6 @@
 #include <Arduino.h>
 
 void pump_init();
-void start_pump();
-void stop_pump();
+void switch_pump();
 
 #endif /* PUMP_H_ */

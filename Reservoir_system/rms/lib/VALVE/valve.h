@@ -11,7 +11,6 @@
 #include <Arduino.h>
 
 void valve_init();
-void open_valve();
-void close_valve();
+void switch_valve();
 
 #endif /* VALVE_H_ */

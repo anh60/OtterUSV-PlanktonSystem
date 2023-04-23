@@ -6,6 +6,7 @@
 */
 
 #include "pump.h"
+#include "fsm.h"
 
 #define PUMP_PIN 2
 
@@ -16,10 +17,6 @@ void pump_init(){
     pumpTimer = 0;
 }
 
-void start_pump(){
-    digitalWrite(PUMP_PIN, 1);
-}
-
-void stop_pump(){
-    digitalWrite(PUMP_PIN, 0);
+void switch_pump(){
+    digitalWrite(PUMP_PIN, (get_sys_state() >> PUMP_BIT) & 1);
 }

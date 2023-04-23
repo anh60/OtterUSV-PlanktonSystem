@@ -6,6 +6,7 @@
 */
 
 #include "valve.h"
+#include "fsm.h"
 
 #define VALVE_PIN 3
 
@@ -16,10 +17,6 @@ void valve_init(){
     flushTimer = 0;
 }
 
-void open_valve(){
-    digitalWrite(VALVE_PIN, 1);
-}
-
-void close_valve(){
-    digitalWrite(VALVE_PIN, 0);
+void switch_valve(){
+    digitalWrite(VALVE_PIN, (get_sys_state() >> VALVE_BIT) & 1);
 }
