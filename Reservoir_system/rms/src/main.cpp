@@ -11,14 +11,16 @@
 #include "comms.h"
 #include "pump.h"
 #include "valve.h"
-#include "sensors.h"
+#include "level_switch.h"
+#include "water_sensor.h"
 
 void setup() {
   fsm_init();
   comms_init();
   pump_init();
   valve_init();
-  sensors_init();
+  //level_switch_init();
+  water_sensor_init();
 }
 
 void loop() {

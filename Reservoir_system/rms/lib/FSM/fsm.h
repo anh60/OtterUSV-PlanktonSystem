@@ -29,4 +29,6 @@ void set_sys_state(status_bit k, bool val);
 
 bool update_sys_state();
 
+void reset_sys();
+
 #endif /* FSM_H_ */

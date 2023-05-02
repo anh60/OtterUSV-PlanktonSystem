@@ -56,3 +56,16 @@ bool update_sys_state(){
     }
     return 0;
 }
+
+void reset_sys(){
+    // Flush reservoir
+    //
+    // Stop reservoir
+    // Stop pump
+    //
+    // Clear timers
+    //
+    // Confirm sensor values
+    //
+    // Set status = 0x00
+}
