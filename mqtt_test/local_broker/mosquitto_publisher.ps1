@@ -1,0 +1,1 @@
+mosquitto_pub -i mosq_pub1 -t "Topic1" -m "Hello"
