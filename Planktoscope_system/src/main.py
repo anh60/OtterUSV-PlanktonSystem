@@ -1,15 +1,24 @@
+# main.py
 #
-# Andreas Hølleland
-# 2022
+# Andreas Holleland
+# 2023
 #
 
-import rms_com as rms
+import asyncio
+import mqtt_client.mqtt_client as cli
 
-i = 1
-while(i == 1):
+SYS_STATUS = 0x64
 
-     rms.sendCMD()
+async def pub():
+    cli.pub_status(SYS_STATUS)
+    await asyncio.sleep(3)
 
+#SETUP
+cli.init_mqtt()
+
+#LOOP
+while True:
+    asyncio.run(pub())
 
 if __name__ == '__main__':
     pass
