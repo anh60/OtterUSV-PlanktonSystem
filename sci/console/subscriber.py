@@ -1,16 +1,14 @@
 import paho.mqtt.client as mqtt
 import mqtt_constants as con
 
-qos = 0
-
 def on_connect(client, userdata, flags, rc):
-    client.subscribe([
-        (con.topic.STATUS, qos)
-    ])
+    client.subscribe(con.topic.STATUS, 0)
 
 def on_message(client, userdata, message):
     msg = message.payload
-    print(str(msg.decode("utf-8")))
+    print("Received new state: ")
+    print(msg)
+    print("\n")
 
 def init_sub():
     client = mqtt.Client("planktopi_sub")

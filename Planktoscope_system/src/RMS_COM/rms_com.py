@@ -18,7 +18,7 @@ C_STOP      = 0x03
 C_STATUS    = 0x04
 cmds = [C_PUMP, C_FLUSH, C_STOP, C_STATUS]
 
-rms_status = 0
+rms_status = 0x00
 
 ser = serial.Serial(port, baud, timeout=0)
 

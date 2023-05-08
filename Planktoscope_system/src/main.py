@@ -1,24 +1,39 @@
+# 
 # main.py
 #
 # Andreas Holleland
 # 2023
 #
 
+#---------------------------- PACKAGES -----------------------------------------
+
 import asyncio
-import mqtt_client.mqtt_client as cli
+import STATUS.status as state
+import MQTT_CLIENT.mqtt_client as client
 
-SYS_STATUS = 0x64
 
-async def pub():
-    cli.pub_status(SYS_STATUS)
-    await asyncio.sleep(3)
+#---------------------------- FUNCTIONS ----------------------------------------
 
-#SETUP
-cli.init_mqtt()
+async def mainloop():
+    if(state.update_sys_state()):
+        client.pub_status()
+        print("Command received, sending new state: " + bin(state.get_sys_state()))
 
-#LOOP
+
+#---------------------------- INIT ---------------------------------------------
+
+state.init_state()
+client.init_mqtt()
+
+
+#---------------------------- LOOP ---------------------------------------------
+
 while True:
-    asyncio.run(pub())
+    asyncio.run(mainloop())
+
+
+#-------------------------------------------------------------------------------
+
 
 if __name__ == '__main__':
     pass
