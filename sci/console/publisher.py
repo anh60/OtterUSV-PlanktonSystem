@@ -1,20 +1,24 @@
 import asyncio
-import time
 
 import paho.mqtt.client as mqtt
 import mqtt_constants as con
 
 client = mqtt.Client("planktopi_pub")
 
+
+async def pub():
+    client.publish(con.topic.SAMPLE, "sample")
+    print("Publishing: 1\n")
+    await asyncio.sleep(1)
+    print("Publishing: 0\n")
+    client.publish(con.topic.POS, "position")
+    await asyncio.sleep(1)
+
+
 client.connect(con.broker)
 
 while True:
-    client.publish(con.topic.SAMPLE, "sample")
-    print("Publishing: 1\n")
-    time.sleep(1)
-    print("Publishing: 0\n")
-    client.publish(con.topic.POS, "position")
-    time.sleep(1)
+    asyncio.run(pub())
 
 """"
 curr_sys_status = 0

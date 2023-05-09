@@ -17,7 +17,7 @@ import MQTT_CLIENT.mqtt_client as client
 async def mainloop():
     if(state.update_sys_state()):
         client.pub_status()
-        print("Command received, sending new state: " + bin(state.get_sys_state()))
+        print("Sending new state: " + bin(state.get_sys_state()))
 
 
 #---------------------------- INIT ---------------------------------------------
