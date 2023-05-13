@@ -14,7 +14,7 @@ void ISR_WATER(){
     set_sys_state(WATER_BIT, (~(get_sys_state() >> WATER_BIT) & 1));
 }
 
-void level_switch_init(){
+void water_sensor_init(){
     pinMode(WATER_PIN, INPUT);
     attachInterrupt(digitalPinToInterrupt(WATER_PIN), ISR_WATER, CHANGE);
 }

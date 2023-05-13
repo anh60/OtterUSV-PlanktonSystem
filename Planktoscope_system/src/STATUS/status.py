@@ -29,20 +29,17 @@ class status_flag(int, Enum):
 
 def init_state():
     global curr_sys_state, next_sys_state
-
     curr_sys_state = 0
     next_sys_state = 0
 
 
 def get_sys_state():
     global curr_sys_state, next_sys_state
-
     return curr_sys_state
 
 
 def set_sys_state(flag, val):
     global curr_sys_state, next_sys_state
-
     if(val == 1):
         next_sys_state |= (1 << flag)
     else:
@@ -51,7 +48,6 @@ def set_sys_state(flag, val):
 
 def update_sys_state():
     global curr_sys_state, next_sys_state
-
     if (curr_sys_state != next_sys_state):
         curr_sys_state = next_sys_state
         return True

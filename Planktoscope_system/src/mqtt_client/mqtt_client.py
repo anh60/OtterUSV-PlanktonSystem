@@ -7,9 +7,10 @@
 
 #---------------------------- PACKAGES -----------------------------------------
 
-import paho.mqtt.client as mqtt
-import MQTT_CLIENT.mqtt_constants as con
-import STATUS.status as state
+import paho.mqtt.client             as mqtt
+import MQTT_CLIENT.mqtt_constants   as con
+import STATUS.status                as state
+import RMS_COM.rms_com              as rms
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -33,9 +34,13 @@ def init_mqtt():
 
 
 def on_connect(client, userdata, flags, rc):
-    qos = 0
+    if(rc == 0):
+        print("Connected to broker")
+    else:
+        print("Connection failed, returned code: ", rc)
+
     for topic in topics_sub:
-        client.subscribe(topic, qos)
+        client.subscribe(topic, 0)
 
 
 def on_message(client, userdata, message):
@@ -48,12 +53,19 @@ def msg_handler(topic, msg):
 
     if(topic == con.topic.SAMPLE):
         state.set_sys_state(state.status_flag.SAMPLING, 1)
+        rms.send_pump()
 
     # just for testing!!!
     if(topic == con.topic.POS):
         state.set_sys_state(state.status_flag.SAMPLING, 0)
+        rms.send_stop()
 
 
 def pub_status():
-    client.publish(con.topic.STATUS, state.get_sys_state())
+    client.publish(
+        topic   = con.topic.STATUS, 
+        payload = state.get_sys_state(), 
+        qos     = 0, 
+        retain  = True
+    )
 
