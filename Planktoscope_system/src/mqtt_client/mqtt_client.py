@@ -36,11 +36,12 @@ def init_mqtt():
 def on_connect(client, userdata, flags, rc):
     if(rc == 0):
         print("Connected to broker")
+
     else:
         print("Connection failed, returned code: ", rc)
 
     for topic in topics_sub:
-        client.subscribe(topic, 0)
+        client.subscribe(topic, 1)
 
 
 def on_message(client, userdata, message):
@@ -65,7 +66,7 @@ def pub_status():
     client.publish(
         topic   = con.topic.STATUS, 
         payload = state.get_sys_state(), 
-        qos     = 0, 
+        qos     = 1, 
         retain  = True
     )
 
