@@ -55,9 +55,8 @@ def on_message(client, userdata, message):
     msg = message.payload
     print("")
     print("Received new state: " + str(msg))
-    sys_state = int(msg)
-    print("sys_state updated")
     print("")
+    sys_state = int(msg)
 
 
 def init_sub():

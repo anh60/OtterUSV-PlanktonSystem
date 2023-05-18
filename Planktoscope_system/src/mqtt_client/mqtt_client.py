@@ -54,12 +54,10 @@ def msg_handler(topic, msg):
 
     if(topic == con.topic.SAMPLE):
         state.set_sys_state(state.status_flag.SAMPLING, 1)
-        rms.send_pump()
 
     # just for testing!!!
     if(topic == con.topic.POS):
         state.set_sys_state(state.status_flag.SAMPLING, 0)
-        rms.send_stop()
 
 
 def pub_status():
