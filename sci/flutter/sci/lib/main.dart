@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sci/pages/status.dart';
 import 'package:sci/controllers/mqtt_controller.dart';
 
 void main() {
@@ -54,29 +53,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       body: Center(
         // Main column
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+
           // Column elements
           children: <Widget>[
-            // Heading for status
-            Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.blueGrey,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Text(
-                'Current Status',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-
             // Status flags
             ValueListenableBuilder<int>(
               builder: (BuildContext context, int value, Widget? child) {
@@ -90,125 +70,254 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
                 const double sfontsize = 20;
                 const Color scolor = Color.fromARGB(255, 77, 90, 114);
-                const double edges = 10;
+                const double edges = 5;
+                const double sradius = 10;
+                const double spadding = 10;
 
                 // Box around status flags
                 return Container(
                   alignment: Alignment.center,
-                  margin: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: Colors.blueGrey,
                     shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(15),
                   ),
 
                   // Column for all the status flags
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Container(
                         alignment: Alignment.center,
                         margin: const EdgeInsets.all(edges),
+                        padding: const EdgeInsets.all(spadding),
                         decoration: BoxDecoration(
                           color: scolor,
                           shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(sradius),
                         ),
-                        child: Text(
-                          'RMS Pump $rms_pump',
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: sfontsize),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Connected',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                '$connected',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
                         alignment: Alignment.center,
                         margin: const EdgeInsets.all(edges),
+                        padding: const EdgeInsets.all(spadding),
                         decoration: BoxDecoration(
                           color: scolor,
                           shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(sradius),
                         ),
-                        child: Text(
-                          'RMS Valve $rms_valve',
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: sfontsize),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Sampling',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '$sampling',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
                         alignment: Alignment.center,
                         margin: const EdgeInsets.all(edges),
+                        padding: const EdgeInsets.all(spadding),
                         decoration: BoxDecoration(
                           color: scolor,
                           shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(sradius),
                         ),
-                        child: Text(
-                          'RMS Full $rms_full',
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: sfontsize),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Leak',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '$leak',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
                         alignment: Alignment.center,
                         margin: const EdgeInsets.all(edges),
+                        padding: const EdgeInsets.all(spadding),
                         decoration: BoxDecoration(
                           color: scolor,
                           shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(sradius),
                         ),
-                        child: Text(
-                          'RMS Leak $rms_leak',
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: sfontsize),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'RMS Pump',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '$rms_pump',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
                         alignment: Alignment.center,
                         margin: const EdgeInsets.all(edges),
+                        padding: const EdgeInsets.all(spadding),
                         decoration: BoxDecoration(
                           color: scolor,
                           shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(sradius),
                         ),
-                        child: Text(
-                          'Connected $connected',
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: sfontsize),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'RMS Valve',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '$rms_valve',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
                         alignment: Alignment.center,
                         margin: const EdgeInsets.all(edges),
+                        padding: const EdgeInsets.all(spadding),
                         decoration: BoxDecoration(
                           color: scolor,
                           shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(sradius),
                         ),
-                        child: Text(
-                          'Sampling $sampling',
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: sfontsize),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'RMS Full',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '$rms_full',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
                         alignment: Alignment.center,
                         margin: const EdgeInsets.all(edges),
+                        padding: const EdgeInsets.all(spadding),
                         decoration: BoxDecoration(
                           color: scolor,
                           shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(sradius),
                         ),
-                        child: Text(
-                          'Leak $leak',
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: sfontsize),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'RMS Leak',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '$rms_leak',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: sfontsize),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -219,6 +328,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             ),
 
             // Sample button
+            //heightFactor: 2,
             FloatingActionButton.extended(
               label: const Text(
                 'Start Sampling',
@@ -228,6 +338,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 ),
               ),
               backgroundColor: Colors.blueGrey,
+              elevation: 5,
+              hoverColor: Color.fromARGB(255, 126, 151, 194),
+              hoverElevation: 10,
+              splashColor: Colors.blue,
               onPressed: () {
                 mqtt.publishMessage('sample');
               },

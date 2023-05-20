@@ -36,6 +36,7 @@ def init_mqtt():
 def on_connect(client, userdata, flags, rc):
     if(rc == 0):
         print("Connected to broker")
+        state.set_sys_state(state.status_flag.CONNECTED, 1)
 
     else:
         print("Connection failed, returned code: ", rc)
