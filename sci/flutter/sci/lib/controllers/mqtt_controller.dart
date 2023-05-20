@@ -5,7 +5,7 @@ import "package:mqtt_client/mqtt_server_client.dart";
 import "package:sci/constants.dart";
 
 class MQTTController with ChangeNotifier {
-  final ValueNotifier<String> data = ValueNotifier<String>("");
+  final ValueNotifier<int> statusdata = ValueNotifier<int>(0);
   late MqttServerClient client;
 
   Future<Object> connect() async {
@@ -52,10 +52,19 @@ class MQTTController with ChangeNotifier {
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
-      final pt =
+
+      String pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-      data.value = pt;
+      int status = int.parse(pt);
+
+      switch (c[0].topic) {
+        case topics.STATUS:
+          statusdata.value = status;
+          break;
+        default:
+      }
+
       print(
           'MQTT_LOGS:: New data arrived: topic is <${c[0].topic}>, payload is $pt');
       print('');
@@ -86,5 +95,12 @@ class MQTTController with ChangeNotifier {
 
   void pong() {
     print('MQTT_LOGS:: Ping response client callback invoked');
+  }
+
+  void publishMessage(String message) {
+    const pubTopic = topics.SAMPLE;
+    final builder = MqttClientPayloadBuilder();
+    builder.addString(message);
+    client.publishMessage(pubTopic, MqttQos.atLeastOnce, builder.payload!);
   }
 }
