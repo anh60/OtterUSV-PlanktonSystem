@@ -5,9 +5,17 @@ import "package:mqtt_client/mqtt_server_client.dart";
 import "package:sci/constants.dart";
 
 class MQTTController with ChangeNotifier {
-  final ValueNotifier<int> statusdata = ValueNotifier<int>(0);
+  // Status notifiers
+  final ValueNotifier<int> status_flags = ValueNotifier<int>(0);
+
+  // Calibration notifiers
+  final ValueNotifier<int> cal_pos = ValueNotifier<int>(0);
+  final ValueNotifier<int> cal_photo = ValueNotifier<int>(0);
+
+  // Client to be initialized
   late MqttServerClient client;
 
+  // Configure MQTT Client
   Future<Object> connect() async {
     client = MqttServerClient.withPort(
         mqtt_broker, mqtt_client_name, mqtt_broker_port);
@@ -47,8 +55,10 @@ class MQTTController with ChangeNotifier {
     }
 
     print('MQTT_LOGS::Subscribing to the status topic');
-    String topic = topics.STATUS;
-    client.subscribe(topic, MqttQos.atMostOnce);
+    client.subscribe(topics.STATUS_FLAGS, MqttQos.atLeastOnce);
+    client.subscribe(topics.STATUS_CONNECTED, MqttQos.atLeastOnce);
+    client.subscribe(topics.CAL_CURRPOS, MqttQos.atLeastOnce);
+    client.subscribe(topics.CAL_PHOTO, MqttQos.atLeastOnce);
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
@@ -56,11 +66,17 @@ class MQTTController with ChangeNotifier {
       String pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-      int status = int.parse(pt);
+      int data = int.parse(pt);
 
       switch (c[0].topic) {
-        case topics.STATUS:
-          statusdata.value = status;
+        case topics.STATUS_FLAGS:
+          status_flags.value = data;
+          break;
+        case topics.CAL_CURRPOS:
+          cal_pos.value = data;
+          break;
+        case topics.CAL_PHOTO:
+          cal_photo.value = data;
           break;
         default:
       }
@@ -97,10 +113,9 @@ class MQTTController with ChangeNotifier {
     print('MQTT_LOGS:: Ping response client callback invoked');
   }
 
-  void publishMessage(String message) {
-    const pubTopic = topics.SAMPLE;
+  void publishMessage(String t, String m) {
     final builder = MqttClientPayloadBuilder();
-    builder.addString(message);
-    client.publishMessage(pubTopic, MqttQos.atLeastOnce, builder.payload!);
+    builder.addString(m);
+    client.publishMessage(t, MqttQos.atLeastOnce, builder.payload!);
   }
 }

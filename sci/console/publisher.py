@@ -5,17 +5,41 @@ import mqtt_constants as con
 
 client = mqtt.Client("planktopi_pub")
 
-
 async def pub():
-    client.publish(con.topic.SAMPLE, "sample")
-    print("Publishing: 1\n")
-    await asyncio.sleep(1)
-    print("Publishing: 0\n")
-    client.publish(con.topic.POS, "position")
-    await asyncio.sleep(1)
+    choice = input()
 
+    if(choice == '1'):
+        client.publish(
+            topic = con.topic.STATUS_FLAGS, 
+            payload = 0, 
+            qos = 1,
+            retain = True
+            )
+        print("Publishing: 1")
+        print("")
+
+    if(choice == '2'):
+        client.publish(
+            topic = con.topic.STATUS_FLAGS, 
+            payload = 1, 
+            qos = 1,
+            retain = True
+            )
+        print("Publishing: 1")
+        print("")
+
+    if(choice == '3'):
+        client.publish(
+            topic = con.topic.STATUS_FLAGS, 
+            payload = 2, 
+            qos = 1,
+            retain = True
+            )
+        print("Publishing: 2")
+        print("")
 
 client.connect(con.broker)
+client.loop_start()
 
 while True:
     asyncio.run(pub())

@@ -29,7 +29,6 @@ async def pub():
         print("")
 
     if(choice == '2'):
-        client.publish(con.topic.POS, "position", 1)
         print("Publishing: 0")
         print("")
 
