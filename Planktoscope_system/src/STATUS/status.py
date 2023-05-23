@@ -16,13 +16,14 @@ curr_sys_state = 0
 next_sys_state = 0
 
 class status_flag(int, Enum):
-    RMS_PUMP    = 0
-    RMS_VALVE   = 1
-    RMS_FULL    = 2
-    RMS_LEAK    = 3
-    CONNECTED   = 4
-    SAMPLING    = 5
-    LEAK        = 6
+    RMS_PUMP        = 0
+    RMS_VALVE       = 1
+    RMS_FULL        = 2
+    RMS_LEAK        = 3
+    CONNECTED       = 4
+    SAMPLING        = 5
+    LEAK            = 6 
+    CALIBRATING     = 7
 
 
 #---------------------------- FUNCTIONS ----------------------------------------

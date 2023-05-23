@@ -53,6 +53,24 @@ class _CalibratePageState extends State<CalibratePage> {
             },
             valueListenable: widget.mqtt.cal_pos,
           ),
+          // Calibrate Button
+          FloatingActionButton.extended(
+            label: const Text(
+              'Change Position',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+            backgroundColor: Colors.blueGrey,
+            elevation: 5,
+            hoverColor: Color.fromARGB(255, 126, 151, 194),
+            hoverElevation: 10,
+            splashColor: Colors.blue,
+            onPressed: () {
+              widget.mqtt.publishMessage(topics.CAL_NEXTPOS, '1');
+            },
+          ),
         ],
       ),
     );

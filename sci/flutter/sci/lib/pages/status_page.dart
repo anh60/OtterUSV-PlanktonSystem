@@ -20,6 +20,7 @@ class StatusPage extends StatefulWidget {
 class _StatusPageState extends State<StatusPage> {
   int connected = 0;
   int sampling = 0;
+  int calibrating = 0;
   int leak = 0;
   int rms_pump = 0;
   int rms_valve = 0;
@@ -45,6 +46,7 @@ class _StatusPageState extends State<StatusPage> {
               connected = (value >> 4) & 1;
               sampling = (value >> 5) & 1;
               leak = (value >> 6) & 1;
+              calibrating = (value >> 7) & 1;
 
               // Box around status flags
               return Container(
@@ -63,6 +65,7 @@ class _StatusPageState extends State<StatusPage> {
                   children: <Widget>[
                     StatusTab('Connected', connected),
                     StatusTab('Sampling', sampling),
+                    StatusTab('Calibrating', calibrating),
                     StatusTab('Leak', leak),
                     StatusTab('RMS Pump', rms_pump),
                     StatusTab('RMS Valve', rms_valve),

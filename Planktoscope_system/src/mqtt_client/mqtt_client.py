@@ -19,8 +19,8 @@ clientname = "planktopi"
 client = mqtt.Client(clientname)
 
 topics_sub = [
-    con.topic.SAMPLE,
-    con.topic.POS
+    con.topic.CTRL_SAMPLE,
+    con.topic.CAL_NEXTPOS
 ]
 
 
@@ -36,7 +36,7 @@ def init_mqtt():
 def on_connect(client, userdata, flags, rc):
     if(rc == 0):
         print("Connected to broker")
-        state.set_sys_state(state.status_flag.CONNECTED, 1)
+        state.set_sys_state(state.status_flag.CONNECTED, 0)
 
     else:
         print("Connection failed, returned code: ", rc)
@@ -53,19 +53,26 @@ def on_message(client, userdata, message):
 
 def msg_handler(topic, msg):
 
-    if(topic == con.topic.SAMPLE):
+    if(topic == con.topic.CTRL_SAMPLE):
         state.set_sys_state(state.status_flag.SAMPLING, 1)
 
-    # just for testing!!!
-    if(topic == con.topic.POS):
-        state.set_sys_state(state.status_flag.SAMPLING, 0)
+    if(topic == con.topic.CAL_NEXTPOS):
+        state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
 
 def pub_status():
     client.publish(
-        topic   = con.topic.STATUS, 
+        topic   = con.topic.STATUS_FLAGS, 
         payload = state.get_sys_state(), 
         qos     = 1, 
         retain  = True
+    )
+
+def pub_photo(picture):
+    client.publish(
+        topic   = con.topic.CAL_PHOTO, 
+        payload = picture, 
+        qos     = 1, 
+        retain  = False
     )
 

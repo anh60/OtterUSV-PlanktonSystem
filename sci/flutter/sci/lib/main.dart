@@ -4,6 +4,7 @@ import 'package:sci/controllers/mqtt_controller.dart';
 import 'package:sci/pages/status_page.dart';
 import 'package:sci/pages/images_page.dart';
 import 'package:sci/pages/calibrate_page.dart';
+import 'package:sci/pages/vehicle_page.dart';
 import 'package:sci/pages/logs_page.dart';
 
 void main() {
@@ -41,7 +42,13 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
-    pages = [StatusPage(mqtt), ImagesPage(), CalibratePage(mqtt), LogsPage()];
+    pages = [
+      StatusPage(mqtt),
+      ImagesPage(),
+      CalibratePage(mqtt),
+      VehiclePage(),
+      LogsPage()
+    ];
     mqtt.connect();
   }
 
@@ -83,6 +90,13 @@ class _RootPageState extends State<RootPage> {
               color: Colors.white,
             ),
             label: 'Calibrate',
+          ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.directions_boat,
+              color: Colors.white,
+            ),
+            label: 'Vehicle',
           ),
           NavigationDestination(
             icon: Icon(

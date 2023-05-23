@@ -1,3 +1,5 @@
+import "dart:typed_data";
+
 import "package:flutter/material.dart";
 import "package:mqtt_client/mqtt_client.dart";
 import "package:mqtt_client/mqtt_server_client.dart";
@@ -58,7 +60,7 @@ class MQTTController with ChangeNotifier {
     client.subscribe(topics.STATUS_FLAGS, MqttQos.atLeastOnce);
     client.subscribe(topics.STATUS_CONNECTED, MqttQos.atLeastOnce);
     client.subscribe(topics.CAL_CURRPOS, MqttQos.atLeastOnce);
-    client.subscribe(topics.CAL_PHOTO, MqttQos.atLeastOnce);
+    //client.subscribe(topics.CAL_PHOTO, MqttQos.atLeastOnce);
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
@@ -66,23 +68,26 @@ class MQTTController with ChangeNotifier {
       String pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
-      int data = int.parse(pt);
+      Uint8List binarydata = Uint8List.view(
+          recMess.payload.message.buffer, 0, recMess.payload.message.length);
 
       switch (c[0].topic) {
         case topics.STATUS_FLAGS:
-          status_flags.value = data;
+          status_flags.value = int.parse(pt);
           break;
-        case topics.CAL_CURRPOS:
-          cal_pos.value = data;
-          break;
-        case topics.CAL_PHOTO:
-          cal_photo.value = data;
-          break;
+        //case topics.CAL_CURRPOS:
+        //  cal_pos.value = data;
+        //  break;
+        //case topics.CAL_PHOTO:
+        //img
+        //  break;
         default:
       }
 
-      print(
-          'MQTT_LOGS:: New data arrived: topic is <${c[0].topic}>, payload is $pt');
+      print('MQTT_LOGS:: New data arrived: topic is <${c[0].topic}>');
+      print('Payload size = ${recMess.payload.message.length}');
+      print('value = ${recMess.payload.message}');
+      print(binarydata);
       print('');
     });
 
