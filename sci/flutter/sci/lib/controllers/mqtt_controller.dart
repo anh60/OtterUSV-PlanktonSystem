@@ -1,5 +1,3 @@
-import "dart:typed_data";
-
 import "package:flutter/material.dart";
 import "package:mqtt_client/mqtt_client.dart";
 import "package:mqtt_client/mqtt_server_client.dart";
@@ -7,38 +5,36 @@ import "package:mqtt_client/mqtt_server_client.dart";
 import "package:sci/constants.dart";
 
 class MQTTController with ChangeNotifier {
-  // Status notifiers
-  final ValueNotifier<int> status_flags = ValueNotifier<int>(0);
-
-  // Calibration notifiers
-  final ValueNotifier<int> cal_pos = ValueNotifier<int>(0);
-  final ValueNotifier<int> cal_photo = ValueNotifier<int>(0);
+  // Value notifiers
+  final ValueNotifier<String> status_flags = ValueNotifier<String>('0');
+  final ValueNotifier<String> cal_pos = ValueNotifier<String>('0');
+  final ValueNotifier<String> cal_photo = ValueNotifier<String>('0');
 
   // Client to be initialized
   late MqttServerClient client;
 
-  // Configure MQTT Client
   Future<Object> connect() async {
     client = MqttServerClient.withPort(
         mqtt_broker, mqtt_client_name, mqtt_broker_port);
-    client.logging(on: true);
+    client.logging(on: false);
     client.onConnected = onConnected;
     client.onDisconnected = onDisconnected;
     client.onSubscribed = onSubscribed;
     client.onSubscribeFail = onSubscribeFail;
     client.pongCallback = pong;
     client.keepAlivePeriod = 60;
-    client.logging(on: true);
+    client.logging(on: false);
     client.setProtocolV311();
 
+    // Configure connection will-message and set clean session
     final connMessage = MqttConnectMessage()
         .withWillTopic('willtopic')
         .withWillMessage('Will message')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
 
-    print('MQTT_LOGS::Mosquitto client connecting....');
-
+    // Connect to broker
+    print('MQTT | Client connecting....');
     client.connectionMessage = connMessage;
     try {
       await client.connect();
@@ -47,47 +43,52 @@ class MQTTController with ChangeNotifier {
       client.disconnect();
     }
 
+    // Check if connected, if not disconnect properly
     if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      print('MQTT_LOGS::Mosquitto client connected');
+      print('MQTT | Client connected');
     } else {
       print(
-          'MQTT_LOGS::ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
+          'MQTT | ERROR client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
       return -1;
     }
 
-    print('MQTT_LOGS::Subscribing to the status topic');
+    // Subscribe to topics
     client.subscribe(topics.STATUS_FLAGS, MqttQos.atLeastOnce);
     client.subscribe(topics.STATUS_CONNECTED, MqttQos.atLeastOnce);
     client.subscribe(topics.CAL_CURRPOS, MqttQos.atLeastOnce);
-    //client.subscribe(topics.CAL_PHOTO, MqttQos.atLeastOnce);
+    client.subscribe(topics.CAL_PHOTO, MqttQos.atLeastOnce);
 
-    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-      final recMess = c![0].payload as MqttPublishMessage;
+    // Listen for messages on subscribed topics
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? msg) {
+      // Convert payload to MqttPublishMessage
+      final data = msg![0].payload as MqttPublishMessage;
 
-      String pt =
-          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      // Get Uint8Buffer message
+      var message = data.payload.message;
 
-      Uint8List binarydata = Uint8List.view(
-          recMess.payload.message.buffer, 0, recMess.payload.message.length);
+      // Convert Uint8Buffer to String
+      String stringMsg = MqttPublishPayload.bytesToStringAsString(message);
 
-      switch (c[0].topic) {
+      // Get topic
+      String topic = msg[0].topic;
+
+      // Filter topics and update corresponding ValueNotifier
+      switch (topic) {
         case topics.STATUS_FLAGS:
-          status_flags.value = int.parse(pt);
+          status_flags.value = stringMsg;
           break;
-        //case topics.CAL_CURRPOS:
-        //  cal_pos.value = data;
-        //  break;
-        //case topics.CAL_PHOTO:
-        //img
-        //  break;
+        case topics.CAL_CURRPOS:
+          cal_pos.value = stringMsg;
+          break;
+        case topics.CAL_PHOTO:
+          cal_photo.value = stringMsg;
+          break;
         default:
       }
 
-      print('MQTT_LOGS:: New data arrived: topic is <${c[0].topic}>');
-      print('Payload size = ${recMess.payload.message.length}');
-      print('value = ${recMess.payload.message}');
-      print(binarydata);
+      print('MQTT | Data received on topic: $topic');
+      print('MQTT | Payload size = ${message.length}');
       print('');
     });
 
@@ -95,27 +96,27 @@ class MQTTController with ChangeNotifier {
   }
 
   void onConnected() {
-    print('MQTT_LOGS:: Connected');
+    print('MQTT | Connected');
   }
 
   void onDisconnected() {
-    print('MQTT_LOGS:: Disconnected');
+    print('MQTT | Disconnected');
   }
 
   void onSubscribed(String topic) {
-    print('MQTT_LOGS:: Subscribed topic: $topic');
+    print('MQTT | Subscribed topic: $topic');
   }
 
   void onSubscribeFail(String topic) {
-    print('MQTT_LOGS:: Failed to subscribe $topic');
+    print('MQTT | Failed to subscribe $topic');
   }
 
   void onUnsubscribed(String? topic) {
-    print('MQTT_LOGS:: Unsubscribed topic: $topic');
+    print('MQTT | Unsubscribed topic: $topic');
   }
 
   void pong() {
-    print('MQTT_LOGS:: Ping response client callback invoked');
+    print('MQTT | Ping response client callback invoked');
   }
 
   void publishMessage(String t, String m) {

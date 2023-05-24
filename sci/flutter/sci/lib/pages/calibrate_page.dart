@@ -1,9 +1,11 @@
+import "dart:convert";
+
 import "package:flutter/material.dart";
 
 import "package:sci/constants.dart";
 
 import "package:sci/controllers/mqtt_controller.dart";
-import "package:sci/widgets/StatusTab.dart";
+import 'package:sci/widgets/status_tab.dart';
 
 class CalibratePage extends StatefulWidget {
   // MQTT Client
@@ -23,48 +25,82 @@ class _CalibratePageState extends State<CalibratePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          // Picture
-          ValueListenableBuilder<int>(
-            builder: (BuildContext context, int value, Widget? child) {
-              return Container();
+          // Image
+          ValueListenableBuilder<String>(
+            builder: (BuildContext context, String value, Widget? child) {
+              var bytesImage = const Base64Decoder().convert(value);
+              return Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 77, 90, 114),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Image.memory(
+                  bytesImage,
+                  scale: 2,
+                ),
+              );
             },
             valueListenable: widget.mqtt.cal_photo,
           ),
 
           // Current position
-          ValueListenableBuilder<int>(
-            builder: (BuildContext context, int value, Widget? child) {
+          ValueListenableBuilder<String>(
+            builder: (BuildContext context, String value, Widget? child) {
+              int currPos = int.parse(value);
               return Container(
                 alignment: Alignment.center,
-                margin: const EdgeInsets.all(15),
+                margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: Colors.blueGrey,
                   shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    StatusTab('Current value', 1000),
+                    StatusTab('Current value', currPos),
                   ],
                 ),
               );
             },
             valueListenable: widget.mqtt.cal_pos,
           ),
+
+          // Next value
+          Container(
+            alignment: Alignment.center,
+            margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: Colors.blueGrey,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                StatusTab('New value', 1000),
+              ],
+            ),
+          ),
+
           // Calibrate Button
           FloatingActionButton.extended(
             label: const Text(
               'Change Position',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 15,
               ),
             ),
             backgroundColor: Colors.blueGrey,
             elevation: 5,
-            hoverColor: Color.fromARGB(255, 126, 151, 194),
+            hoverColor: const Color.fromARGB(255, 126, 151, 194),
             hoverElevation: 10,
             splashColor: Colors.blue,
             onPressed: () {

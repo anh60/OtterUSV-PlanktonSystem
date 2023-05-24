@@ -1,10 +1,8 @@
 import "package:flutter/material.dart";
 
 import "package:sci/constants.dart";
-
 import "package:sci/controllers/mqtt_controller.dart";
-
-import "package:sci/widgets/StatusTab.dart";
+import "package:sci/widgets/status_box.dart";
 
 class StatusPage extends StatefulWidget {
   // MQTT Client
@@ -37,40 +35,96 @@ class _StatusPageState extends State<StatusPage> {
         // Column elements
         children: <Widget>[
           // Status flags
-          ValueListenableBuilder<int>(
-            builder: (BuildContext context, int value, Widget? child) {
-              rms_pump = (value >> 0) & 1;
-              rms_valve = (value >> 1) & 1;
-              rms_full = (value >> 2) & 1;
-              rms_leak = (value >> 3) & 1;
-              connected = (value >> 4) & 1;
-              sampling = (value >> 5) & 1;
-              leak = (value >> 6) & 1;
-              calibrating = (value >> 7) & 1;
+          ValueListenableBuilder<String>(
+            builder: (BuildContext context, String value, Widget? child) {
+              int status = int.parse(value);
+              rms_pump = (status >> 0) & 1;
+              rms_valve = (status >> 1) & 1;
+              rms_full = (status >> 2) & 1;
+              rms_leak = (status >> 3) & 1;
+              connected = (status >> 4) & 1;
+              sampling = (status >> 5) & 1;
+              leak = (status >> 6) & 1;
+              calibrating = (status >> 7) & 1;
 
-              // Box around status flags
-              return Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.all(15),
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey,
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-
-                // Column for all the status flags
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              return SizedBox(
+                height: 360,
+                width: 1320,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
                   children: <Widget>[
-                    StatusTab('Connected', connected),
-                    StatusTab('Sampling', sampling),
-                    StatusTab('Calibrating', calibrating),
-                    StatusTab('Leak', leak),
-                    StatusTab('RMS Pump', rms_pump),
-                    StatusTab('RMS Valve', rms_valve),
-                    StatusTab('RMS Full', rms_full),
-                    StatusTab('RMS Leak', rms_leak),
+                    StatusBox(
+                      'Connected',
+                      connected,
+                      'Sampling',
+                      sampling,
+                      'Calibrating',
+                      calibrating,
+                      'Leak',
+                      leak,
+                      'RMS Pump',
+                      rms_pump,
+                      'RMS Valve',
+                      rms_valve,
+                      'RMS Full',
+                      rms_full,
+                      'RMS Leak',
+                      rms_leak,
+                    ),
+                    StatusBox(
+                      'Connected',
+                      connected,
+                      'Sampling',
+                      sampling,
+                      'Calibrating',
+                      calibrating,
+                      'Leak',
+                      leak,
+                      'RMS Pump',
+                      rms_pump,
+                      'RMS Valve',
+                      rms_valve,
+                      'RMS Full',
+                      rms_full,
+                      'RMS Leak',
+                      rms_leak,
+                    ),
+                    StatusBox(
+                      'Connected',
+                      connected,
+                      'Sampling',
+                      sampling,
+                      'Calibrating',
+                      calibrating,
+                      'Leak',
+                      leak,
+                      'RMS Pump',
+                      rms_pump,
+                      'RMS Valve',
+                      rms_valve,
+                      'RMS Full',
+                      rms_full,
+                      'RMS Leak',
+                      rms_leak,
+                    ),
+                    StatusBox(
+                      'Connected',
+                      connected,
+                      'Sampling',
+                      sampling,
+                      'Calibrating',
+                      calibrating,
+                      'Leak',
+                      leak,
+                      'RMS Pump',
+                      rms_pump,
+                      'RMS Valve',
+                      rms_valve,
+                      'RMS Full',
+                      rms_full,
+                      'RMS Leak',
+                      rms_leak,
+                    ),
                   ],
                 ),
               );
@@ -83,7 +137,7 @@ class _StatusPageState extends State<StatusPage> {
               'Start Sampling',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 15,
               ),
             ),
             backgroundColor: Colors.blueGrey,
