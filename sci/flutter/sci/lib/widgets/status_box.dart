@@ -3,26 +3,12 @@ import "package:flutter/material.dart";
 import "package:sci/widgets/status_tab.dart";
 
 class StatusBox extends StatefulWidget {
-  String name0, name1, name2, name3, name4, name5, name6, name7;
-  int val0, val1, val2, val3, val4, val5, val6, val7;
+  List<String> labels;
+  int flags;
 
   StatusBox(
-    this.name0,
-    this.val0,
-    this.name1,
-    this.val1,
-    this.name2,
-    this.val2,
-    this.name3,
-    this.val3,
-    this.name4,
-    this.val4,
-    this.name5,
-    this.val5,
-    this.name6,
-    this.val6,
-    this.name7,
-    this.val7,
+    this.labels,
+    this.flags,
   );
 
   @override
@@ -57,14 +43,14 @@ class _StatusBoxState extends State<StatusBox> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          StatusTab(widget.name0, widget.val0),
-          StatusTab(widget.name1, widget.val1),
-          StatusTab(widget.name2, widget.val2),
-          StatusTab(widget.name3, widget.val3),
-          StatusTab(widget.name4, widget.val4),
-          StatusTab(widget.name5, widget.val5),
-          StatusTab(widget.name6, widget.val6),
-          StatusTab(widget.name7, widget.val7),
+          StatusTab(widget.labels[0], (widget.flags >> 0) & 1),
+          StatusTab(widget.labels[1], (widget.flags >> 1) & 1),
+          StatusTab(widget.labels[2], (widget.flags >> 2) & 1),
+          StatusTab(widget.labels[3], (widget.flags >> 3) & 1),
+          StatusTab(widget.labels[4], (widget.flags >> 4) & 1),
+          StatusTab(widget.labels[5], (widget.flags >> 5) & 1),
+          StatusTab(widget.labels[6], (widget.flags >> 6) & 1),
+          StatusTab(widget.labels[7], (widget.flags >> 7) & 1),
         ],
       ),
     );
