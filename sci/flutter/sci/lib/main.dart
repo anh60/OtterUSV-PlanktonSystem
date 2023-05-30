@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:sci/controllers/mqtt_controller.dart';
 
+import 'package:sci/constants.dart';
+
 import 'package:sci/pages/status_page.dart';
 import 'package:sci/pages/images_page.dart';
 import 'package:sci/pages/calibrate_page.dart';
@@ -57,52 +59,65 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 200, 220, 255),
+      backgroundColor: Color.fromARGB(183, 193, 225, 253),
       // Title bar at the top
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
+        elevation: 5,
+        shadowColor: Colors.black,
+        backgroundColor: darkBlue,
         centerTitle: true,
-        title: const Text('Planktoscope SCI'),
+        leadingWidth: 200,
+        leading: const Text(
+          'Connection status:   Planktoscope connected',
+        ),
+        title: const Text(
+          'Planktoscope Control Interface',
+          style: TextStyle(
+            color: lightBlue,
+          ),
+        ),
       ),
       // Current page active
       body: pages[currentPage],
       // Page navigation bar at the bottom
       bottomNavigationBar: NavigationBar(
-        backgroundColor: Colors.blueGrey,
-        indicatorColor: Color.fromARGB(255, 92, 108, 138),
+        backgroundColor: darkBlue,
+        shadowColor: Colors.black,
+        indicatorColor: darkerBlue,
+        elevation: 5,
         destinations: const [
           NavigationDestination(
             icon: Icon(
               Icons.info,
-              color: Colors.white,
+              color: lightBlue,
             ),
             label: 'Status',
           ),
           NavigationDestination(
             icon: Icon(
               Icons.photo_library,
-              color: Colors.white,
+              color: lightBlue,
             ),
             label: 'Images',
           ),
           NavigationDestination(
             icon: Icon(
               Icons.settings,
-              color: Colors.white,
+              color: lightBlue,
             ),
             label: 'Calibrate',
           ),
           NavigationDestination(
             icon: Icon(
               Icons.directions_boat,
-              color: Colors.white,
+              color: lightBlue,
             ),
             label: 'Vehicle',
           ),
           NavigationDestination(
             icon: Icon(
               Icons.format_list_bulleted,
-              color: Colors.white,
+              color: lightBlue,
             ),
             label: 'Logs',
           ),

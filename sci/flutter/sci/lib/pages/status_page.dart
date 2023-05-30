@@ -25,13 +25,15 @@ class _StatusPageState extends State<StatusPage> {
             builder: (BuildContext context, String value, Widget? child) {
               status.setStatus(value);
               return SizedBox(
-                height: 360,
+                height: 400,
                 width: 1320,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
-                    StatusBox(status.pscope.flagLabels, status.pscope.flags),
-                    StatusBox(status.rms.flagLabels, status.rms.flags),
+                    StatusBox(status.pscope.label, status.pscope.flagLabels,
+                        status.pscope.flags),
+                    StatusBox(status.rms.label, status.rms.flagLabels,
+                        status.rms.flags),
                   ],
                 ),
               );
@@ -42,15 +44,18 @@ class _StatusPageState extends State<StatusPage> {
             label: const Text(
               'Start Sampling',
               style: TextStyle(
-                color: Colors.white,
+                color: lightBlue,
                 fontSize: 15,
               ),
             ),
-            backgroundColor: Colors.blueGrey,
+            backgroundColor: darkerBlue,
             elevation: 5,
-            hoverColor: Color.fromARGB(255, 126, 151, 194),
+            hoverColor: darkBlue,
             hoverElevation: 10,
             splashColor: Colors.blue,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
             onPressed: () {
               widget.mqtt.publishMessage(topics.CTRL_SAMPLE, '1');
             },

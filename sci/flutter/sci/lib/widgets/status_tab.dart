@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "package:sci/constants.dart";
+
 class StatusTab extends StatefulWidget {
   String name;
   int value;
@@ -12,7 +14,6 @@ class StatusTab extends StatefulWidget {
 
 class _StatusTabState extends State<StatusTab> {
   static const double fontsize = 15;
-  static const Color color = Color.fromARGB(255, 77, 90, 114);
   static const double radius = 10;
   static const double xMargin = 10;
   static const double yMargin = 5;
@@ -27,7 +28,7 @@ class _StatusTabState extends State<StatusTab> {
       padding:
           const EdgeInsets.fromLTRB(xPadding, yPadding, xPadding, yPadding),
       decoration: BoxDecoration(
-        color: color,
+        color: darkerBlue,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(radius),
       ),
@@ -39,7 +40,7 @@ class _StatusTabState extends State<StatusTab> {
             child: Text(
               widget.name,
               style: const TextStyle(
-                color: Color.fromARGB(255, 255, 255, 255),
+                color: lightBlue,
                 fontSize: fontsize,
               ),
             ),
@@ -49,7 +50,7 @@ class _StatusTabState extends State<StatusTab> {
             child: Text(
               widget.value.toString(),
               style: const TextStyle(
-                color: Color.fromARGB(255, 255, 255, 255),
+                color: lightBlue,
                 fontSize: fontsize,
               ),
             ),

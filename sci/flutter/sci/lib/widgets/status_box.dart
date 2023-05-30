@@ -1,12 +1,15 @@
 import "package:flutter/material.dart";
+import "package:sci/constants.dart";
 
 import "package:sci/widgets/status_tab.dart";
 
 class StatusBox extends StatefulWidget {
+  String label;
   List<String> labels;
   int flags;
 
   StatusBox(
+    this.label,
     this.labels,
     this.flags,
   );
@@ -28,9 +31,17 @@ class _StatusBoxState extends State<StatusBox> {
       margin: const EdgeInsets.all(15),
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
       decoration: BoxDecoration(
-        color: Colors.blueGrey,
+        color: darkBlue,
         shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(1),
+            spreadRadius: 3,
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       constraints: const BoxConstraints(
         maxWidth: xMax,
@@ -43,6 +54,13 @@ class _StatusBoxState extends State<StatusBox> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          Text(
+            widget.label,
+            style: const TextStyle(
+              color: lightBlue,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           StatusTab(widget.labels[0], (widget.flags >> 0) & 1),
           StatusTab(widget.labels[1], (widget.flags >> 1) & 1),
           StatusTab(widget.labels[2], (widget.flags >> 2) & 1),
