@@ -3,10 +3,10 @@ import "package:flutter/material.dart";
 import "package:sci/constants.dart";
 
 class StatusTab extends StatefulWidget {
-  String name;
-  int value;
+  final String name;
+  final int value;
 
-  StatusTab(this.name, this.value);
+  const StatusTab(this.name, this.value, {super.key});
 
   @override
   State<StatusTab> createState() => _StatusTabState();

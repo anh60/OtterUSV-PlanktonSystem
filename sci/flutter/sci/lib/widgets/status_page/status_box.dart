@@ -1,14 +1,14 @@
 import "package:flutter/material.dart";
 import "package:sci/constants.dart";
 
-import "package:sci/widgets/status_tab.dart";
+import "package:sci/widgets/status_page/status_tab.dart";
 
 class StatusBox extends StatefulWidget {
-  String label;
-  List<String> labels;
-  int flags;
+  final String label;
+  final List<String> labels;
+  final int flags;
 
-  StatusBox(
+  const StatusBox(
     this.label,
     this.labels,
     this.flags,

@@ -5,25 +5,19 @@ import "package:flutter/material.dart";
 import "package:sci/constants.dart";
 
 import "package:sci/controllers/mqtt_controller.dart";
-import 'package:sci/widgets/status_tab.dart';
 
 class CalibratePage extends StatefulWidget {
   // MQTT Client
-  MQTTController mqtt;
+  final MQTTController mqtt;
 
   // Constructor
-  CalibratePage(this.mqtt);
+  const CalibratePage(this.mqtt, {super.key});
 
   @override
   State<CalibratePage> createState() => _CalibratePageState();
 }
 
 class _CalibratePageState extends State<CalibratePage> {
-  static const double xMax = 600;
-  static const double yMax = double.infinity;
-  static const double xMin = 0;
-  static const double yMin = 0;
-
   @override
   Widget build(BuildContext context) {
     return Center(
