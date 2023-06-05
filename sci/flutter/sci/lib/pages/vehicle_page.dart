@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_map/flutter_map.dart';
@@ -8,7 +6,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:sci/constants.dart';
 import 'package:sci/widgets/outlined_button_dark.dart';
 import 'package:sci/widgets/outlined_text_field.dart';
-import 'package:sci/widgets/vehicle_page/path_list_window.dart';
 import 'package:sci/widgets/vehicle_page/path_marker_tab.dart';
 import 'package:sci/widgets/vehicle_page/path_remove_button.dart';
 
@@ -124,9 +121,10 @@ class _VehiclePageState extends State<VehiclePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  OutlinedTextField(latFieldController, 'Enter Latitude'),
-                  OutlinedTextField(lonFieldController, 'Enter Longitude'),
-                  OutlinedButtonDark(addButtonPressed, 'Add'),
+                  OutlinedTextField(latFieldController, 'Enter Latitude', true),
+                  OutlinedTextField(
+                      lonFieldController, 'Enter Longitude', true),
+                  OutlinedButtonDark(addButtonPressed, 'Add', false),
                 ],
               ),
 
@@ -161,7 +159,7 @@ class _VehiclePageState extends State<VehiclePage> {
               ),
 
               // Clear list button
-              OutlinedButtonDark(clearButtonPressed, 'Clear'),
+              OutlinedButtonDark(clearButtonPressed, 'Clear', false),
             ],
           ),
         ),

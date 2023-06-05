@@ -47,9 +47,9 @@ class _RootPageState extends State<RootPage> {
     super.initState();
     pages = [
       StatusPage(mqtt),
+      VehiclePage(),
       ImagesPage(),
       CalibratePage(mqtt),
-      VehiclePage(),
       LogsPage()
     ];
     mqtt.connect();
@@ -59,19 +59,15 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(183, 193, 225, 253),
+      backgroundColor: Color.fromARGB(206, 193, 238, 255),
       // Title bar at the top
       appBar: AppBar(
         elevation: 5,
         shadowColor: Colors.black,
         backgroundColor: darkBlue,
         centerTitle: true,
-        leadingWidth: 200,
-        leading: const Text(
-          'Connection status:   Planktoscope connected',
-        ),
         title: const Text(
-          'Planktoscope Control Interface',
+          'Planktoscope :  Connected',
           style: TextStyle(
             color: lightBlue,
           ),
@@ -95,6 +91,13 @@ class _RootPageState extends State<RootPage> {
           ),
           NavigationDestination(
             icon: Icon(
+              Icons.directions_boat,
+              color: lightBlue,
+            ),
+            label: 'Vehicle',
+          ),
+          NavigationDestination(
+            icon: Icon(
               Icons.photo_library,
               color: lightBlue,
             ),
@@ -106,13 +109,6 @@ class _RootPageState extends State<RootPage> {
               color: lightBlue,
             ),
             label: 'Calibrate',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.directions_boat,
-              color: lightBlue,
-            ),
-            label: 'Vehicle',
           ),
           NavigationDestination(
             icon: Icon(

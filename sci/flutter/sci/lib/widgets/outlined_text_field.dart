@@ -5,8 +5,10 @@ import 'package:sci/constants.dart';
 class OutlinedTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
+  final bool notActive;
 
-  const OutlinedTextField(this.controller, this.label, {super.key});
+  const OutlinedTextField(this.controller, this.label, this.notActive,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class OutlinedTextField extends StatelessWidget {
         maxHeight: 50,
       ),
       child: TextFormField(
+        enabled: notActive,
         controller: controller,
         textAlign: TextAlign.center,
         style: const TextStyle(

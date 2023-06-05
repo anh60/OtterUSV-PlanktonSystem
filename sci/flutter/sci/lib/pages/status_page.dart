@@ -21,11 +21,30 @@ class _StatusPageState extends State<StatusPage> {
 
   TextEditingController textFieldController = TextEditingController();
 
+  bool manualSampling = false;
+  bool manualControl = false;
+
   void sampleButtonPressed() {
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE, '1');
   }
 
   void resetButtonPressed() {}
+
+  void pumpButtonPressed() {
+    widget.mqtt.publishMessage(topics.CTRL_RMS_PUMP, '1');
+  }
+
+  void valveButtonPressed() {
+    widget.mqtt.publishMessage(topics.CTRL_RMS_VALVE, '1');
+  }
+
+  void stopButtonPressed() {
+    widget.mqtt.publishMessage(topics.CTRL_RMS_STOP, '1');
+  }
+
+  void samplePumpButtonPressed() {
+    widget.mqtt.publishMessage(topics.CTRL_SAMPLE_PUMP, '1');
+  }
 
   void buttonPlaceholder() {}
 
@@ -89,14 +108,27 @@ class _StatusPageState extends State<StatusPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        OutlinedTextField(textFieldController, 'N Samples'),
-                        const SizedBox(width: 15),
-                        OutlinedButtonDark(sampleButtonPressed, 'Start'),
+                        Switch(
+                          value: manualSampling,
+                          onChanged: (bool value) {
+                            setState(() {
+                              manualSampling = value;
+                            });
+                          },
+                          activeColor: lightBlue,
+                        ),
                       ],
                     ),
                     Row(
                       children: <Widget>[
-                        OutlinedButtonDark(resetButtonPressed, 'Reset')
+                        OutlinedTextField(
+                            textFieldController, 'N Samples', manualSampling),
+                        const SizedBox(width: 15),
+                        OutlinedButtonDark(
+                            sampleButtonPressed, 'Start', !manualSampling),
+                        const SizedBox(width: 15),
+                        OutlinedButtonDark(
+                            resetButtonPressed, 'Reset', !manualSampling)
                       ],
                     ),
                   ],
@@ -127,10 +159,40 @@ class _StatusPageState extends State<StatusPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    OutlinedButtonDark(buttonPlaceholder, '12V Pump'),
-                    OutlinedButtonDark(buttonPlaceholder, 'Valve'),
-                    OutlinedButtonDark(buttonPlaceholder, '5V Pump'),
-                    OutlinedButtonDark(buttonPlaceholder, 'Image'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Switch(
+                          value: manualControl,
+                          onChanged: (bool value) {
+                            setState(() {
+                              manualControl = value;
+                            });
+                          },
+                          activeColor: lightBlue,
+                        ),
+                      ],
+                    ),
+                    OutlinedButtonDark(
+                      pumpButtonPressed,
+                      '12V Pump',
+                      !manualControl,
+                    ),
+                    OutlinedButtonDark(
+                      valveButtonPressed,
+                      'Valve',
+                      !manualControl,
+                    ),
+                    OutlinedButtonDark(
+                      stopButtonPressed,
+                      'Stop',
+                      !manualControl,
+                    ),
+                    OutlinedButtonDark(
+                      samplePumpButtonPressed,
+                      '5V Pump',
+                      !manualControl,
+                    ),
                   ],
                 ),
               ),

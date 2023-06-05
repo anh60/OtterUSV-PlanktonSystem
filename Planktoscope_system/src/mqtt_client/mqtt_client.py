@@ -20,7 +20,10 @@ client = mqtt.Client(clientname)
 
 topics_sub = [
     con.topic.CTRL_SAMPLE,
-    con.topic.CAL_NEXTPOS
+    con.topic.CAL_NEXTPOS,
+    con.topic.CTRL_RMS_PUMP,
+    con.topic.CTRL_RMS_VALVE,
+    con.topic.CTRL_RMS_STOP
 ]
 
 
@@ -55,6 +58,15 @@ def msg_handler(topic, msg):
 
     if(topic == con.topic.CTRL_SAMPLE):
         state.set_sys_state(state.status_flag.SAMPLING, 1)
+
+    if(topic == con.topic.CTRL_RMS_PUMP):
+        rms.send_pump()
+
+    if(topic == con.topic.CTRL_RMS_VALVE):
+        rms.send_flush()
+
+    if(topic == con.topic.CTRL_RMS_STOP):
+        rms.send_stop()
 
     if(topic == con.topic.CAL_NEXTPOS):
         state.set_sys_state(state.status_flag.CALIBRATING, 1)

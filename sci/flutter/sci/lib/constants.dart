@@ -5,9 +5,20 @@ const String mqtt_client_name = "sci_client";
 const int mqtt_broker_port = 1883;
 
 abstract class topics {
+  // status
   static const String STATUS_FLAGS = "planktoscope/status/flags";
   static const String STATUS_CONNECTED = "planktoscope/status/connected";
+
+  // Control
   static const String CTRL_SAMPLE = "planktoscope/control/sample";
+  static const String CTRL_SAMPLE_PUMP = "planktoscope/control/sample_pump";
+
+  // RMS Control
+  static const String CTRL_RMS_PUMP = "planktoscope/control/pump";
+  static const String CTRL_RMS_VALVE = "planktoscope/control/valve";
+  static const String CTRL_RMS_STOP = "planktoscope/control/stop";
+
+  // Calibrate
   static const String CAL_CURRPOS = "planktoscope/calibrate/currpos";
   static const String CAL_NEXTPOS = "planktoscope/calibrate/nextpos";
   static const String CAL_PHOTO = "planktoscope/calibrate/photo";
