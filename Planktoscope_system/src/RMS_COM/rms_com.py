@@ -15,8 +15,8 @@ import STATUS.status as state
 #---------------------------- GLOBALS ------------------------------------------
 
 # Bottom USB3.0 (blue)
-#port = '/dev/ttyUSB0'
-port = 'COM4'
+port = '/dev/ttyUSB0'
+#port = 'COM4'
 baud = 9600
 
 C_PUMP      = 0x01
