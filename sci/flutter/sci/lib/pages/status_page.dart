@@ -42,6 +42,14 @@ class _StatusPageState extends State<StatusPage> {
     widget.mqtt.publishMessage(topics.CTRL_RMS_STOP, '1');
   }
 
+  void littlePumpButtonPressed() {
+    widget.mqtt.publishMessage(topics.CTRL_SAMPLE_PUMP, '1');
+  }
+
+  void stopPumpButtonPressed() {
+    widget.mqtt.publishMessage(topics.CTRL_STOP, '1');
+  }
+
   void samplePumpButtonPressed() {
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE_PUMP, '1');
   }
@@ -189,8 +197,13 @@ class _StatusPageState extends State<StatusPage> {
                       !manualControl,
                     ),
                     OutlinedButtonDark(
-                      samplePumpButtonPressed,
+                      littlePumpButtonPressed,
                       '5V Pump',
+                      !manualControl,
+                    ),
+                    OutlinedButtonDark(
+                      stopPumpButtonPressed,
+                      'Stop',
                       !manualControl,
                     ),
                   ],

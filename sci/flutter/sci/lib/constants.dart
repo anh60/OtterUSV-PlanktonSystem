@@ -12,6 +12,7 @@ abstract class topics {
   // Control
   static const String CTRL_SAMPLE = "planktoscope/control/sample";
   static const String CTRL_SAMPLE_PUMP = "planktoscope/control/sample_pump";
+  static const String CTRL_STOP = "planktoscope/control/stop";
 
   // RMS Control
   static const String CTRL_RMS_PUMP = "planktoscope/control/pump";

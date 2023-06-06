@@ -20,10 +20,10 @@ class status_flag(int, Enum):
     RMS_VALVE       = 1
     RMS_FULL        = 2
     RMS_LEAK        = 3
-    CONNECTED       = 4
-    SAMPLING        = 5
-    LEAK            = 6 
-    CALIBRATING     = 7
+    SAMPLING        = 4
+    PUMP            = 5
+    CALIBRATING     = 6
+    LEAK            = 7 
 
 
 #---------------------------- FUNCTIONS ----------------------------------------

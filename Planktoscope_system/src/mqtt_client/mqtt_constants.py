@@ -14,6 +14,7 @@ class topic(str, Enum):
 
     CTRL_SAMPLE         = "planktoscope/control/sample"
     CTRL_SAMPLE_PUMP    = "planktoscope/control/sample_pump"
+    CTRL_STOP           = "planktoscope/control/stop"
     
     CTRL_RMS_PUMP       = "planktoscope/control/pump"
     CTRL_RMS_VALVE      = "planktoscope/control/valve"
