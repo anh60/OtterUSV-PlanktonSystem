@@ -90,7 +90,7 @@ while True:
     if((state.get_sys_state() >> state.status_flag.PUMP) & 1):
         asyncio.run(samplePump())
     else:
-        kit.motor3.throttle = 0
+        kit.motor3.throttle = None
 
 
 #-------------------------------------------------------------------------------
