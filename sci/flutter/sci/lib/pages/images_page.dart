@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:sci/constants.dart';
 
 import 'package:sci/classes/sample_image.dart';
+import 'package:sci/widgets/container_scaled.dart';
 
 class ImagesPage extends StatefulWidget {
   const ImagesPage({super.key});
@@ -15,9 +16,9 @@ class ImagesPage extends StatefulWidget {
 class _ImagesPageState extends State<ImagesPage> {
   // Page layout constants
   static const double div = 3;
-  static const double box1Ratio = 1;
-  static const double box2Ratio = 2;
-  static const double boxMargin = 20;
+  static const double controlBoxRatio = 1;
+  static const double imageBoxRatio = 2;
+  static const double boxMargin = 15;
 
   // Folder List
   List<String> sampleList = [
@@ -80,90 +81,58 @@ class _ImagesPageState extends State<ImagesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // File selection box
-            Container(
-              // Configuration of box
-              height: constraints.maxHeight,
-              width: (((constraints.maxWidth / div) * box1Ratio) - boxMargin),
-              margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-              decoration: BoxDecoration(
-                color: darkBlue,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.blueGrey.withOpacity(1),
-                    spreadRadius: 3,
-                    blurRadius: 9,
-                    offset: const Offset(0, 3),
+    return Row(
+      children: [
+        const SizedBox(width: 15),
+        ContainerScaled(
+          div,
+          controlBoxRatio,
+          boxMargin,
+          ListView.builder(
+            itemCount: sampleList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ExpansionTile(
+                // Configuration
+                backgroundColor: darkerBlue,
+                collapsedIconColor: lightBlue,
+                iconColor: lightBlue,
+
+                // Icon
+                leading: const Icon(Icons.folder),
+
+                // Name
+                title: Text(
+                  sampleList[index],
+                  style: const TextStyle(
+                    color: lightBlue,
+                    fontSize: 15,
                   ),
-                ],
-              ),
+                ),
 
-              // Build expansion tiles (folders)
-              child: ListView.builder(
-                itemCount: sampleList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ExpansionTile(
-                    // Configuration
-                    backgroundColor: darkerBlue,
-                    collapsedIconColor: lightBlue,
-                    iconColor: lightBlue,
-
-                    // Icon
-                    leading: const Icon(Icons.folder),
-
-                    // Name
-                    title: Text(
-                      sampleList[index],
-                      style: const TextStyle(
-                        color: lightBlue,
-                        fontSize: 15,
-                      ),
-                    ),
-
-                    // When clicked (expanded)
-                    onExpansionChanged: (expanding) {
-                      if (expanding) {
-                        activeFolder = index;
-                      }
-                    },
-
-                    // Build ListTiles (Images)
-                    children: buildTileList(),
-                  );
+                // When clicked (expanded)
+                onExpansionChanged: (expanding) {
+                  if (expanding) {
+                    activeFolder = index;
+                  }
                 },
-              ),
-            ),
 
-            // Image box
-            Container(
-              // Configuration
-              height: constraints.maxHeight,
-              width: (((constraints.maxWidth / div) * box2Ratio) - boxMargin),
-              margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-              decoration: BoxDecoration(
-                color: darkBlue,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.blueGrey.withOpacity(1),
-                    spreadRadius: 3,
-                    blurRadius: 9,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
+                // Build ListTiles (Images)
+                children: buildTileList(),
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 15),
+        const ContainerScaled(
+          div,
+          imageBoxRatio,
+          boxMargin,
+          Align(
+            alignment: Alignment.center,
+            child: Text('IMAGE HERE'),
+          ),
+        ),
+      ],
     );
   }
 }

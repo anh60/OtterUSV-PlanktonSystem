@@ -59,71 +59,60 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(206, 193, 238, 255),
-      // Title bar at the top
-      appBar: AppBar(
-        elevation: 5,
-        shadowColor: Colors.black,
-        backgroundColor: darkBlue,
-        centerTitle: true,
-        title: const Text(
-          'Planktoscope :  Connected',
-          style: TextStyle(
-            color: lightBlue,
+      backgroundColor: const Color.fromARGB(206, 193, 238, 255),
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          NavigationRail(
+            minWidth: 50,
+            backgroundColor: darkBlue,
+            elevation: 10,
+            selectedIndex: currentPage,
+            onDestinationSelected: (int index) {
+              setState(() {
+                currentPage = index;
+              });
+            },
+            destinations: const <NavigationRailDestination>[
+              NavigationRailDestination(
+                icon: Icon(
+                  Icons.info,
+                  color: lightBlue,
+                ),
+                label: Text(''),
+              ),
+              NavigationRailDestination(
+                icon: Icon(
+                  Icons.directions_boat,
+                  color: lightBlue,
+                ),
+                label: Text(''),
+              ),
+              NavigationRailDestination(
+                icon: Icon(
+                  Icons.photo_library,
+                  color: lightBlue,
+                ),
+                label: Text(''),
+              ),
+              NavigationRailDestination(
+                icon: Icon(
+                  Icons.settings,
+                  color: lightBlue,
+                ),
+                label: Text(''),
+              ),
+              NavigationRailDestination(
+                icon: Icon(
+                  Icons.format_list_bulleted,
+                  color: lightBlue,
+                ),
+                label: Text(''),
+              ),
+            ],
           ),
-        ),
-      ),
-      // Current page active
-      body: pages[currentPage],
-      // Page navigation bar at the bottom
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: darkBlue,
-        shadowColor: Colors.black,
-        indicatorColor: darkerBlue,
-        elevation: 5,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(
-              Icons.info,
-              color: lightBlue,
-            ),
-            label: 'Status',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.directions_boat,
-              color: lightBlue,
-            ),
-            label: 'Vehicle',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.photo_library,
-              color: lightBlue,
-            ),
-            label: 'Images',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.settings,
-              color: lightBlue,
-            ),
-            label: 'Calibrate',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.format_list_bulleted,
-              color: lightBlue,
-            ),
-            label: 'Logs',
-          ),
+          pages[currentPage],
         ],
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPage = index;
-          });
-        },
-        selectedIndex: currentPage,
       ),
     );
   }
