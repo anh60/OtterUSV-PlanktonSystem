@@ -13,9 +13,9 @@ class LogsPage extends StatefulWidget {
 class _LogsPageState extends State<LogsPage> {
   // Page layout constants
   static const double div = 3;
-  static const double box1Ratio = 1;
-  static const double box2Ratio = 2;
-  static const double boxMargin = 20;
+  static const double controlBoxRatio = 1;
+  static const double logsBoxRatio = 2;
+  static const double boxMargin = 15;
 
   // Folder List
   List<String> logList = [
@@ -44,7 +44,12 @@ class _LogsPageState extends State<LogsPage> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Row(
-          children: [],
+          children: [
+            const SizedBox(width: 15),
+            ContainerScaled(div, controlBoxRatio, boxMargin, Placeholder()),
+            const SizedBox(width: 15),
+            ContainerScaled(div, logsBoxRatio, boxMargin, Placeholder()),
+          ],
         );
       },
     );

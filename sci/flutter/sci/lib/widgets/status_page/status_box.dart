@@ -27,8 +27,6 @@ class _StatusBoxState extends State<StatusBox> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
-      margin: const EdgeInsets.all(15),
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
       decoration: BoxDecoration(
         color: darkBlue,

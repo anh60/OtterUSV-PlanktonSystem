@@ -47,12 +47,19 @@ class _RootPageState extends State<RootPage> {
     super.initState();
     pages = [
       StatusPage(mqtt),
-      VehiclePage(),
-      ImagesPage(),
+      const VehiclePage(),
+      const ImagesPage(),
       CalibratePage(mqtt),
-      LogsPage()
+      const LogsPage()
     ];
     mqtt.connect();
+  }
+
+  Icon setConnectionIcon(int connection) {
+    if (connection == 1) {
+      return const Icon(Icons.wifi, color: Colors.green);
+    }
+    return const Icon(Icons.wifi_off, color: Colors.red);
   }
 
   // Rootpage Widget
@@ -63,53 +70,88 @@ class _RootPageState extends State<RootPage> {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          NavigationRail(
-            minWidth: 50,
-            backgroundColor: darkBlue,
-            elevation: 10,
-            selectedIndex: currentPage,
-            onDestinationSelected: (int index) {
-              setState(() {
-                currentPage = index;
-              });
+          ValueListenableBuilder<String>(
+            builder: (BuildContext context, String value, Widget? child) {
+              int connection = int.parse(value);
+              return Container(
+                height: (MediaQuery.of(context).size.height - 30),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blueGrey.withOpacity(1),
+                      spreadRadius: 3,
+                      blurRadius: 9,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(5),
+                    bottomRight: Radius.circular(5),
+                  ),
+                  child: NavigationRail(
+                    minWidth: 50,
+                    backgroundColor: darkBlue,
+                    elevation: 10,
+                    trailing: Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: setConnectionIcon(connection),
+                        ),
+                      ),
+                    ),
+                    selectedIndex: currentPage,
+                    onDestinationSelected: (int index) {
+                      setState(() {
+                        currentPage = index;
+                      });
+                    },
+                    destinations: const <NavigationRailDestination>[
+                      NavigationRailDestination(
+                        icon: Icon(
+                          Icons.info,
+                          color: lightBlue,
+                        ),
+                        label: Text(''),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(
+                          Icons.directions_boat,
+                          color: lightBlue,
+                        ),
+                        label: Text(''),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(
+                          Icons.photo_library,
+                          color: lightBlue,
+                        ),
+                        label: Text(''),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(
+                          Icons.settings,
+                          color: lightBlue,
+                        ),
+                        label: Text(''),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(
+                          Icons.format_list_bulleted,
+                          color: lightBlue,
+                        ),
+                        label: Text(''),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             },
-            destinations: const <NavigationRailDestination>[
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.info,
-                  color: lightBlue,
-                ),
-                label: Text(''),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.directions_boat,
-                  color: lightBlue,
-                ),
-                label: Text(''),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.photo_library,
-                  color: lightBlue,
-                ),
-                label: Text(''),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.settings,
-                  color: lightBlue,
-                ),
-                label: Text(''),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.format_list_bulleted,
-                  color: lightBlue,
-                ),
-                label: Text(''),
-              ),
-            ],
+            valueListenable: mqtt.status_connected,
           ),
           pages[currentPage],
         ],

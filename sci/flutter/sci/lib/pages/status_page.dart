@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:sci/constants.dart";
 import "package:sci/controllers/status_controller.dart";
 import "package:sci/controllers/mqtt_controller.dart";
+import "package:sci/widgets/container_scaled.dart";
 import "package:sci/widgets/outlined_button_dark.dart";
 import "package:sci/widgets/outlined_text_field.dart";
 import "package:sci/widgets/status_page/status_box.dart";
@@ -17,6 +18,14 @@ class StatusPage extends StatefulWidget {
 }
 
 class _StatusPageState extends State<StatusPage> {
+  // Page layout constants
+  static const double div = 4;
+  static const double controlBoxRatio = 1;
+  static const double statusFieldRatio = 3;
+  static const double boxMargin = 15;
+
+  static const double buttonSpacing = 10;
+
   StatusController status = StatusController();
 
   TextEditingController textFieldController = TextEditingController();
@@ -58,161 +67,107 @@ class _StatusPageState extends State<StatusPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          // Status boxes
-          ValueListenableBuilder<String>(
-            builder: (BuildContext context, String value, Widget? child) {
-              status.setStatus(value);
-              return SizedBox(
-                height: 400,
-                width: 1320,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    StatusBox(status.pscope.label, status.pscope.flagLabels,
-                        status.pscope.flags),
-                    StatusBox(status.rms.label, status.rms.flagLabels,
-                        status.rms.flags),
-                    StatusContainer(),
-                    StatusContainer(),
-                  ],
-                ),
-              );
-            },
-            valueListenable: widget.mqtt.status_flags,
-          ),
-
-          // Bottom boxes
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Bottom left box
-              Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                padding: const EdgeInsets.all(30),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 77, 90, 114),
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blueGrey.withOpacity(1),
-                      spreadRadius: 3,
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                constraints: const BoxConstraints(
-                  maxWidth: 630,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Switch(
-                          value: manualSampling,
-                          onChanged: (bool value) {
-                            setState(() {
-                              manualSampling = value;
-                            });
-                          },
-                          activeColor: lightBlue,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        OutlinedTextField(
-                            textFieldController, 'N Samples', manualSampling),
-                        const SizedBox(width: 15),
-                        OutlinedButtonDark(
-                            sampleButtonPressed, 'Start', !manualSampling),
-                        const SizedBox(width: 15),
-                        OutlinedButtonDark(
-                            resetButtonPressed, 'Reset', !manualSampling)
-                      ],
-                    ),
-                  ],
-                ),
+    return Row(
+      children: [
+        const SizedBox(width: 15),
+        ContainerScaled(
+          div,
+          controlBoxRatio,
+          boxMargin,
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Switch(
+                    value: manualSampling,
+                    onChanged: (bool value) {
+                      setState(() {
+                        manualSampling = value;
+                      });
+                    },
+                    activeColor: lightBlue,
+                  ),
+                  SizedBox(height: buttonSpacing),
+                  OutlinedTextField(
+                      textFieldController, 'N Samples', manualSampling),
+                  SizedBox(height: buttonSpacing),
+                  OutlinedButtonDark(
+                      sampleButtonPressed, 'Start', !manualSampling),
+                  SizedBox(height: buttonSpacing),
+                  OutlinedButtonDark(
+                      resetButtonPressed, 'Reset', !manualSampling),
+                  SizedBox(height: buttonSpacing),
+                  Switch(
+                    value: manualControl,
+                    onChanged: (bool value) {
+                      setState(() {
+                        manualControl = value;
+                      });
+                    },
+                    activeColor: lightBlue,
+                  ),
+                  SizedBox(height: buttonSpacing),
+                  OutlinedButtonDark(
+                    pumpButtonPressed,
+                    '12V Pump',
+                    !manualControl,
+                  ),
+                  SizedBox(height: buttonSpacing),
+                  OutlinedButtonDark(
+                    valveButtonPressed,
+                    'Valve',
+                    !manualControl,
+                  ),
+                  SizedBox(height: buttonSpacing),
+                  OutlinedButtonDark(
+                    stopButtonPressed,
+                    'Stop',
+                    !manualControl,
+                  ),
+                  SizedBox(height: buttonSpacing),
+                  OutlinedButtonDark(
+                    littlePumpButtonPressed,
+                    '5V Pump',
+                    !manualControl,
+                  ),
+                  SizedBox(height: buttonSpacing),
+                  OutlinedButtonDark(
+                    stopPumpButtonPressed,
+                    'Stop',
+                    !manualControl,
+                  ),
+                ],
               ),
-
-              // Bottom right box
-              Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                padding: const EdgeInsets.all(30),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 77, 90, 114),
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blueGrey.withOpacity(1),
-                      spreadRadius: 3,
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                constraints: const BoxConstraints(
-                  maxWidth: 630,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Switch(
-                          value: manualControl,
-                          onChanged: (bool value) {
-                            setState(() {
-                              manualControl = value;
-                            });
-                          },
-                          activeColor: lightBlue,
-                        ),
-                      ],
-                    ),
-                    OutlinedButtonDark(
-                      pumpButtonPressed,
-                      '12V Pump',
-                      !manualControl,
-                    ),
-                    OutlinedButtonDark(
-                      valveButtonPressed,
-                      'Valve',
-                      !manualControl,
-                    ),
-                    OutlinedButtonDark(
-                      stopButtonPressed,
-                      'Stop',
-                      !manualControl,
-                    ),
-                    OutlinedButtonDark(
-                      littlePumpButtonPressed,
-                      '5V Pump',
-                      !manualControl,
-                    ),
-                    OutlinedButtonDark(
-                      stopPumpButtonPressed,
-                      'Stop',
-                      !manualControl,
-                    ),
-                  ],
-                ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 15),
+        Container(
+          height: MediaQuery.of(context).size.height - 30,
+          width: ((((MediaQuery.of(context).size.width) / div) *
+                  statusFieldRatio) -
+              40 -
+              (15 / 2)),
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              StatusBox(
+                status.pscope.label,
+                status.pscope.flagLabels,
+                status.pscope.flags,
+              ),
+              const SizedBox(width: 15),
+              StatusBox(
+                status.rms.label,
+                status.rms.flagLabels,
+                status.rms.flags,
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

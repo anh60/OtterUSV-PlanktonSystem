@@ -6,6 +6,7 @@ import "package:sci/constants.dart";
 
 class MQTTController with ChangeNotifier {
   // Value notifiers
+  final ValueNotifier<String> status_connected = ValueNotifier<String>('0');
   final ValueNotifier<String> status_flags = ValueNotifier<String>('0');
   final ValueNotifier<String> cal_pos = ValueNotifier<String>('0');
   final ValueNotifier<String> cal_photo = ValueNotifier<String>('0');
@@ -75,6 +76,9 @@ class MQTTController with ChangeNotifier {
 
       // Filter topics and update corresponding ValueNotifier
       switch (topic) {
+        case topics.STATUS_CONNECTED:
+          status_connected.value = stringMsg;
+          break;
         case topics.STATUS_FLAGS:
           status_flags.value = stringMsg;
           break;
