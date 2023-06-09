@@ -15,8 +15,6 @@ class StatusTab extends StatefulWidget {
 class _StatusTabState extends State<StatusTab> {
   static const double fontsize = 15;
   static const double radius = 10;
-  static const double xMargin = 10;
-  static const double yMargin = 5;
   static const double xPadding = 10;
   static const double yPadding = 5;
 
@@ -24,7 +22,6 @@ class _StatusTabState extends State<StatusTab> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      margin: const EdgeInsets.fromLTRB(xMargin, yMargin, xMargin, yMargin),
       padding:
           const EdgeInsets.fromLTRB(xPadding, yPadding, xPadding, yPadding),
       decoration: BoxDecoration(

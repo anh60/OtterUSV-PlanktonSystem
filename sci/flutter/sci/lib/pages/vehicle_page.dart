@@ -106,8 +106,10 @@ class _VehiclePageState extends State<VehiclePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 300,
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxHeight: 200,
+                    ),
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                       decoration: BoxDecoration(

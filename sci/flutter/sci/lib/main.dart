@@ -73,80 +73,82 @@ class _RootPageState extends State<RootPage> {
           ValueListenableBuilder<String>(
             builder: (BuildContext context, String value, Widget? child) {
               int connection = int.parse(value);
-              return Container(
-                height: (MediaQuery.of(context).size.height - 30),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blueGrey.withOpacity(1),
-                      spreadRadius: 3,
-                      blurRadius: 9,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(5),
-                    bottomRight: Radius.circular(5),
-                  ),
-                  child: NavigationRail(
-                    minWidth: 50,
-                    backgroundColor: darkBlue,
-                    elevation: 10,
-                    trailing: Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: setConnectionIcon(connection),
-                        ),
-                      ),
-                    ),
-                    selectedIndex: currentPage,
-                    onDestinationSelected: (int index) {
-                      setState(() {
-                        currentPage = index;
-                      });
-                    },
-                    destinations: const <NavigationRailDestination>[
-                      NavigationRailDestination(
-                        icon: Icon(
-                          Icons.info,
-                          color: lightBlue,
-                        ),
-                        label: Text(''),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(
-                          Icons.directions_boat,
-                          color: lightBlue,
-                        ),
-                        label: Text(''),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(
-                          Icons.photo_library,
-                          color: lightBlue,
-                        ),
-                        label: Text(''),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(
-                          Icons.settings,
-                          color: lightBlue,
-                        ),
-                        label: Text(''),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(
-                          Icons.format_list_bulleted,
-                          color: lightBlue,
-                        ),
-                        label: Text(''),
+              return SingleChildScrollView(
+                child: Container(
+                  height: (MediaQuery.of(context).size.height - 30),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blueGrey.withOpacity(1),
+                        spreadRadius: 3,
+                        blurRadius: 9,
+                        offset: const Offset(0, 3),
                       ),
                     ],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(5),
+                      bottomRight: Radius.circular(5),
+                    ),
+                    child: NavigationRail(
+                      minWidth: 50,
+                      backgroundColor: darkBlue,
+                      elevation: 10,
+                      trailing: Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: setConnectionIcon(connection),
+                          ),
+                        ),
+                      ),
+                      selectedIndex: currentPage,
+                      onDestinationSelected: (int index) {
+                        setState(() {
+                          currentPage = index;
+                        });
+                      },
+                      destinations: const <NavigationRailDestination>[
+                        NavigationRailDestination(
+                          icon: Icon(
+                            Icons.info,
+                            color: lightBlue,
+                          ),
+                          label: Text(''),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(
+                            Icons.directions_boat,
+                            color: lightBlue,
+                          ),
+                          label: Text(''),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(
+                            Icons.photo_library,
+                            color: lightBlue,
+                          ),
+                          label: Text(''),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(
+                            Icons.settings,
+                            color: lightBlue,
+                          ),
+                          label: Text(''),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(
+                            Icons.format_list_bulleted,
+                            color: lightBlue,
+                          ),
+                          label: Text(''),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
