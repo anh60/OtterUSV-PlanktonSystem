@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 
 const String mqtt_broker = "mqtt.eclipseprojects.io";
 const String mqtt_client_name = "sci_client";
