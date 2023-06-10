@@ -38,6 +38,23 @@ async def pub():
         print("Publishing: 2")
         print("")
 
+def on_connect(client, userdata, flags, rc):
+    client.publish(
+        topic = con.topic.STATUS_CONNECTED, 
+        payload = 1, 
+        qos = 1,
+        retain = True
+    )
+
+client.on_connect = on_connect
+
+client.will_set(
+    topic = con.topic.STATUS_CONNECTED,
+    payload = 0,
+    qos = 1,
+    retain = True
+)
+
 client.connect(con.broker)
 client.loop_start()
 

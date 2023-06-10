@@ -71,6 +71,7 @@ class _RootPageState extends State<RootPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           ValueListenableBuilder<String>(
+            valueListenable: mqtt.status_connected,
             builder: (BuildContext context, String value, Widget? child) {
               int connection = int.parse(value);
               return SingleChildScrollView(
@@ -153,7 +154,6 @@ class _RootPageState extends State<RootPage> {
                 ),
               );
             },
-            valueListenable: mqtt.status_connected,
           ),
           pages[currentPage],
         ],

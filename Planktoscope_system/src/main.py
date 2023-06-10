@@ -12,7 +12,7 @@ import threading
 
 import STATUS.status            as state
 import RMS_COM.rms_com          as rms
-import MQTT_CLIENT.mqtt_client  as client
+import mqtt_client.mqtt_client  as client
 import base64
 
 import time
