@@ -39,12 +39,14 @@ class _RootPageState extends State<RootPage> {
 
   // Pages
   late List<Widget> pages;
-  int currentPage = 0;
+  int currentPage = 0; // Current page index
 
   // Init
   @override
   void initState() {
     super.initState();
+
+    // Initialize pages
     pages = [
       StatusPage(mqtt),
       const VehiclePage(),
@@ -52,9 +54,12 @@ class _RootPageState extends State<RootPage> {
       CalibratePage(mqtt),
       const LogsPage()
     ];
+
+    // Initialize MQTT Client
     mqtt.connect();
   }
 
+  // Function for setting the connection status symbol
   Icon setConnectionIcon(int connection) {
     if (connection == 1) {
       return const Icon(Icons.wifi, color: Colors.green);
@@ -70,11 +75,14 @@ class _RootPageState extends State<RootPage> {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
+          // Sidebar
           ValueListenableBuilder<String>(
+            // Listens to changes on the 'connected' flag over MQTT
             valueListenable: mqtt.status_connected,
             builder: (BuildContext context, String value, Widget? child) {
               int connection = int.parse(value);
               return SingleChildScrollView(
+                // Container for setting size of NavigationRail
                 child: Container(
                   height: (MediaQuery.of(context).size.height - 30),
                   decoration: BoxDecoration(
@@ -88,11 +96,15 @@ class _RootPageState extends State<RootPage> {
                     ],
                     borderRadius: BorderRadius.circular(5),
                   ),
+
+                  // Make edges curved
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(5),
                       bottomRight: Radius.circular(5),
                     ),
+
+                    // Build NavigationRail
                     child: NavigationRail(
                       minWidth: 50,
                       backgroundColor: darkBlue,
@@ -106,12 +118,18 @@ class _RootPageState extends State<RootPage> {
                           ),
                         ),
                       ),
+
+                      // Set current page with selected button
                       selectedIndex: currentPage,
+
+                      // On button press
                       onDestinationSelected: (int index) {
                         setState(() {
                           currentPage = index;
                         });
                       },
+
+                      // Mapping buttons to destinations (pages)
                       destinations: const <NavigationRailDestination>[
                         NavigationRailDestination(
                           icon: Icon(
@@ -155,6 +173,8 @@ class _RootPageState extends State<RootPage> {
               );
             },
           ),
+
+          // Current page
           pages[currentPage],
         ],
       ),

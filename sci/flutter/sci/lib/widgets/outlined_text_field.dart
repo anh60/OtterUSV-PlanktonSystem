@@ -20,7 +20,7 @@ class OutlinedTextField extends StatelessWidget {
       ),
       constraints: const BoxConstraints(
         minWidth: 100,
-        maxWidth: 150,
+        maxWidth: 100,
         minHeight: 0,
         maxHeight: 50,
       ),

@@ -1,13 +1,13 @@
 import "dart:convert";
 
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 
-import "package:sci/constants.dart";
+import 'package:sci/constants.dart';
 
-import "package:sci/controllers/mqtt_controller.dart";
-import "package:sci/widgets/container_scaled.dart";
-import "package:sci/widgets/outlined_button_dark.dart";
-import "package:sci/widgets/outlined_text_field.dart";
+import 'package:sci/controllers/mqtt_controller.dart';
+import 'package:sci/widgets/container_scaled.dart';
+import 'package:sci/widgets/outlined_button_dark.dart';
+import 'package:sci/widgets/outlined_text_field.dart';
 
 class CalibratePage extends StatefulWidget {
   // MQTT Client
@@ -35,7 +35,10 @@ class _CalibratePageState extends State<CalibratePage> {
     super.dispose();
   }
 
-  void onSendPressed() {}
+  void onSendPressed() {
+    widget.mqtt.publishMessage(
+        topics.CAL_NEXTPOS, textFieldController.text.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +107,7 @@ class _CalibratePageState extends State<CalibratePage> {
                     children: [
                       OutlinedTextField(
                         textFieldController,
-                        'Enter new value',
+                        'New value',
                         true,
                       ),
                       OutlinedButtonDark(
