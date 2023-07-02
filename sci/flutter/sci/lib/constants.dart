@@ -4,6 +4,8 @@ const String mqtt_broker = "mqtt.eclipseprojects.io";
 const String mqtt_client_name = "sci_client";
 const int mqtt_broker_port = 1883;
 
+const String db_server_address = "127.0.0.1";
+
 // MQTT Topics
 abstract class topics {
   // Status

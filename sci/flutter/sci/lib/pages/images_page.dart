@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:sci/constants.dart';
 
@@ -27,6 +28,11 @@ class _ImagesPageState extends State<ImagesPage> {
 
   // Current files corresponding to folder
   List<String> files = [];
+
+  //Future<List<String>> getSamples() async {
+  // var uri = Uri.parse("http://localhost/pscope_db/getSamples.php");
+  //  final response = await http.get(uri);
+  //}
 
   // Creates the tiles (file references) displayed when a folder is clicked
   List<Material> buildTileList() {

@@ -131,6 +131,7 @@ class _RootPageState extends State<RootPage> {
 
                       // Mapping buttons to destinations (pages)
                       destinations: const <NavigationRailDestination>[
+                        // Status page
                         NavigationRailDestination(
                           icon: Icon(
                             Icons.info,
@@ -138,6 +139,8 @@ class _RootPageState extends State<RootPage> {
                           ),
                           label: Text(''),
                         ),
+
+                        // Vehicle page
                         NavigationRailDestination(
                           icon: Icon(
                             Icons.directions_boat,
@@ -145,6 +148,8 @@ class _RootPageState extends State<RootPage> {
                           ),
                           label: Text(''),
                         ),
+
+                        // Images page
                         NavigationRailDestination(
                           icon: Icon(
                             Icons.photo_library,
@@ -152,6 +157,8 @@ class _RootPageState extends State<RootPage> {
                           ),
                           label: Text(''),
                         ),
+
+                        // Calibrate page
                         NavigationRailDestination(
                           icon: Icon(
                             Icons.settings,
@@ -159,6 +166,8 @@ class _RootPageState extends State<RootPage> {
                           ),
                           label: Text(''),
                         ),
+
+                        // Logs page
                         NavigationRailDestination(
                           icon: Icon(
                             Icons.format_list_bulleted,
