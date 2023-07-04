@@ -15,13 +15,13 @@ import STATUS.status as state
 #---------------------------- GLOBALS ------------------------------------------
 
 # UART TX/RX
-port = '/dev/ttyS0'
+#port = '/dev/ttyS0'
 
 # Bottom USB3.0 (blue)
 #port = '/dev/ttyUSB0'
 
 # Laptop USB port
-#port = 'COM4'
+port = 'COM4'
 
 baud = 9600
 

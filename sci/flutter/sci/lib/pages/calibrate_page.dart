@@ -1,4 +1,5 @@
 import "dart:convert";
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -130,13 +131,20 @@ class _CalibratePageState extends State<CalibratePage> {
           Padding(
             padding: const EdgeInsets.all(15),
             child: ValueListenableBuilder<String>(
+              valueListenable: widget.mqtt.cal_photo,
               builder: (BuildContext context, String value, Widget? child) {
+                if (value == '0') {
+                  return Image.asset('lib/image.jpg');
+                } else {
+                  if (value.length % 4 > 0) {
+                    value += '=' * (4 - value.length % 4);
+                  }
+                }
                 var bytesImage = const Base64Decoder().convert(value);
                 return Image.memory(
                   bytesImage,
                 );
               },
-              valueListenable: widget.mqtt.cal_photo,
             ),
           ),
         ),

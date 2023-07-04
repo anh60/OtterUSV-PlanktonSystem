@@ -19,8 +19,10 @@ void setup() {
   comms_init();
   pump_init();
   valve_init();
+
   //level_switch_init();
-  water_sensor_init();
+  //water_sensor_init();
+
 }
 
 void loop() {
@@ -32,5 +34,4 @@ void loop() {
     switch_pump();
     switch_valve();
   }
-  
 }

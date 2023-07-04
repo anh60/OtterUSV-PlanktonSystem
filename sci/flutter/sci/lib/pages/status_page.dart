@@ -55,6 +55,8 @@ class _StatusPageState extends State<StatusPage> {
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE_PUMP, '1');
   }
 
+  void cameraButtonPressed() {}
+
   void stopPumpButtonPressed() {
     widget.mqtt.publishMessage(topics.CTRL_STOP, '1');
   }
@@ -64,6 +66,13 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   void buttonPlaceholder() {}
+
+  Color setTitleColor(bool value) {
+    if (value) {
+      return lightBlue;
+    }
+    return Colors.black;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +87,7 @@ class _StatusPageState extends State<StatusPage> {
             padding: const EdgeInsets.all(15),
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Switch(
                     value: manualSampling,
@@ -89,16 +98,38 @@ class _StatusPageState extends State<StatusPage> {
                     },
                     activeColor: lightBlue,
                   ),
+
+                  // Title over buttons
+                  Text(
+                    'Sample',
+                    style: TextStyle(
+                      color: setTitleColor(manualSampling),
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxHeight: 1,
+                    ),
+                    color: setTitleColor(manualSampling),
+                  ),
+
+                  // N-Samples text field
                   const SizedBox(height: buttonSpacing),
                   OutlinedTextField(
                       textFieldController, 'N Samples', manualSampling),
+
+                  // Start sampling button
                   const SizedBox(height: buttonSpacing),
                   OutlinedButtonDark(
                       sampleButtonPressed, 'Start', !manualSampling),
+
+                  // Reset Button
                   const SizedBox(height: buttonSpacing),
                   OutlinedButtonDark(
                       resetButtonPressed, 'Reset', !manualSampling),
-                  const SizedBox(height: buttonSpacing),
+
+                  // Manual control switch
+                  const SizedBox(height: 20),
                   Switch(
                     value: manualControl,
                     onChanged: (bool value) {
@@ -108,30 +139,77 @@ class _StatusPageState extends State<StatusPage> {
                     },
                     activeColor: lightBlue,
                   ),
+
+                  // Title over buttons
+                  Text(
+                    'RMS',
+                    style: TextStyle(
+                      color: setTitleColor(manualControl),
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxHeight: 1,
+                    ),
+                    color: setTitleColor(manualControl),
+                  ),
+
+                  // Fill reservoir button
                   const SizedBox(height: buttonSpacing),
                   OutlinedButtonDark(
                     pumpButtonPressed,
-                    '12V Pump',
+                    'Fill',
                     !manualControl,
                   ),
+
+                  // Flush reservoir button
                   const SizedBox(height: buttonSpacing),
                   OutlinedButtonDark(
                     valveButtonPressed,
-                    'Valve',
+                    'Flush',
                     !manualControl,
                   ),
+
+                  // Stop button (rms idle)
                   const SizedBox(height: buttonSpacing),
                   OutlinedButtonDark(
                     stopButtonPressed,
                     'Stop',
                     !manualControl,
                   ),
+
+                  // Title over buttons
+                  const SizedBox(height: 20),
+                  Text(
+                    'PIS',
+                    style: TextStyle(
+                      color: setTitleColor(manualControl),
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxHeight: 1,
+                    ),
+                    color: setTitleColor(manualControl),
+                  ),
+
+                  // P-scope pump button
                   const SizedBox(height: buttonSpacing),
                   OutlinedButtonDark(
                     littlePumpButtonPressed,
-                    '5V Pump',
+                    'Pump',
                     !manualControl,
                   ),
+
+                  // P-scope camera button
+                  const SizedBox(height: buttonSpacing),
+                  OutlinedButtonDark(
+                    cameraButtonPressed,
+                    'Camera',
+                    !manualControl,
+                  ),
+
+                  // P-scope stop button
                   const SizedBox(height: buttonSpacing),
                   OutlinedButtonDark(
                     stopPumpButtonPressed,
@@ -148,49 +226,69 @@ class _StatusPageState extends State<StatusPage> {
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: Container(
-              margin: const EdgeInsets.only(top: 15),
-              constraints: const BoxConstraints(
-                maxHeight: 325,
-              ),
-              width: ((((MediaQuery.of(context).size.width) / div) *
-                      statusFieldRatio) -
-                  (40) -
-                  (15 / 2)),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  ValueListenableBuilder<String>(
-                    valueListenable: widget.mqtt.status_flags,
-                    builder:
-                        (BuildContext context, String value, Widget? child) {
-                      status.setStatus(value);
-                      return StatusBox(
-                        status.pscope.label,
-                        status.pscope.flagLabels,
-                        status.pscope.flags,
-                      );
-                    },
+            child: Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 15),
+                  constraints: const BoxConstraints(
+                    maxHeight: 325,
                   ),
-                  const SizedBox(width: 15),
-                  ValueListenableBuilder<String>(
-                    valueListenable: widget.mqtt.status_flags,
-                    builder:
-                        (BuildContext context, String value, Widget? child) {
-                      status.setStatus(value);
-                      return StatusBox(
-                        status.rms.label,
-                        status.rms.flagLabels,
-                        status.rms.flags,
-                      );
-                    },
+                  width: ((((MediaQuery.of(context).size.width) / div) *
+                          statusFieldRatio) -
+                      (40) -
+                      (15 / 2)),
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      ValueListenableBuilder<String>(
+                        valueListenable: widget.mqtt.status_flags,
+                        builder: (BuildContext context, String value,
+                            Widget? child) {
+                          status.setStatus(value);
+                          return StatusBox(
+                            status.pscope.label,
+                            status.pscope.flagLabels,
+                            status.pscope.flags,
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 15),
+                      ValueListenableBuilder<String>(
+                        valueListenable: widget.mqtt.status_flags,
+                        builder: (BuildContext context, String value,
+                            Widget? child) {
+                          status.setStatus(value);
+                          return StatusBox(
+                            status.rms.label,
+                            status.rms.flagLabels,
+                            status.rms.flags,
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 15),
+                      const StatusContainer(Placeholder()),
+                      const SizedBox(width: 15),
+                      const StatusContainer(Placeholder()),
+                    ],
                   ),
-                  const SizedBox(width: 15),
-                  StatusContainer(Placeholder()),
-                  const SizedBox(width: 15),
-                  StatusContainer(Placeholder()),
-                ],
-              ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  margin: const EdgeInsets.only(top: 15, bottom: 15),
+                  //height: ((MediaQuery.of(context).size.height)),
+                  width: ((((MediaQuery.of(context).size.width) / div) *
+                          statusFieldRatio) -
+                      (40) -
+                      (15 / 2)),
+                  decoration: BoxDecoration(
+                    color: darkBlue,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  alignment: Alignment.topCenter,
+                  child: Image.asset('lib/image.jpg'),
+                ),
+              ],
             ),
           ),
         ),
