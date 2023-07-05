@@ -6,6 +6,8 @@ import "package:sci/controllers/mqtt_controller.dart";
 import "package:sci/widgets/container_scaled.dart";
 import "package:sci/widgets/outlined_button_dark.dart";
 import "package:sci/widgets/outlined_text_field.dart";
+import "package:sci/widgets/status_page/calibration_box.dart";
+import "package:sci/widgets/status_page/reservoir_box.dart";
 import "package:sci/widgets/status_page/status_box.dart";
 import "package:sci/widgets/status_page/status_container.dart";
 
@@ -78,7 +80,10 @@ class _StatusPageState extends State<StatusPage> {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        // Horizontal gap
         const SizedBox(width: 15),
+
+        // Control panel (left)
         ContainerScaled(
           div,
           controlBoxRatio,
@@ -221,14 +226,24 @@ class _StatusPageState extends State<StatusPage> {
             ),
           ),
         ),
+
+        // Horizontal gap
         const SizedBox(width: 15),
+
+        // Status boxes and image (right)
         Align(
           alignment: Alignment.topCenter,
+
+          // Vertical scroll
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
+
+            // Scrollable column
             child: Column(
               children: [
+                // Status boxes
                 Container(
+                  // Configuration
                   margin: const EdgeInsets.only(top: 15),
                   constraints: const BoxConstraints(
                     maxHeight: 325,
@@ -237,9 +252,12 @@ class _StatusPageState extends State<StatusPage> {
                           statusFieldRatio) -
                       (40) -
                       (15 / 2)),
+
+                  // Horizontal scroll
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
+                      // PIS container
                       ValueListenableBuilder<String>(
                         valueListenable: widget.mqtt.status_flags,
                         builder: (BuildContext context, String value,
@@ -252,7 +270,11 @@ class _StatusPageState extends State<StatusPage> {
                           );
                         },
                       ),
+
+                      // Horizontal gap
                       const SizedBox(width: 15),
+
+                      // RMS container
                       ValueListenableBuilder<String>(
                         valueListenable: widget.mqtt.status_flags,
                         builder: (BuildContext context, String value,
@@ -265,17 +287,27 @@ class _StatusPageState extends State<StatusPage> {
                           );
                         },
                       ),
+
+                      // Horizontal gap
                       const SizedBox(width: 15),
-                      const StatusContainer(Placeholder()),
+
+                      // Calibration/microscopev box
+                      CalibrationBox(widget.mqtt),
+
+                      // Horizontal gap
                       const SizedBox(width: 15),
-                      const StatusContainer(Placeholder()),
+
+                      // Empty Status container
+                      ReservoirBox(),
                     ],
                   ),
                 ),
+
+                // Microscope image
                 Container(
-                  padding: const EdgeInsets.all(15),
+                  // Config
+                  padding: const EdgeInsets.all(0),
                   margin: const EdgeInsets.only(top: 15, bottom: 15),
-                  //height: ((MediaQuery.of(context).size.height)),
                   width: ((((MediaQuery.of(context).size.width) / div) *
                           statusFieldRatio) -
                       (40) -
@@ -286,7 +318,12 @@ class _StatusPageState extends State<StatusPage> {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   alignment: Alignment.topCenter,
-                  child: Image.asset('lib/image.jpg'),
+
+                  // Image
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Image.asset('lib/image.jpg'),
+                  ),
                 ),
               ],
             ),

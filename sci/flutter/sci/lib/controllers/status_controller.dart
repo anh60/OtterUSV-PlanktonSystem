@@ -30,7 +30,7 @@ const int calibrating = 6;
 const int leak = 7;
 
 class StatusController {
-  StatusByte pscope = StatusByte('Planktoscope', pscopeLabels, 0);
+  StatusByte pscope = StatusByte('PIS', pscopeLabels, 0);
   StatusByte rms = StatusByte('RMS', rmsLabels, 0);
 
   void setStatus(String statusMessage) {
