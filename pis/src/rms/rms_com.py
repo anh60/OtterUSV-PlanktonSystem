@@ -9,7 +9,7 @@
 
 import serial
 import threading
-import STATUS.status as state
+import state.status as state
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -25,7 +25,7 @@ port = '/dev/ttyS0'
 
 baud = 9600
 
-C_PUMP      = 0x01
+C_FILL      = 0x01
 C_FLUSH     = 0x02
 C_STOP      = 0x03
 C_STATUS    = 0x04
@@ -59,8 +59,8 @@ def set_rms_flags(s):
     state.set_sys_state(state.status_flag.RMS_FULL,  ((s >> 3) & 1))
 
 
-def send_pump():
-    ser.write(C_PUMP.to_bytes(1, 'big'))
+def send_fill():
+    ser.write(C_FILL.to_bytes(1, 'big'))
 
 
 def send_flush():

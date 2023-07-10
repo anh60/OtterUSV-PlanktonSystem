@@ -10,8 +10,8 @@
 import asyncio
 import threading
 
-import STATUS.status            as state
-import RMS_COM.rms_com          as rms
+import state.status            as state
+import rms.rms_com          as rms
 import mqtt_client.mqtt_client  as client
 import base64
 
@@ -26,7 +26,7 @@ import time
 
 async def sample():
     print("Sampling started\n")
-    rms.send_pump()
+    rms.send_fill()
     await asyncio.sleep(5.0)
     print("Sampling finished\n")
     rms.send_stop()

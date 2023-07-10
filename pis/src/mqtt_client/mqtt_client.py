@@ -9,8 +9,8 @@
 
 import paho.mqtt.client             as mqtt
 import mqtt_client.mqtt_constants   as con
-import STATUS.status                as state
-import RMS_COM.rms_com              as rms
+import state.status                as state
+import rms.rms_com              as rms
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -95,7 +95,7 @@ def msg_handler(topic, msg):
         state.set_sys_state(state.status_flag.PUMP, 0)
 
     if(topic == con.topic.CTRL_RMS_PUMP):
-        rms.send_pump()
+        rms.send_fill()
 
     if(topic == con.topic.CTRL_RMS_VALVE):
         rms.send_flush()
