@@ -9,7 +9,7 @@
 
 import serial
 import threading
-import state.status as state
+import state.sys_state as state
 
 
 #---------------------------- GLOBALS ------------------------------------------

@@ -9,13 +9,13 @@
 
 import asyncio
 import threading
-
-import state.status            as state
-import rms.rms_com          as rms
-import mqtt_client.mqtt_client  as client
 import base64
 
-import time
+import state.sys_state              as state
+import rms.rms_com                  as rms
+import mqtt_client.mqtt_client      as client
+import sample.sample                as sample
+
 #import board
 #from adafruit_motorkit import MotorKit
 
@@ -23,14 +23,6 @@ import time
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
-
-async def sample():
-    print("Sampling started\n")
-    rms.send_fill()
-    await asyncio.sleep(5.0)
-    print("Sampling finished\n")
-    rms.send_stop()
-    state.set_sys_state(state.status_flag.SAMPLING, 0)
 
 async def calibrate():
     print("Calibration started\n")
@@ -47,9 +39,6 @@ async def calibrate():
     print("Calibration finished\n")
     state.set_sys_state(state.status_flag.CALIBRATING, 0)
 
-#async def samplePump():
-#    kit.motor3.throttle = -1.0
-
 
 def status_pub_thread():
     while True:
@@ -60,30 +49,24 @@ def status_pub_thread():
 
 #---------------------------- INIT ---------------------------------------------
 
-state.init_state()
-rms.init_comms()
-client.init_mqtt()
-
-rms.send_status_request()
-client.pub_status()
+state.init_state()              # State handler
+rms.init_comms()                # RMS communication
+client.init_mqtt()              # MQTT client
+sample.init_sample_thread()     # Sample thread
 
 status_thread = threading.Thread(target = status_pub_thread)
 status_thread.daemon = True
 status_thread.start()
 
+rms.send_status_request()
+
 
 #---------------------------- LOOP ---------------------------------------------
 
-# note: maybe change to threading instead of async functions,
-#       as extracting/publishing image file may be computationally intensive
-#
-# note: Considering the above, figure out how to execute and kill threads
-#       on command (at the moment threads can only run forever)
+#async def samplePump():
+#    kit.motor3.throttle = -1.0
 
 while True:
-    if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
-        asyncio.run(sample())
-
     if((state.get_sys_state() >> state.status_flag.CALIBRATING) & 1):
         asyncio.run(calibrate())
 

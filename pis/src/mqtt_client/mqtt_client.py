@@ -9,24 +9,24 @@
 
 import paho.mqtt.client             as mqtt
 import mqtt_client.mqtt_constants   as con
-import state.status                as state
-import rms.rms_com              as rms
+import state.sys_state          as state
+import rms.rms_com                  as rms
 
 
 #---------------------------- GLOBALS ------------------------------------------
 
-clientname = "planktopi"
+clientname = "pis"
 client = mqtt.Client(clientname)
 
 
-# Topics subscribed to by Planktoscope
+# Topics subscribed to by the PIS
 topics_sub = [
     con.topic.CTRL_SAMPLE,
     con.topic.CTRL_SAMPLE_PUMP,
     con.topic.CTRL_STOP,
     con.topic.CAL_NEXTPOS,
-    con.topic.CTRL_RMS_PUMP,
-    con.topic.CTRL_RMS_VALVE,
+    con.topic.CTRL_RMS_FILL,
+    con.topic.CTRL_RMS_FLUSH,
     con.topic.CTRL_RMS_STOP
 ]
 
@@ -94,10 +94,10 @@ def msg_handler(topic, msg):
     if(topic == con.topic.CTRL_STOP):
         state.set_sys_state(state.status_flag.PUMP, 0)
 
-    if(topic == con.topic.CTRL_RMS_PUMP):
+    if(topic == con.topic.CTRL_RMS_FILL):
         rms.send_fill()
 
-    if(topic == con.topic.CTRL_RMS_VALVE):
+    if(topic == con.topic.CTRL_RMS_FLUSH):
         rms.send_flush()
 
     if(topic == con.topic.CTRL_RMS_STOP):
