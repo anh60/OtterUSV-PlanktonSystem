@@ -36,7 +36,7 @@ def sample_state_handler():
     # Check for a state transition
     if(next_sample_state != curr_sample_state):
         curr_sample_state = next_sample_state
-        print("")
+        print("state changed")
 
     # FILL state
     if(curr_sample_state == sample_state.FILL):
@@ -85,6 +85,7 @@ def sample_state_handler():
 
 def sample_thread_cb():
     if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
+        print("sampling")
         sample_state_handler()
     else:
         time.sleep(0.1)
