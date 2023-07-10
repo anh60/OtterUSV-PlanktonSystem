@@ -9,8 +9,9 @@
 
 import paho.mqtt.client             as mqtt
 import mqtt_client.mqtt_constants   as con
-import state.sys_state          as state
+import state.sys_state              as state
 import rms.rms_com                  as rms
+import sample.sample                as sample
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -33,8 +34,8 @@ topics_sub = [
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
-# Initialize Planktoscope MQTT client
-def init_mqtt():
+# Initialize MQTT client thread
+def init_mqtt_thread():
     
     # Set callbacks
     client.on_connect = on_connect
@@ -53,7 +54,7 @@ def init_mqtt():
     client.loop_start()
 
 
-# On-connect callback
+# On-connect callback function
 def on_connect(client, userdata, flags, rc):
 
     # If connection succeeds
@@ -75,7 +76,7 @@ def on_connect(client, userdata, flags, rc):
         client.subscribe(topic, 1)
 
 
-# On-message received callback
+# On-message received callback function
 def on_message(client, userdata, message):
     msg = message.payload
     topic = message.topic
@@ -85,28 +86,31 @@ def on_message(client, userdata, message):
 # Filter incoming messages in on_message callback
 def msg_handler(topic, msg):
 
+    # Begin sample routine
     if(topic == con.topic.CTRL_SAMPLE):
         state.set_sys_state(state.status_flag.SAMPLING, 1)
+        sample.set_sample_num(int(msg))
 
+    # Manual control - 5v pump on/off
     if(topic == con.topic.CTRL_SAMPLE_PUMP):
         state.set_sys_state(state.status_flag.PUMP, 1)
-
     if(topic == con.topic.CTRL_STOP):
         state.set_sys_state(state.status_flag.PUMP, 0)
 
+    # Manual control - RMS fill, flush, stop
     if(topic == con.topic.CTRL_RMS_FILL):
         rms.send_fill()
-
     if(topic == con.topic.CTRL_RMS_FLUSH):
         rms.send_flush()
-
     if(topic == con.topic.CTRL_RMS_STOP):
         rms.send_stop()
 
+    # Camera calibration - new position
     if(topic == con.topic.CAL_NEXTPOS):
         state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
 
+# Publish current system state to status topic
 def pub_status():
     client.publish(
         topic   = con.topic.STATUS_FLAGS, 
@@ -115,11 +119,13 @@ def pub_status():
         retain  = True
     )
 
+
+# Publish an image to photo topic
 def pub_photo(picture):
     client.publish(
         topic   = con.topic.CAL_PHOTO, 
         payload = picture, 
         qos     = 1, 
-        retain  = False
+        retain  = True
     )
 

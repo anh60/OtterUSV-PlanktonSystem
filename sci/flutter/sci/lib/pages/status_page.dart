@@ -9,7 +9,6 @@ import "package:sci/widgets/outlined_text_field.dart";
 import "package:sci/widgets/status_page/calibration_box.dart";
 import "package:sci/widgets/status_page/reservoir_box.dart";
 import "package:sci/widgets/status_page/status_box.dart";
-import "package:sci/widgets/status_page/status_container.dart";
 
 class StatusPage extends StatefulWidget {
   final MQTTController mqtt;
@@ -36,7 +35,8 @@ class _StatusPageState extends State<StatusPage> {
   bool manualControl = false;
 
   void sampleButtonPressed() {
-    widget.mqtt.publishMessage(topics.CTRL_SAMPLE, '1');
+    widget.mqtt.publishMessage(topics.CTRL_SAMPLE, textFieldController.text);
+    textFieldController.clear();
   }
 
   void resetButtonPressed() {}

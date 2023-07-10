@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 
-import 'package:sci/constants.dart';
 import 'package:sci/widgets/container_scaled.dart';
 
 class LogsPage extends StatefulWidget {

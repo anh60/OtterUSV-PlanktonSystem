@@ -14,14 +14,13 @@ import state.sys_state as state
 
 #---------------------------- GLOBALS ------------------------------------------
 
-# UART TX/RX
+# --------- Ports for testing/debugging -------------
+#port = '/dev/ttyUSB0'      # Bottom USB3.0 (blue)
+#port = 'COM4'               # Laptop USB port
+# ---------------------------------------------------
+
+# Raspberry pi UART
 port = '/dev/ttyS0'
-
-# Bottom USB3.0 (blue)
-#port = '/dev/ttyUSB0'
-
-# Laptop USB port
-#port = 'COM4'
 
 baud = 9600
 
@@ -36,21 +35,6 @@ ser = serial.Serial(port, baud, timeout=0)
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
-
-def init_comms():
-    rx_thread = threading.Thread(target = rx_thread_cb)
-    rx_thread.daemon = True
-    rx_thread.start()
-
-
-def rx_thread_cb():
-    global rms_state
-    while True:
-        msg = ser.read()
-        if msg:
-            rms_state = int.from_bytes(msg, 'big')
-            set_rms_flags(rms_state)
-
 
 def set_rms_flags(s):
     state.set_sys_state(state.status_flag.RMS_PUMP,  ((s >> 0) & 1))
@@ -73,4 +57,19 @@ def send_stop():
 
 def send_status_request():
     ser.write(C_STATUS.to_bytes(1, 'big'))
+
+
+def rx_thread_cb():
+    global rms_state
+    while True:
+        msg = ser.read()
+        if msg:
+            rms_state = int.from_bytes(msg, 'big')
+            set_rms_flags(rms_state)
+
+
+def init_rms_thread():
+    rx_thread = threading.Thread(target = rx_thread_cb)
+    rx_thread.daemon = True
+    rx_thread.start()
     

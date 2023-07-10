@@ -126,6 +126,11 @@ class MQTTController with ChangeNotifier {
   void publishMessage(String t, String m) {
     final builder = MqttClientPayloadBuilder();
     builder.addString(m);
-    client.publishMessage(t, MqttQos.atLeastOnce, builder.payload!);
+    client.publishMessage(
+      t,
+      MqttQos.atLeastOnce,
+      builder.payload!,
+      retain: false,
+    );
   }
 }

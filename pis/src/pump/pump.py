@@ -1,27 +1,31 @@
 #
+# pump.py
+#
 # Andreas Hølleland
 # 2022
 #
 
+import threading
 import time
 import board
 from adafruit_motorkit import MotorKit
 
-kit = MotorKit(i2c=board.I2C()) 
+import state.sys_state as state
 
-# Pump rate = 100mL/min at throttle=1.0
-#           = 1.6mL/sec at throttle=1.0
+kit = MotorKit(i2c=board.I2C())
 
-PUMP_RATE = 0.22    # mL/sec     
 
-def pump(ml: int):
-    if ml < 0:
-        kit.motor3.throttle = -0.5
-        ml *= -1
-    else:
-        kit.motor3.throttle = 0.5
-    time.sleep(ml / PUMP_RATE)
-    kit.motor3.throttle = None
+def pump_thread_cb():
+    while True:
+        if((state.get_sys_state() >> state.status_flag.PUMP) & 1):
+            kit.motor3.throttle = -1.0
+        else:
+            kit.motor3.throttle = None
+        time.sleep(0.01)
+        
 
-while True:
-    kit.motor3.throttle = -1.0
+
+def init_pump_thread():
+    pump_thread = threading.Thread(target = pump_thread_cb)
+    pump_thread.daemon = True
+    pump_thread.start()

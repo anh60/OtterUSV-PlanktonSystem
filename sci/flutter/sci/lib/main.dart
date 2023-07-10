@@ -6,7 +6,6 @@ import 'package:sci/constants.dart';
 
 import 'package:sci/pages/status_page.dart';
 import 'package:sci/pages/images_page.dart';
-import 'package:sci/pages/calibrate_page.dart';
 import 'package:sci/pages/vehicle_page.dart';
 import 'package:sci/pages/logs_page.dart';
 
@@ -51,7 +50,6 @@ class _RootPageState extends State<RootPage> {
       StatusPage(mqtt),
       const VehiclePage(),
       const ImagesPage(),
-      CalibratePage(mqtt),
       const LogsPage()
     ];
 
@@ -153,15 +151,6 @@ class _RootPageState extends State<RootPage> {
                         NavigationRailDestination(
                           icon: Icon(
                             Icons.photo_library,
-                            color: lightBlue,
-                          ),
-                          label: Text(''),
-                        ),
-
-                        // Calibrate page
-                        NavigationRailDestination(
-                          icon: Icon(
-                            Icons.settings,
                             color: lightBlue,
                           ),
                           label: Text(''),
