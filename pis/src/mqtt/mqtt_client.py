@@ -8,7 +8,7 @@
 #---------------------------- PACKAGES -----------------------------------------
 
 import paho.mqtt.client             as mqtt
-import mqtt_client.mqtt_constants   as con
+import mqtt.mqtt_constants          as con
 import state.sys_state              as state
 import rms.rms_com                  as rms
 import sample.sample                as sample
