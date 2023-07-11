@@ -96,6 +96,8 @@ def flush():
 
     print("Sampling finished, system ready \n")
 
+    time.sleep(0.1)
+
 
 def sample_state_handler():
     global curr_sample_state
