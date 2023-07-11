@@ -22,13 +22,14 @@ state.init_state_thread()       # System state handler thread
 rms.init_rms_thread()           # RMS communication thread
 client.init_mqtt_thread()       # MQTT client thread
 pump.init_pump_thread()         # Pump thread
-cam.init_cam_thread()           # Camera thread
+cam.init_cam_thread()           # Camera imaging thread
+cam.init_cal_thread()           # Camera calibration thread
 sample.init_sample_thread()     # Sample routine thread
 
 # Get state of RMS
 rms.send_status_request()
 
-print("Init complete, system ready")
+print("Init complete, system ready \n")
 
 # Loop main thread
 while True:

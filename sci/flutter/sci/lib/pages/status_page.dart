@@ -295,13 +295,13 @@ class _StatusPageState extends State<StatusPage> {
                       // Horizontal gap
                       const SizedBox(width: 15),
 
-                      // Calibration/microscopev box
+                      // Calibration/microscope box
                       CalibrationBox(widget.mqtt),
 
                       // Horizontal gap
                       const SizedBox(width: 15),
 
-                      // Empty Status container
+                      // Reservoir status box
                       ReservoirBox(),
                     ],
                   ),

@@ -90,8 +90,8 @@ def msg_handler(topic, msg):
 
     # Begin sample routine
     if(topic == con.topic.CTRL_SAMPLE):
-        state.set_sys_state(state.status_flag.SAMPLING, 1)
         sample.set_sample_num(int(msg))
+        state.set_sys_state(state.status_flag.SAMPLING, 1)
 
     # Manual control - 5v pump on/off
     if(topic == con.topic.CTRL_SAMPLE_PUMP):
@@ -113,8 +113,8 @@ def msg_handler(topic, msg):
 
     # Camera calibration - new position
     if(topic == con.topic.CAL_NEXTPOS):
+        cam.set_pos(int(msg))
         state.set_sys_state(state.status_flag.CALIBRATING, 1)
-        
 
 
 # Publish current system state to status topic
@@ -122,6 +122,15 @@ def pub_status():
     client.publish(
         topic   = con.topic.STATUS_FLAGS, 
         payload = state.get_sys_state(), 
+        qos     = 1, 
+        retain  = True
+    )
+
+
+def pub_cam_pos(pos):
+    client.publish(
+        topic   = con.topic.CAL_CURRPOS, 
+        payload = pos, 
         qos     = 1, 
         retain  = True
     )

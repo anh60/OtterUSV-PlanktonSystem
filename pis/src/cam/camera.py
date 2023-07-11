@@ -42,18 +42,21 @@ import mqtt.mqtt_client as client
 #   - Test to see how far back I can go with microscope
 #
 
-camera = PiCamera()     # Camera object
+# Camera 
+camera = PiCamera()
 
+# Stepper motor
+kit = MotorKit(i2c=board.I2C())
+
+# Path to image
 image_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/image.jpg'
 
-CAM_POS_MIN = 0         # Minimum allowed position (Ibidi slide side) 
-CAM_POS_MAX = 10000     # Maximum allowed position (Stepper motor side)
+# Min/max positions of camera lens (distance from slide)
+min_pos = 0
+max_pos = 10000
 
-prev_pos = 0            # Previous position of camera
-curr_pos = 0            # Current position of camera
-next_pos = 0            # Next position of camera
-
-image_taken = False     # Flag indicating if an image has been taken
+curr_pos = 0
+next_pos = 0
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
@@ -63,19 +66,15 @@ def capture_image():
 
 
 def set_pos(new_pos):
-    global prev_pos, curr_pos
-
-    prev_pos = curr_pos
-    curr_pos = new_pos
+    global curr_pos, next_pos
+    next_pos = new_pos 
 
 
 def image_thread_cb():
-    global image_taken
-
     while True:
         if((state.get_sys_state() >> state.status_flag.IMAGING) & 1):
 
-            print("Taking image")
+            print("Taking image \n")
 
             capture_image()
 
@@ -88,7 +87,7 @@ def image_thread_cb():
 
             client.pub_photo(base64_message)
 
-            print("Image published")
+            print("Image published \n")
                 
             state.set_sys_state(state.status_flag.IMAGING, 0)
 
@@ -96,9 +95,57 @@ def image_thread_cb():
 
 
 def cal_thread_cb():
+    global curr_pos, next_pos
+
     while True:
         if((state.get_sys_state() >> state.status_flag.CALIBRATING) & 1):
-            print("")
+            print("Calibrating \n")
+
+            # Set direction
+            if(next_pos < curr_pos):
+                # Camera forward
+                direction = stepper.BACKWARD
+                n_steps = curr_pos - next_pos
+            else:
+                # Camera backward
+                direction = stepper.FORWARD
+                n_steps = next_pos - curr_pos
+
+            # Move camera
+            for i in range(n_steps):
+
+                # Check if min/max limit is reached
+                if(direction == stepper.BACKWARD):
+                    if(curr_pos == min_pos):
+                        print("limit reached")
+                        break
+                else:
+                    if(curr_pos == max_pos):
+                        print("limit reached")
+                        break
+                
+                # Move stepper motor
+                kit.stepper1.onestep(direction=direction)
+
+                # If moving camera forward, decrement curr_pos
+                if(direction == stepper.BACKWARD):
+                    curr_pos -= 1
+
+                # If backward, increment
+                else:
+                    curr_pos += 1
+
+            state.set_sys_state(state.status_flag.CALIBRATING, 0)
+            client.pub_cam_pos(curr_pos)
+            next_pos = curr_pos
+
+            print("moved to new position", curr_pos)
+
+            time.sleep(0.1)
+
+
+
+
 
 
 def init_cam_thread():
