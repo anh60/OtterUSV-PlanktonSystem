@@ -40,9 +40,11 @@ import mqtt.mqtt_client as client
 #
 # Todo:
 #   - Test to see how far back I can go with microscope
-#   
+#
 
 camera = PiCamera()     # Camera object
+
+image_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/image.jpg'
 
 CAM_POS_MIN = 0         # Minimum allowed position (Ibidi slide side) 
 CAM_POS_MAX = 10000     # Maximum allowed position (Stepper motor side)
@@ -57,8 +59,7 @@ image_taken = False     # Flag indicating if an image has been taken
 #---------------------------- FUNCTIONS ----------------------------------------
 
 def capture_image():
-    path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/image.jpg'
-    camera.capture(path)
+    camera.capture(image_path)
 
 
 def set_pos(new_pos):
@@ -80,7 +81,7 @@ def image_thread_cb():
 
                 capture_image()
 
-                with open("image.jpg", "rb") as image:
+                with open(image_path, "rb") as image:
                     img = image.read()
 
                 message = img 
