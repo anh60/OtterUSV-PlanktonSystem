@@ -135,6 +135,8 @@ def cal_thread_cb():
                 else:
                     curr_pos += 1
 
+                time.sleep(0.01)
+
             state.set_sys_state(state.status_flag.CALIBRATING, 0)
             client.pub_cam_pos(curr_pos)
             next_pos = curr_pos
