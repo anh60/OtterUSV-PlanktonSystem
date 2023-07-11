@@ -74,23 +74,28 @@ def image_thread_cb():
 
     while True:
         if((state.get_sys_state() >> state.status_flag.IMAGING) & 1):
-            print("Taking image")
+            
+            if(image_taken == False):
 
-            capture_image()
+                print("Taking image")
 
-            with open(image_path, "rb") as image:
-                img = image.read()
+                capture_image()
 
-            message = img 
-            base64_bytes = base64.b64encode(message)
-            base64_message = base64_bytes.decode('ascii')
+                with open(image_path, "rb") as image:
+                    img = image.read()
 
-            client.pub_photo(base64_message)
+                message = img 
+                base64_bytes = base64.b64encode(message)
+                base64_message = base64_bytes.decode('ascii')
 
-            print("Image published")
+                client.pub_photo(base64_message)
+
+                print("Image published")
                 
-            #image_taken = True
-            state.set_sys_state(state.status_flag.IMAGING, 0)
+                image_taken = True
+                state.set_sys_state(state.status_flag.IMAGING, 0)
+
+                time.sleep(0.1)
 
 
 def cal_thread_cb():
