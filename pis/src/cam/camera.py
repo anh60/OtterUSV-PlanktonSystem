@@ -125,7 +125,7 @@ def cal_thread_cb():
                         break
                 
                 # Move stepper motor
-                kit.stepper1.onestep(direction=direction)
+                kit.stepper1.onestep(direction=direction, style=stepper.DOUBLE)
 
                 # If moving camera forward, decrement curr_pos
                 if(direction == stepper.BACKWARD):
