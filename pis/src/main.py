@@ -9,7 +9,7 @@
 
 import state.sys_state              as state
 import rms.rms_com                  as rms
-import mqtt_client.mqtt_client      as client
+import mqtt.mqtt_client             as client
 import pump.pump                    as pump
 import sample.sample                as sample
 

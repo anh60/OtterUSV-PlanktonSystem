@@ -10,7 +10,7 @@
 from enum import Enum
 import threading
 
-import mqtt_client.mqtt_client as client
+import mqtt.mqtt_client as client
 
 
 #---------------------------- GLOBALS ------------------------------------------
