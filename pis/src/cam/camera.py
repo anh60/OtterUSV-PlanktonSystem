@@ -142,6 +142,8 @@ def cal_thread_cb():
             next_pos = curr_pos
 
             print("moved to new position", curr_pos)
+            
+            kit.stepper1.release()
 
             time.sleep(0.1)
 
