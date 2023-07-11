@@ -9,7 +9,7 @@ class MQTTController with ChangeNotifier {
   final ValueNotifier<String> status_connected = ValueNotifier<String>('0');
   final ValueNotifier<String> status_flags = ValueNotifier<String>('0');
   final ValueNotifier<String> cal_pos = ValueNotifier<String>('0');
-  final ValueNotifier<String> cal_photo = ValueNotifier<String>('0');
+  final ValueNotifier<String> image = ValueNotifier<String>('0');
 
   // Client to be initialized
   late MqttServerClient client;
@@ -58,7 +58,7 @@ class MQTTController with ChangeNotifier {
     client.subscribe(topics.STATUS_FLAGS, MqttQos.atLeastOnce);
     client.subscribe(topics.STATUS_CONNECTED, MqttQos.atLeastOnce);
     client.subscribe(topics.CAL_CURRPOS, MqttQos.atLeastOnce);
-    client.subscribe(topics.CAL_PHOTO, MqttQos.atLeastOnce);
+    client.subscribe(topics.IMAGE, MqttQos.atLeastOnce);
 
     // Listen for messages on subscribed topics
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? msg) {
@@ -85,8 +85,8 @@ class MQTTController with ChangeNotifier {
         case topics.CAL_CURRPOS:
           cal_pos.value = stringMsg;
           break;
-        case topics.CAL_PHOTO:
-          cal_photo.value = stringMsg;
+        case topics.IMAGE:
+          image.value = stringMsg;
           break;
         default:
       }

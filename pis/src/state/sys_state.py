@@ -30,7 +30,9 @@ class status_flag(int, Enum):
     SAMPLING        = 4
     PUMP            = 5
     CALIBRATING     = 6
-    LEAK            = 7 
+    LEAK            = 7
+    IMAGING         = 8
+    READY           = 9
 
 
 #---------------------------- FUNCTIONS ----------------------------------------

@@ -16,8 +16,11 @@ class topic(str, Enum):
     # connected flag (last will)
     STATUS_CONNECTED    = "planktoscope/status/connected"
 
-    # begin sampling routine
+    # Begin sampling routine
     CTRL_SAMPLE         = "planktoscope/control/sample"
+
+    # Capture new image and publish
+    CTRL_IMAGE          = "planktoscope/control/capture_image"
 
     # 5v pump on/off
     CTRL_SAMPLE_PUMP    = "planktoscope/control/sample_pump"
@@ -28,7 +31,10 @@ class topic(str, Enum):
     CTRL_RMS_FLUSH      = "planktoscope/control/valve"
     CTRL_RMS_STOP       = "planktoscope/control/stop"
 
-    # Camera currPos, newpos, and take mqtt photo
+    # Camera currPos, newpos
     CAL_CURRPOS         = "planktoscope/calibrate/currpos"
     CAL_NEXTPOS         = "planktoscope/calibrate/nextpos"
-    CAL_PHOTO           = "planktoscope/calibrate/photo"
+
+    # Image from picamera
+    IMAGE               = "planktoscope/calibrate/photo"
+    

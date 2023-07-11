@@ -17,6 +17,9 @@ abstract class topics {
 
   // Control
   static const String CTRL_SAMPLE = "planktoscope/control/sample";
+
+  static const String CTRL_IMAGE = "planktoscope/control/capture_image";
+
   static const String CTRL_SAMPLE_PUMP = "planktoscope/control/sample_pump";
   static const String CTRL_STOP = "planktoscope/control/stop";
 
@@ -28,7 +31,7 @@ abstract class topics {
   // Calibrate
   static const String CAL_CURRPOS = "planktoscope/calibrate/currpos";
   static const String CAL_NEXTPOS = "planktoscope/calibrate/nextpos";
-  static const String CAL_PHOTO = "planktoscope/calibrate/photo";
+  static const String IMAGE = "planktoscope/calibrate/photo";
 }
 
 const Color darkBlue = Color.fromARGB(255, 77, 90, 114);

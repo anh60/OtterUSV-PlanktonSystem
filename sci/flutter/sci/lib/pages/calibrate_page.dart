@@ -130,7 +130,7 @@ class _CalibratePageState extends State<CalibratePage> {
           Padding(
             padding: const EdgeInsets.all(15),
             child: ValueListenableBuilder<String>(
-              valueListenable: widget.mqtt.cal_photo,
+              valueListenable: widget.mqtt.image,
               builder: (BuildContext context, String value, Widget? child) {
                 if (value == '0') {
                   return Image.asset('lib/image.jpg');

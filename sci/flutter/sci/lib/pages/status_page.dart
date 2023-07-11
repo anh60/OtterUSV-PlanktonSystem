@@ -1,3 +1,5 @@
+import "dart:convert";
+
 import "package:flutter/material.dart";
 
 import "package:sci/constants.dart";
@@ -57,7 +59,9 @@ class _StatusPageState extends State<StatusPage> {
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE_PUMP, '1');
   }
 
-  void cameraButtonPressed() {}
+  void cameraButtonPressed() {
+    widget.mqtt.publishMessage(topics.CTRL_IMAGE, '1');
+  }
 
   void stopPumpButtonPressed() {
     widget.mqtt.publishMessage(topics.CTRL_STOP, '1');
@@ -322,7 +326,30 @@ class _StatusPageState extends State<StatusPage> {
                   // Image
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5),
-                    child: Image.asset('lib/image.jpg'),
+                    child: ValueListenableBuilder<String>(
+                      // Listen to image value received over mqtt
+                      valueListenable: widget.mqtt.image,
+
+                      // Build and display image
+                      builder:
+                          (BuildContext context, String value, Widget? child) {
+                        // If no image is transmitted, return placeholder
+                        if (value == '0') {
+                          return Image.asset('lib/image.jpg');
+                        }
+
+                        // Append n "=" if size is not multiple of four
+                        else {
+                          if (value.length % 4 > 0) {
+                            value += '=' * (4 - value.length % 4);
+                          }
+
+                          // Convert Base64 String to Image object
+                          var bytesImage = const Base64Decoder().convert(value);
+                          return Image.memory(bytesImage);
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],

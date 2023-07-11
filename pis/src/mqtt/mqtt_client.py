@@ -12,6 +12,7 @@ import mqtt_client.mqtt_constants   as con
 import state.sys_state              as state
 import rms.rms_com                  as rms
 import sample.sample                as sample
+import cam.camera                   as cam
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -23,6 +24,7 @@ client = mqtt.Client(clientname)
 # Topics subscribed to by the PIS
 topics_sub = [
     con.topic.CTRL_SAMPLE,
+    con.topic.CTRL_IMAGE,
     con.topic.CTRL_SAMPLE_PUMP,
     con.topic.CTRL_STOP,
     con.topic.CAL_NEXTPOS,
@@ -105,9 +107,14 @@ def msg_handler(topic, msg):
     if(topic == con.topic.CTRL_RMS_STOP):
         rms.send_stop()
 
+    # Manual control - capture new image and publish
+    if(topic == con.topic.CTRL_IMAGE):
+        state.set_sys_state(state.status_flag.IMAGING, 1)
+
     # Camera calibration - new position
     if(topic == con.topic.CAL_NEXTPOS):
         state.set_sys_state(state.status_flag.CALIBRATING, 1)
+        
 
 
 # Publish current system state to status topic
@@ -123,7 +130,7 @@ def pub_status():
 # Publish an image to photo topic
 def pub_photo(picture):
     client.publish(
-        topic   = con.topic.CAL_PHOTO, 
+        topic   = con.topic.IMAGE, 
         payload = picture, 
         qos     = 1, 
         retain  = True
