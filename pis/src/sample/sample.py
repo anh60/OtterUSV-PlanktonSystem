@@ -11,7 +11,8 @@ import threading
 import time
 from enum import Enum
 
-import state.sys_state as state
+import state.sys_state  as state
+import cam.camera       as cam
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -29,12 +30,18 @@ next_sample_state = 0
 sample_num = 0
 curr_sample = 0
 
+image_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
+
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
 def set_sample_num(n):
     global sample_num
     sample_num = n
+
+def set_image_name():
+    name = time.strftime('%Y%m%d%H%M%S')
+    return name
 
 
 def fill():
@@ -62,6 +69,7 @@ def image():
     global next_sample_state
 
     print("imaging sample", curr_sample, "\n")
+    cam.capture_image(image_path + set_image_name() + '.jpg')
     time.sleep(2)
 
     # Set next state

@@ -22,47 +22,28 @@ import mqtt.mqtt_client as client
 
 #---------------------------- GLOBALS ------------------------------------------
 
-# Ideas:
-#   -   Manual calibration? Using buttons on the app,
-#       as this only has to be done once (probably)
-#       First set minimum (ibidi slide side), then navigate and set maximum
-#       Maybe move in increments at every button press? e.g 10 or 100 steps
-# 
-#   -   Store min/max in file
-#       (get at startup, store after calibration)
-#
-#   -   Store current position in file (get at startup and store after moving)
-#       Perhaps store this in persistent database?
-#       In case retained mqtt message isn't good/reliable enough
-#       
-#       If I rely on local storage, maybe publish min/max/current
-#       to broker on startup/changes?
-#
-# Todo:
-#   - Test to see how far back I can go with microscope
-#
-
 # Camera 
 camera = PiCamera()
 
-# Stepper motor
-kit = MotorKit(i2c=board.I2C())
+# Path to image for MQTT transfer
+mqtt_image_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/mqtt_image/image.jpg'
 
-# Path to image
-image_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/image.jpg'
+# Motor interface board
+kit = MotorKit(i2c=board.I2C())
 
 # Min/max positions of camera lens (distance from slide)
 min_pos = 0
 max_pos = 10000
 
+# Current position and new position(received over MQTT)
 curr_pos = 0
 next_pos = 0
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
-def capture_image():
-    camera.capture(image_path)
+def capture_image(path):
+    camera.capture(path)
 
 
 def set_pos(new_pos):
@@ -76,9 +57,9 @@ def image_thread_cb():
 
             print("Taking image \n")
 
-            capture_image()
+            capture_image(mqtt_image_path)
 
-            with open(image_path, "rb") as image:
+            with open(mqtt_image_path, "rb") as image:
                 img = image.read()
 
             message = img 
@@ -146,10 +127,6 @@ def cal_thread_cb():
             kit.stepper1.release()
 
             time.sleep(0.1)
-
-
-
-
 
 
 def init_cam_thread():
