@@ -27,21 +27,31 @@ class sample_state(int, Enum):
 curr_sample_state = 0
 next_sample_state = 0
 
+# Number of samples
 sample_num = 0
+
+# Start time of sample
+sample_time = 0
+
+# Current sample index
 curr_sample = 0
 
+# Storage location for images
 image_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
 def set_sample_num(n):
-    global sample_num
+    global sample_num, sample_time
     sample_num = n
+    sample_time = time.strftime('%d%m%Y%H%M%S')
+
 
 def set_image_name():
-    name = time.strftime('%Y%m%d%H%M%S')
-    return name
+    image_time = time.strftime('%d%m%Y%H%M%S')
+    filename = image_path + sample_time + '_' + image_time + '.jpg'
+    return filename
 
 
 def fill():
@@ -69,7 +79,7 @@ def image():
     global next_sample_state
 
     print("imaging sample", curr_sample, "\n")
-    cam.capture_image(image_path + set_image_name() + '.jpg')
+    cam.capture_image(set_image_name())
     time.sleep(2)
 
     # Set next state
@@ -133,7 +143,6 @@ def sample_state_handler():
     # FLUSH state
     if(curr_sample_state == sample_state.FLUSH):
         flush()
-
 
 
 def sample_thread_cb():

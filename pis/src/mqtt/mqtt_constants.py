@@ -37,4 +37,11 @@ class topic(str, Enum):
 
     # Image from picamera
     IMAGE               = "planktoscope/calibrate/photo"
+
+
+    # Images file system topics
+    DATA_SAMPLES        = "planktoscope/data/samples"
+    DATA_IMAGES         = "planktoscope/data/images"
+    DATA_IMAGE          = "planktoscope/data/image"
+
     

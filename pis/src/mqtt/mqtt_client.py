@@ -127,6 +127,7 @@ def pub_status():
     )
 
 
+# Publish current camera position (relative to slide)
 def pub_cam_pos(pos):
     client.publish(
         topic   = con.topic.CAL_CURRPOS, 
@@ -145,3 +146,32 @@ def pub_photo(picture):
         retain  = True
     )
 
+
+# Publish sample times to samples topic
+def pub_sample_times(sample_times):
+    client.publish(
+        topic   = con.topic.DATA_SAMPLES, 
+        payload = sample_times, 
+        qos     = 1, 
+        retain  = True
+    )
+
+
+# Publish image times of a sample to images topic
+def pub_image_times(image_times):
+    client.publish(
+        topic   = con.topic.DATA_IMAGES, 
+        payload = image_times, 
+        qos     = 1, 
+        retain  = True
+    )
+
+
+# Publish image corresponding to an image time
+def pub_image_times(image):
+    client.publish(
+        topic   = con.topic.DATA_IMAGE, 
+        payload = image, 
+        qos     = 1, 
+        retain  = True
+    )
