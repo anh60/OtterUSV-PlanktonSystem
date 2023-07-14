@@ -16,7 +16,6 @@ import csv
 #---------------------------- GLOBALS ------------------------------------------
 
 images_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
-samples = '/home/pi/OtterUSV-PlanktonSystem/pis/data/samples.csv'
 
 class column(str, Enum):
     ST      = 'sample_time'
@@ -34,17 +33,7 @@ def store_sample_time():
 
 # Get date/time of all samples taken (sample_times)
 def get_sample_times():
-    index = 0
-    with open(samples, 'r') as file:
-        csvreader = csv.reader(file, delimiter=',')
-        for row in csvreader:
-            if(index == 0):
-                print(row)
-                index += 1
-            else:
-                print(row[index])
-                index += 1
-
+    print()
             
 
 # Get date/time of images (sample_times[i] -> image_times)

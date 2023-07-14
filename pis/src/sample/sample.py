@@ -31,35 +31,26 @@ next_sample_state = 0
 # Number of samples
 sample_num = 0
 
-# Start time of sample
-sample_time = 0
-
 # Current sample index
 curr_sample = 0
 
 # Storage location for images
 samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
 
+# Directory for current sample
+sample_dir = 0
+
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
 def set_sample_num(n):
     global sample_num, sample_time
+
     sample_num = n
     sample_time = time.strftime('%d%m%Y%H%M%S')
-
-
-def get_image_path():
-    image_time = time.strftime('%d%m%Y%H%M%S')
-    
     sample_dir = samples_path + sample_time
 
-    if(not os.path.exists(sample_dir)):
-        os.makedirs(sample_dir)
-
-    image_path = sample_dir + '/' + image_time + '.jpg'
-
-    return image_path
+    os.mkdir(sample_dir)
 
 
 def fill():
@@ -86,9 +77,10 @@ def pump():
 def image():
     global next_sample_state
 
-    print("imaging sample", curr_sample, "\n")
-    cam.capture_image(get_image_path())
-    time.sleep(2)
+    print("imaging sample", curr_sample, "\n"),
+
+    image_time = time.strftime('%d%m%Y%H%M%S')
+    cam.capture_image(sample_dir + '/' + image_time + '.jpg')
 
     # Set next state
     if(curr_sample >= sample_num):
