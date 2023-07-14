@@ -7,6 +7,7 @@
 
 #---------------------------- PACKAGES -----------------------------------------
 
+import os
 import threading
 import time
 from enum import Enum
@@ -48,10 +49,17 @@ def set_sample_num(n):
     sample_time = time.strftime('%d%m%Y%H%M%S')
 
 
-def set_image_name():
+def get_image_path():
     image_time = time.strftime('%d%m%Y%H%M%S')
-    filename = sample_time + '/' + samples_path + image_time + '.jpg'
-    return filename
+    
+    sample_dir = samples_path + sample_time
+
+    if(not os.path.exists(sample_dir)):
+        os.makedirs(sample_dir)
+
+    image_path = sample_dir + '/' + image_time + '.jpg'
+
+    return image_path
 
 
 def fill():
@@ -79,7 +87,7 @@ def image():
     global next_sample_state
 
     print("imaging sample", curr_sample, "\n")
-    cam.capture_image(set_image_name())
+    cam.capture_image(get_image_path())
     time.sleep(2)
 
     # Set next state
