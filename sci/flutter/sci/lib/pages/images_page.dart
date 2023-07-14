@@ -96,7 +96,7 @@ class _ImagesPageState extends State<ImagesPage> {
           ValueListenableBuilder(
             valueListenable: widget.mqtt.data_samples,
             builder: (BuildContext context, String value, Widget? child) {
-              print(value[0]);
+              print('data $value');
               return ListView.builder(
                 itemCount: folders.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -111,7 +111,7 @@ class _ImagesPageState extends State<ImagesPage> {
 
                     // Folder name
                     title: Text(
-                      value[0],
+                      value,
                       style: const TextStyle(
                         color: lightBlue,
                         fontSize: 15,
