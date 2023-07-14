@@ -14,6 +14,7 @@ from enum import Enum
 
 import state.sys_state  as state
 import cam.camera       as cam
+import data.images      as imgs
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -47,7 +48,7 @@ def set_sample_num(n):
     global sample_num, sample_time, sample_dir
 
     sample_num = n
-    
+
     sample_time = time.strftime('%d%m%Y%H%M%S')
     sample_dir = samples_path + sample_time
 
@@ -115,6 +116,7 @@ def flush():
     state.set_sys_state(state.status_flag.SAMPLING, 0)
 
     print("Sampling finished, system ready \n")
+    imgs.get_sample_times
 
     time.sleep(0.1)
 

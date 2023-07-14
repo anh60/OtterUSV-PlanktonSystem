@@ -9,13 +9,13 @@
 
 from enum import Enum
 import threading
-import time
-import csv
+import os
 
 
 #---------------------------- GLOBALS ------------------------------------------
 
-images_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
+samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images'
+sample_names = []
 
 class column(str, Enum):
     ST      = 'sample_time'
@@ -26,14 +26,13 @@ class column(str, Enum):
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
-# Append a sample time to the csv file
-def store_sample_time():
-    print()
-
-
 # Get date/time of all samples taken (sample_times)
 def get_sample_times():
-    print()
+    sample_names = [f.name for f in os.scandir(samples_path) if f.is_dir()]
+
+    for n in sample_names:
+        print(sample_names[n], '\n')
+        
             
 
 # Get date/time of images (sample_times[i] -> image_times)
