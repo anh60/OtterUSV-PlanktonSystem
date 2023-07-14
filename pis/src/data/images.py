@@ -35,7 +35,6 @@ def get_sample_times():
         print(name)
 
     print('\n')
-        
             
 
 # Get date/time of images (sample_times[i] -> image_times)
@@ -57,7 +56,13 @@ def images_thread_cb():
 # Initialize images thread
 def init_images_thread():
     sample_names = [f.name for f in os.scandir(samples_path) if f.is_dir()]
-    client.pub_sample_times(sample_names)
+
+    value = ''
+
+    for name in sample_names:
+        value += name
+
+    client.pub_sample_times(value)
     #images_thread = threading.Thread(target = images_thread_cb)
     #images_thread.daemon = True
     #images_thread.start()
