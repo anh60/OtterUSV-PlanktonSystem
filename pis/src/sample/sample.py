@@ -44,9 +44,10 @@ sample_dir = 0
 #---------------------------- FUNCTIONS ----------------------------------------
 
 def set_sample_num(n):
-    global sample_num, sample_time
+    global sample_num, sample_time, sample_dir
 
     sample_num = n
+    
     sample_time = time.strftime('%d%m%Y%H%M%S')
     sample_dir = samples_path + sample_time
 
