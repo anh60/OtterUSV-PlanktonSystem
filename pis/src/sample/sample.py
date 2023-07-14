@@ -80,7 +80,8 @@ def image():
     print("imaging sample", curr_sample, "\n"),
 
     image_time = time.strftime('%d%m%Y%H%M%S')
-    cam.capture_image(sample_dir + '/' + image_time + '.jpg')
+    image_path = sample_dir + '/' + image_time + '.jpg'
+    cam.capture_image(image_path)
 
     # Set next state
     if(curr_sample >= sample_num):
