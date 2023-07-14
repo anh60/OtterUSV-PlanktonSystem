@@ -32,6 +32,18 @@ abstract class topics {
   static const String CAL_CURRPOS = "planktoscope/calibrate/currpos";
   static const String CAL_NEXTPOS = "planktoscope/calibrate/nextpos";
   static const String IMAGE = "planktoscope/calibrate/photo";
+
+  // --- Images file system
+
+  // Commands
+  static const String GET_SAMPLES = "planktoscope/data/get_samples";
+  static const String GET_IMAGES = "planktoscope/data/get_images";
+  static const String GET_IMAGE = "planktoscope/data/get_image";
+
+  // Data
+  static const String DATA_SAMPLES = "planktoscope/data/samples";
+  static const String DATA_IMAGES = "planktoscope/data/images";
+  static const String DATA_IMAGE = "planktoscope/data/image";
 }
 
 const Color darkBlue = Color.fromARGB(255, 77, 90, 114);

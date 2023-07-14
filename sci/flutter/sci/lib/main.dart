@@ -49,7 +49,7 @@ class _RootPageState extends State<RootPage> {
     pages = [
       StatusPage(mqtt),
       const VehiclePage(),
-      const ImagesPage(),
+      ImagesPage(mqtt),
       const LogsPage()
     ];
 

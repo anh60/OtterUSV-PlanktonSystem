@@ -15,7 +15,6 @@ import os
 #---------------------------- GLOBALS ------------------------------------------
 
 samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images'
-sample_names = []
 
 class column(str, Enum):
     ST      = 'sample_time'
@@ -32,6 +31,8 @@ def get_sample_times():
     
     for name in sample_names:
         print(name)
+
+    print('\n')
         
             
 

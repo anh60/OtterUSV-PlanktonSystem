@@ -10,11 +10,16 @@ broker = "mqtt.eclipseprojects.io"
 
 class topic(str, Enum):
 
+    # --- Status topics ---
+
     # PIS and RMS status flags
     STATUS_FLAGS        = "planktoscope/status/flags"
 
     # connected flag (last will)
     STATUS_CONNECTED    = "planktoscope/status/connected"
+
+
+    # --- Control topics ---
 
     # Begin sampling routine
     CTRL_SAMPLE         = "planktoscope/control/sample"
@@ -31,6 +36,9 @@ class topic(str, Enum):
     CTRL_RMS_FLUSH      = "planktoscope/control/valve"
     CTRL_RMS_STOP       = "planktoscope/control/stop"
 
+
+    # --- Calibration topics ---
+
     # Camera currPos, newpos
     CAL_CURRPOS         = "planktoscope/calibrate/currpos"
     CAL_NEXTPOS         = "planktoscope/calibrate/nextpos"
@@ -39,7 +47,14 @@ class topic(str, Enum):
     IMAGE               = "planktoscope/calibrate/photo"
 
 
-    # Images file system topics
+    # --- Images file system ---
+
+    # Commands
+    GET_SAMPLES        = "planktoscope/data/get_samples"
+    GET_IMAGES         = "planktoscope/data/get_images"
+    GET_IMAGE          = "planktoscope/data/get_image"  
+
+    # Data
     DATA_SAMPLES        = "planktoscope/data/samples"
     DATA_IMAGES         = "planktoscope/data/images"
     DATA_IMAGE          = "planktoscope/data/image"

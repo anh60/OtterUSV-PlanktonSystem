@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:sci/constants.dart';
-
 import 'package:sci/widgets/container_scaled.dart';
+import 'package:sci/controllers/mqtt_controller.dart';
 
 class ImagesPage extends StatefulWidget {
-  const ImagesPage({super.key});
+  final MQTTController mqtt;
+  const ImagesPage(this.mqtt, {super.key});
 
   @override
   State<ImagesPage> createState() => _ImagesPageState();
@@ -28,11 +28,6 @@ class _ImagesPageState extends State<ImagesPage> {
 
   // Current files corresponding to folder
   List<String> files = [];
-
-  //Future<List<String>> getSamples() async {
-  // var uri = Uri.parse("http://localhost/pscope_db/getSamples.php");
-  //  final response = await http.get(uri);
-  //}
 
   // Creates the tiles (file references) displayed when a folder is clicked
   List<Material> buildTileList() {
@@ -62,6 +57,7 @@ class _ImagesPageState extends State<ImagesPage> {
 
           // When tile is clicked
           onTap: () {
+            widget.mqtt.publishMessage(topics.GET_SAMPLES, '');
             setState(() {
               selectedFile = index; // Mark as current file
             });
@@ -121,6 +117,7 @@ class _ImagesPageState extends State<ImagesPage> {
                     //       so displayed ListTiles are the correct ones
                     //       when buildTileList() is called.
                     //       Or maybe do http request within buildTileList()?
+
                     selectedFolder = index;
                     files = getFiles(index);
                   }

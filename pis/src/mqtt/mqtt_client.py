@@ -13,6 +13,7 @@ import state.sys_state              as state
 import rms.rms_com                  as rms
 import sample.sample                as sample
 import cam.camera                   as cam
+import data.images                  as imgs
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -115,6 +116,14 @@ def msg_handler(topic, msg):
     if(topic == con.topic.CAL_NEXTPOS):
         cam.set_pos(int(msg))
         state.set_sys_state(state.status_flag.CALIBRATING, 1)
+
+    # Images file system
+    if(topic == con.topic.GET_SAMPLES):
+        imgs.get_sample_times()
+    if(topic == con.topic.GET_IMAGES):
+        print()
+    if(topic == con.topic.GET_IMAGE):
+        print()
 
 
 # Publish current system state to status topic
