@@ -31,7 +31,10 @@ topics_sub = [
     con.topic.CAL_NEXTPOS,
     con.topic.CTRL_RMS_FILL,
     con.topic.CTRL_RMS_FLUSH,
-    con.topic.CTRL_RMS_STOP
+    con.topic.CTRL_RMS_STOP,
+    con.topic.GET_SAMPLES,
+    con.topic.GET_IMAGES,
+    con.topic.GET_IMAGE
 ]
 
 
