@@ -57,10 +57,8 @@ def images_thread_cb():
 def init_images_thread():
     sample_names = [f.name for f in os.scandir(samples_path) if f.is_dir()]
 
-    value = ''
-
     for name in sample_names:
-        value += name
+        value = value + name
 
     client.pub_sample_times(value)
     #images_thread = threading.Thread(target = images_thread_cb)
