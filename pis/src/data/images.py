@@ -11,6 +11,8 @@ from enum import Enum
 import threading
 import os
 
+import mqtt.mqtt_client as client
+
 
 #---------------------------- GLOBALS ------------------------------------------
 
@@ -54,6 +56,8 @@ def images_thread_cb():
 
 # Initialize images thread
 def init_images_thread():
-    images_thread = threading.Thread(target = images_thread_cb)
-    images_thread.daemon = True
-    images_thread.start()
+    sample_names = [f.name for f in os.scandir(samples_path) if f.is_dir()]
+    client.pub_sample_times(sample_names)
+    #images_thread = threading.Thread(target = images_thread_cb)
+    #images_thread.daemon = True
+    #images_thread.start()

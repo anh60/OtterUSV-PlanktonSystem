@@ -24,17 +24,24 @@ client = mqtt.Client(clientname)
 
 # Topics subscribed to by the PIS
 topics_sub = [
+
+    # PIS control
     con.topic.CTRL_SAMPLE,
     con.topic.CTRL_IMAGE,
     con.topic.CTRL_SAMPLE_PUMP,
     con.topic.CTRL_STOP,
     con.topic.CAL_NEXTPOS,
+
+    # RMS control
     con.topic.CTRL_RMS_FILL,
     con.topic.CTRL_RMS_FLUSH,
     con.topic.CTRL_RMS_STOP,
+
+    # Image file system
     con.topic.GET_SAMPLES,
     con.topic.GET_IMAGES,
     con.topic.GET_IMAGE
+    
 ]
 
 

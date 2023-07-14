@@ -29,6 +29,14 @@ class _ImagesPageState extends State<ImagesPage> {
   // Current files corresponding to folder
   List<String> files = [];
 
+  String received = '';
+
+  // Decode and create the folder names to be displayed on the main tiles
+  List<String> buildFolderList(String names) {
+    List<String> folderList = [];
+    return folderList;
+  }
+
   // Creates the tiles (file references) displayed when a folder is clicked
   List<Material> buildTileList() {
     List<Material> tilesList = []; // List of tiles to be returned
@@ -83,49 +91,52 @@ class _ImagesPageState extends State<ImagesPage> {
           div,
           controlBoxRatio,
           boxMargin,
-          ListView.builder(
-            itemCount: folders.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ExpansionTile(
-                // Colors
-                backgroundColor: darkerBlue,
-                collapsedIconColor: lightBlue,
-                iconColor: lightBlue,
 
-                // Icon
-                leading: const Icon(Icons.folder),
+          // Build expansion tiles (folders)
+          ValueListenableBuilder(
+            valueListenable: widget.mqtt.data_samples,
+            builder: (BuildContext context, String value, Widget? child) {
+              return ListView.builder(
+                itemCount: folders.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ExpansionTile(
+                    // Colors
+                    backgroundColor: darkerBlue,
+                    collapsedIconColor: lightBlue,
+                    iconColor: lightBlue,
 
-                // Folder name
-                title: Text(
-                  folders[index],
-                  style: const TextStyle(
-                    color: lightBlue,
-                    fontSize: 15,
-                  ),
-                ),
+                    // Icon
+                    leading: const Icon(Icons.folder),
 
-                // Allow only one to be open at a time
-                key: Key(selectedFolder.toString()),
+                    // Folder name
+                    title: Text(
+                      folders[index],
+                      style: const TextStyle(
+                        color: lightBlue,
+                        fontSize: 15,
+                      ),
+                    ),
 
-                // Initial state of expansion tile
-                initiallyExpanded: (index == selectedFolder),
+                    // Allow only one to be open at a time
+                    key: Key(selectedFolder.toString()),
 
-                // When clicked
-                onExpansionChanged: (expanding) {
-                  if (expanding) {
-                    // todo: Update file-list for current folder (http get),
-                    //       so displayed ListTiles are the correct ones
-                    //       when buildTileList() is called.
-                    //       Or maybe do http request within buildTileList()?
-                    selectedFolder = index;
-                    files = getFiles(index);
-                  }
-                  selectedFile = -1;
-                  setState(() {});
+                    // Initial state of expansion tile
+                    initiallyExpanded: (index == selectedFolder),
+
+                    // When clicked
+                    onExpansionChanged: (expanding) {
+                      if (expanding) {
+                        selectedFolder = index;
+                        files = getFiles(index);
+                      }
+                      selectedFile = -1;
+                      setState(() {});
+                    },
+
+                    // Build ListTiles (Images)
+                    children: buildTileList(),
+                  );
                 },
-
-                // Build ListTiles (Images)
-                children: buildTileList(),
               );
             },
           ),
@@ -135,13 +146,13 @@ class _ImagesPageState extends State<ImagesPage> {
         const SizedBox(width: 15),
 
         // Image box
-        const ContainerScaled(
+        ContainerScaled(
           div,
           imageBoxRatio,
           boxMargin,
           Align(
             alignment: Alignment.center,
-            child: Text('IMAGE HERE'),
+            child: Text(received),
           ),
         ),
       ],
