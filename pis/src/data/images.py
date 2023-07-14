@@ -59,7 +59,7 @@ def init_images_thread():
 
     sample_names = ','.join(sample_names)
 
-    client.pub_sample_times('data')
+    client.pub_sample_times(sample_names)
     #images_thread = threading.Thread(target = images_thread_cb)
     #images_thread.daemon = True
     #images_thread.start()

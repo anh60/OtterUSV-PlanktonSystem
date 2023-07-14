@@ -95,6 +95,7 @@ class MQTTController with ChangeNotifier {
           image.value = stringMsg;
           break;
         case topics.DATA_SAMPLES:
+          data_samples.value = stringMsg;
           break;
         case topics.DATA_IMAGES:
           break;
