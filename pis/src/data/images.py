@@ -29,9 +29,7 @@ class column(str, Enum):
 # Get date/time of all samples taken (sample_times)
 def get_sample_times():
     sample_names = [f.name for f in os.scandir(samples_path) if f.is_dir()]
-
-    for n in sample_names:
-        print(sample_names[n], '\n')
+    print(sample_names)
         
             
 
