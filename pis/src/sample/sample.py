@@ -37,7 +37,7 @@ sample_time = 0
 curr_sample = 0
 
 # Storage location for images
-image_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
+samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
@@ -50,7 +50,7 @@ def set_sample_num(n):
 
 def set_image_name():
     image_time = time.strftime('%d%m%Y%H%M%S')
-    filename = image_path + sample_time + '_' + image_time + '.jpg'
+    filename = sample_time + '/' + samples_path + image_time + '.jpg'
     return filename
 
 
