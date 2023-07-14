@@ -119,6 +119,7 @@ def msg_handler(topic, msg):
 
     # Images file system
     if(topic == con.topic.GET_SAMPLES):
+        print('getting samples')
         imgs.get_sample_times()
     if(topic == con.topic.GET_IMAGES):
         print()

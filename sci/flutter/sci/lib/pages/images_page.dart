@@ -57,8 +57,8 @@ class _ImagesPageState extends State<ImagesPage> {
 
           // When tile is clicked
           onTap: () {
-            widget.mqtt.publishMessage(topics.GET_SAMPLES, '');
             setState(() {
+              widget.mqtt.publishMessage(topics.GET_SAMPLES, '');
               selectedFile = index; // Mark as current file
             });
             print('tapped tile: $selectedFile in folder $selectedFolder');
@@ -117,7 +117,6 @@ class _ImagesPageState extends State<ImagesPage> {
                     //       so displayed ListTiles are the correct ones
                     //       when buildTileList() is called.
                     //       Or maybe do http request within buildTileList()?
-
                     selectedFolder = index;
                     files = getFiles(index);
                   }
