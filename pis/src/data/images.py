@@ -97,8 +97,10 @@ def images_thread_cb():
 
         # If an image has been requested from MQTT broker
         if(image_request == True):
+            img_file = curr_image.decode() + '.jpg'
+
             # Get image path
-            image_path = get_image(curr_sample.decode(), curr_image.decode())
+            image_path = get_image(curr_sample.decode(), img_file)
 
             # Read image file
             with open(image_path, 'rb') as image:
