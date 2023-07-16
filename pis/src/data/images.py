@@ -112,7 +112,7 @@ def images_thread_cb():
             client.pub_image(base64_msg)
 
             # Reset flag
-            images_request = False
+            image_request = False
 
             # Sleep for 1ms
             time.sleep(0.001)
