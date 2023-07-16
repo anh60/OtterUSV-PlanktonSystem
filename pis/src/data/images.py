@@ -7,6 +7,7 @@
 
 #---------------------------- PACKAGES -----------------------------------------
 
+import base64
 import threading
 import os
 import time
@@ -78,6 +79,8 @@ def set_curr_image(image):
 def images_thread_cb():
     global images_request, image_request
     while True:
+
+        # If list of images have been requested from MQTT broker
         if(images_request == True):
             # Get images corresponding to selected sample
             images = get_images(curr_sample.decode())
@@ -91,12 +94,31 @@ def images_thread_cb():
             # Sleep for 1ms
             time.sleep(0.001)
 
+        # If an image has been requested from MQTT broker
         if(image_request == True):
+            # Get image path
+            image_path = get_image(curr_image.decode())
+
+            # Read image file
+            with open(image_path, 'rb') as image:
+                img = image.read()
+
+            # Convert image to a base64 String for transmission
+            msg = img
+            base64_bytes = base64.b64encode(msg)
+            base64_msg = base64_bytes.decode('ascii')
+
+            # Publish image
+            client.pub_image(base64_msg)
+
+            # Reset flag
+            images_request = False
+
             # Sleep for 1ms
             time.sleep(0.001)
 
+        # If nothing is happening, sleep thread
         else:
-            # Sleep for 1ms
             time.sleep(0.001)
 
 

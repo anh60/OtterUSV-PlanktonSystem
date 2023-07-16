@@ -12,9 +12,10 @@ import threading
 import time
 from enum import Enum
 
-import state.sys_state  as state
-import cam.camera       as cam
-import data.images      as imgs
+import state.sys_state      as state
+import cam.camera           as cam
+import data.images          as imgs
+import mqtt.mqtt_client     as client
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -96,7 +97,9 @@ def upload():
     global next_sample_state
 
     print("uploading", sample_num, "images \n")
-    time.sleep(2)
+
+    # Publish list of samples to MQTT broker
+    imgs.send_samples()
 
     # Set next state
     next_sample_state = sample_state.FLUSH
@@ -114,8 +117,6 @@ def flush():
 
     # Clear sampling flag
     state.set_sys_state(state.status_flag.SAMPLING, 0)
-
-    imgs.get_samples()
 
     print("Sampling finished, system ready \n")
 

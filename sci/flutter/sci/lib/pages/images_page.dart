@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:sci/constants.dart';
 import 'package:sci/widgets/container_scaled.dart';
@@ -18,6 +21,9 @@ class _ImagesPageState extends State<ImagesPage> {
   static const double controlBoxRatio = 1;
   static const double imageBoxRatio = 2;
   static const double boxMargin = 15;
+
+  // String printed when loading images
+  String loadingString = 'Loading';
 
   // Current active folder and file indexes
   int selectedFolder = -1;
@@ -61,6 +67,16 @@ class _ImagesPageState extends State<ImagesPage> {
     return samples;
   }
 
+  Widget checkIfLoading(String value, int index) {
+    if (index == 0) {
+      if (value == loadingString) {
+        return LoadingAnimationWidget.prograssiveDots(
+            color: lightBlue, size: 25);
+      }
+    }
+    return const Icon(Icons.image);
+  }
+
   // Creates the tiles(images) displayed when a sample(folder) is clicked
   List<Material> buildTileList(List<String> images) {
     List<Material> tilesList = []; // List of tiles to be returned
@@ -78,7 +94,7 @@ class _ImagesPageState extends State<ImagesPage> {
           selectedTileColor: darkBlue,
 
           // Icon
-          leading: const Icon(Icons.image),
+          leading: checkIfLoading(images[index], index),
 
           // Content
           title: Text(images[index]),
@@ -93,6 +109,7 @@ class _ImagesPageState extends State<ImagesPage> {
               selectedFile = index; // Mark as current file
               currImage = images[index];
             });
+            widget.mqtt.publishMessage(topics.GET_IMAGE, currImage);
             print('selected image: $currImage');
           },
         ),
@@ -160,7 +177,7 @@ class _ImagesPageState extends State<ImagesPage> {
                         // When clicked
                         onExpansionChanged: (expanding) {
                           if (expanding) {
-                            widget.mqtt.data_images.value = 'Loading . . .';
+                            widget.mqtt.data_images.value = loadingString;
                             selectedFolder = index;
                             currSample = samples[index];
                             widget.mqtt
@@ -192,7 +209,26 @@ class _ImagesPageState extends State<ImagesPage> {
           boxMargin,
           Align(
             alignment: Alignment.center,
-            child: Text(''),
+            child: ValueListenableBuilder(
+              valueListenable: widget.mqtt.data_image,
+              builder: (BuildContext context, String value, Widget? child) {
+                // If no image is transmitted, return placeholder
+                if (value == '0') {
+                  return Image.asset('lib/image.jpg');
+                }
+
+                // Append n "=" if size is not multiple of four
+                else {
+                  if (value.length % 4 > 0) {
+                    value += '=' * (4 - value.length % 4);
+                  }
+
+                  // Convert Base64 String to Image object
+                  var bytesImage = const Base64Decoder().convert(value);
+                  return Image.memory(bytesImage);
+                }
+              },
+            ),
           ),
         ),
       ],

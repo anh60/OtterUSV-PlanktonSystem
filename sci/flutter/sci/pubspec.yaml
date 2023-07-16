@@ -38,6 +38,7 @@ dependencies:
   mqtt_client: ^9.8.1
   flutter_map: ^4.0.0
   latlong2: ^0.8.2
+  loading_animation_widget: ^1.2.0+4
 
 dev_dependencies:
   flutter_test:
