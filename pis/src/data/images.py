@@ -76,6 +76,7 @@ def set_curr_image(image):
 
 # Images thread callback function
 def images_thread_cb():
+    global images_request, image_request
     while True:
         if(images_request == True):
             print(curr_sample)
@@ -103,8 +104,6 @@ def images_thread_cb():
 
 # Initialize images thread
 def init_images_thread():
-    images_request = False
-    image_request = False
     images_thread = threading.Thread(target = images_thread_cb)
     images_thread.daemon = True
     images_thread.start()
