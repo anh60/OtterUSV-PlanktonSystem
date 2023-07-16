@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:sci/widgets/status_page/status_tab.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'package:sci/constants.dart';
@@ -23,6 +24,9 @@ class _ImagesPageState extends State<ImagesPage> {
   static const double imageBoxRatio = 2;
   static const double boxMargin = 15;
 
+  // Image aspect ratio
+  double aspectRatio = 9 / 16;
+
   // String printed when loading images
   String loadingString = 'Loading';
 
@@ -35,6 +39,9 @@ class _ImagesPageState extends State<ImagesPage> {
 
   // Current image selected
   String currImage = '';
+
+  // State of the toggle switch
+  List<bool> toggleButtonState = [true, false];
 
   // Decode samples
   List<String> buildSampleList(String names) {
@@ -50,22 +57,30 @@ class _ImagesPageState extends State<ImagesPage> {
     return imagesList;
   }
 
-  // Format sample list to be more readable
-  List<String> formatSampleList(List<String> samples) {
-    for (int i = 0; i < samples.length; i++) {
-      samples[i] = samples[i].substring(0, 2) +
-          "/" +
-          samples[i].substring(2, 4) +
-          "/" +
-          samples[i].substring(4, 8) +
-          " " +
-          samples[i].substring(8, 10) +
-          ":" +
-          samples[i].substring(10, 12) +
-          ":" +
-          samples[i].substring(12, 14);
+  // Format sample/image filenames to be more readable
+  String formatDateTime(String filename) {
+    if (filename == loadingString) {
+      return filename;
     }
-    return samples;
+    filename =
+        // Day
+        filename.substring(6, 8) +
+            "/" +
+            // Month
+            filename.substring(4, 6) +
+            "/" +
+            // Year
+            filename.substring(0, 4) +
+            " " +
+            // Hour
+            filename.substring(8, 10) +
+            ":" +
+            // Minute
+            filename.substring(10, 12) +
+            ":" +
+            // Second
+            filename.substring(12, 14);
+    return filename;
   }
 
   Widget checkIfLoading(String value, int index) {
@@ -98,7 +113,7 @@ class _ImagesPageState extends State<ImagesPage> {
           leading: checkIfLoading(images[index], index),
 
           // Content
-          title: Text(images[index]),
+          title: Text(formatDateTime(images[index])),
           contentPadding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
 
           // Mark as selected if current index matches
@@ -129,9 +144,16 @@ class _ImagesPageState extends State<ImagesPage> {
     return sampleList.length;
   }
 
+  double setImageWidth(BuildContext context) {
+    return ((((MediaQuery.of(context).size.width) / div) * imageBoxRatio) -
+        (40) -
+        (15 / 2));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Empty gap
         const SizedBox(width: 15),
@@ -170,7 +192,7 @@ class _ImagesPageState extends State<ImagesPage> {
 
                         // Folder name
                         title: Text(
-                          samples[index],
+                          formatDateTime(samples[index]),
                           style: const TextStyle(
                             color: lightBlue,
                             fontSize: 15,
@@ -220,60 +242,145 @@ class _ImagesPageState extends State<ImagesPage> {
                 // Config
                 padding: const EdgeInsets.all(0),
                 margin: const EdgeInsets.only(top: 15, bottom: 15),
-                width: ((((MediaQuery.of(context).size.width) / div) *
-                        imageBoxRatio) -
-                    (40) -
-                    (15 / 2)),
+                width: setImageWidth(context),
+                height: setImageWidth(context) * aspectRatio,
                 decoration: BoxDecoration(
                   //color: darkBlue,
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                alignment: Alignment.topCenter,
+                alignment: Alignment.center,
 
                 // Image
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
-                  child: ValueListenableBuilder<String>(
-                    // Listen to image value received over mqtt
-                    valueListenable: widget.mqtt.data_image,
+                child: ValueListenableBuilder<String>(
+                  // Listen to image value received over mqtt
+                  valueListenable: widget.mqtt.data_image,
 
-                    // Build and display image
-                    builder:
-                        (BuildContext context, String value, Widget? child) {
-                      // If no image is transmitted, return placeholder
-                      if (value == '0') {
-                        return Column(
-                          children: [
-                            const Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Loading image',
-                                style: TextStyle(color: darkBlue, fontSize: 25),
-                              ),
-                            ),
-                            LoadingAnimationWidget.prograssiveDots(
-                                color: darkBlue, size: 50),
-                          ],
-                        );
+                  // Build and display image
+                  builder: (BuildContext context, String value, Widget? child) {
+                    // If no image is transmitted
+                    if (value == '0') {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Loading image',
+                            style: TextStyle(color: darkBlue, fontSize: 25),
+                          ),
+                          LoadingAnimationWidget.prograssiveDots(
+                              color: darkBlue, size: 50),
+                        ],
+                      );
+                    }
+
+                    // Append n "=" if size is not multiple of four
+                    else {
+                      if (value.length % 4 > 0) {
+                        value += '=' * (4 - value.length % 4);
                       }
 
-                      // Append n "=" if size is not multiple of four
-                      else {
-                        if (value.length % 4 > 0) {
-                          value += '=' * (4 - value.length % 4);
-                        }
-
-                        // Convert Base64 String to Image object
-                        var bytesImage = const Base64Decoder().convert(value);
-                        return FadeInImage(
+                      // Convert Base64 String to Image object
+                      var bytesImage = const Base64Decoder().convert(value);
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: FadeInImage(
                           placeholder: MemoryImage(kTransparentImage),
                           image: MemoryImage(bytesImage),
                           fadeInDuration: const Duration(milliseconds: 300),
-                        );
-                      }
-                    },
-                  ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              Container(
+                // Config
+                padding: const EdgeInsets.all(15),
+                margin: const EdgeInsets.only(top: 15, bottom: 15),
+                width: ((((MediaQuery.of(context).size.width) / div) *
+                        imageBoxRatio) -
+                    (40) -
+                    (15 / 2)),
+                decoration: BoxDecoration(
+                  color: darkBlue,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      constraints:
+                          BoxConstraints(maxWidth: setImageWidth(context) / 2),
+                      child: const Column(
+                        children: [
+                          StatusTab('Time of sample', 0),
+                          SizedBox(height: 15),
+                          StatusTab('Latitude', 0),
+                          SizedBox(height: 15),
+                          StatusTab('Longitude', 0)
+                        ],
+                      ),
+                    ),
+                    ToggleButtons(
+                      isSelected: toggleButtonState,
+
+                      onPressed: (int index) {
+                        for (int i = 0; i < toggleButtonState.length; i++) {
+                          if (i == index) {
+                            toggleButtonState[i] = true;
+                          } else {
+                            toggleButtonState[i] = false;
+                          }
+                        }
+                        setState(() {});
+                      },
+
+                      // Colors
+                      borderColor: lightBlue,
+                      selectedColor: lightBlue,
+                      color: darkerBlue,
+                      fillColor: darkerBlue,
+                      splashColor: Colors.blue,
+                      selectedBorderColor: lightBlue,
+                      hoverColor: Color.fromARGB(92, 144, 220, 255),
+
+                      // Border
+                      renderBorder: true,
+                      borderWidth: 1,
+                      borderRadius: BorderRadius.circular(10),
+
+                      // Content
+                      children: [
+                        Container(
+                          width: 100,
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text('Image'),
+                              Icon(
+                                Icons.image,
+                                size: 25,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 100,
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text('Map'),
+                              Icon(
+                                Icons.map,
+                                size: 25,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ],
