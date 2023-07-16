@@ -203,31 +203,57 @@ class _ImagesPageState extends State<ImagesPage> {
         const SizedBox(width: 15),
 
         // Image box
-        ContainerScaled(
-          div,
-          imageBoxRatio,
-          boxMargin,
-          Align(
-            alignment: Alignment.center,
-            child: ValueListenableBuilder(
-              valueListenable: widget.mqtt.data_image,
-              builder: (BuildContext context, String value, Widget? child) {
-                // If no image is transmitted, return placeholder
-                if (value == '0') {
-                  return Image.asset('lib/image.jpg');
-                }
+        Align(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Container(
+                  // Config
+                  padding: const EdgeInsets.all(0),
+                  margin: const EdgeInsets.only(top: 15, bottom: 15),
+                  width: ((((MediaQuery.of(context).size.width) / div) *
+                          imageBoxRatio) -
+                      (40) -
+                      (15 / 2)),
+                  decoration: BoxDecoration(
+                    color: darkBlue,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  alignment: Alignment.topCenter,
 
-                // Append n "=" if size is not multiple of four
-                else {
-                  if (value.length % 4 > 0) {
-                    value += '=' * (4 - value.length % 4);
-                  }
+                  // Image
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: ValueListenableBuilder<String>(
+                      // Listen to image value received over mqtt
+                      valueListenable: widget.mqtt.data_image,
 
-                  // Convert Base64 String to Image object
-                  var bytesImage = const Base64Decoder().convert(value);
-                  return Image.memory(bytesImage);
-                }
-              },
+                      // Build and display image
+                      builder:
+                          (BuildContext context, String value, Widget? child) {
+                        // If no image is transmitted, return placeholder
+                        if (value == '0') {
+                          return Image.asset('lib/image.jpg');
+                        }
+
+                        // Append n "=" if size is not multiple of four
+                        else {
+                          if (value.length % 4 > 0) {
+                            value += '=' * (4 - value.length % 4);
+                          }
+
+                          // Convert Base64 String to Image object
+                          var bytesImage = const Base64Decoder().convert(value);
+                          return Image.memory(bytesImage);
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
