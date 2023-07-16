@@ -83,7 +83,7 @@ def images_thread_cb():
         # If list of images have been requested from MQTT broker
         if(images_request == True):
             # Get images corresponding to selected sample
-            images = get_images(curr_sample.decode(), curr_image.decode())
+            images = get_images(curr_sample.decode())
 
             # Publish images
             client.pub_image_times(images)
@@ -97,7 +97,7 @@ def images_thread_cb():
         # If an image has been requested from MQTT broker
         if(image_request == True):
             # Get image path
-            image_path = get_image(curr_image.decode())
+            image_path = get_image(curr_sample.decode(), curr_image.decode())
 
             # Read image file
             with open(image_path, 'rb') as image:
