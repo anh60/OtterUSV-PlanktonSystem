@@ -49,8 +49,9 @@ def send_samples():
 def get_images(sample):
     images_path = (samples_path + '/' + sample)
     images = [
-        file.name for file in os.scandir(images_path)
+        file.name[:-4] for file in os.scandir(images_path)   
     ]
+
     images = ','.join(images)
     return images
 

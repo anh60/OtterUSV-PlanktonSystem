@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import 'package:sci/constants.dart';
 import 'package:sci/widgets/container_scaled.dart';
@@ -106,6 +107,7 @@ class _ImagesPageState extends State<ImagesPage> {
           // When tile is clicked
           onTap: () {
             setState(() {
+              widget.mqtt.data_image.value = '0';
               selectedFile = index; // Mark as current file
               currImage = images[index];
             });
@@ -118,6 +120,13 @@ class _ImagesPageState extends State<ImagesPage> {
       tilesList.add(tile);
     }
     return tilesList;
+  }
+
+  int checkIfSamples(List<String> sampleList) {
+    if (sampleList[0] == '0') {
+      return 0;
+    }
+    return sampleList.length;
   }
 
   @override
@@ -142,7 +151,7 @@ class _ImagesPageState extends State<ImagesPage> {
             builder: (BuildContext context, String value, Widget? child) {
               List<String> samples = buildSampleList(value);
               return ListView.builder(
-                itemCount: samples.length,
+                itemCount: checkIfSamples(samples),
                 itemBuilder: (BuildContext context, int index) {
                   return ValueListenableBuilder(
                     // Listen to data_images topic
@@ -203,58 +212,71 @@ class _ImagesPageState extends State<ImagesPage> {
         const SizedBox(width: 15),
 
         // Image box
-        Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                Container(
-                  // Config
-                  padding: const EdgeInsets.all(0),
-                  margin: const EdgeInsets.only(top: 15, bottom: 15),
-                  width: ((((MediaQuery.of(context).size.width) / div) *
-                          imageBoxRatio) -
-                      (40) -
-                      (15 / 2)),
-                  decoration: BoxDecoration(
-                    color: darkBlue,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  alignment: Alignment.topCenter,
+        SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Container(
+                // Config
+                padding: const EdgeInsets.all(0),
+                margin: const EdgeInsets.only(top: 15, bottom: 15),
+                width: ((((MediaQuery.of(context).size.width) / div) *
+                        imageBoxRatio) -
+                    (40) -
+                    (15 / 2)),
+                decoration: BoxDecoration(
+                  //color: darkBlue,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                alignment: Alignment.topCenter,
 
-                  // Image
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: ValueListenableBuilder<String>(
-                      // Listen to image value received over mqtt
-                      valueListenable: widget.mqtt.data_image,
+                // Image
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: ValueListenableBuilder<String>(
+                    // Listen to image value received over mqtt
+                    valueListenable: widget.mqtt.data_image,
 
-                      // Build and display image
-                      builder:
-                          (BuildContext context, String value, Widget? child) {
-                        // If no image is transmitted, return placeholder
-                        if (value == '0') {
-                          return Image.asset('lib/image.jpg');
+                    // Build and display image
+                    builder:
+                        (BuildContext context, String value, Widget? child) {
+                      // If no image is transmitted, return placeholder
+                      if (value == '0') {
+                        return Column(
+                          children: [
+                            const Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Loading image',
+                                style: TextStyle(color: darkBlue, fontSize: 25),
+                              ),
+                            ),
+                            LoadingAnimationWidget.prograssiveDots(
+                                color: darkBlue, size: 50),
+                          ],
+                        );
+                      }
+
+                      // Append n "=" if size is not multiple of four
+                      else {
+                        if (value.length % 4 > 0) {
+                          value += '=' * (4 - value.length % 4);
                         }
 
-                        // Append n "=" if size is not multiple of four
-                        else {
-                          if (value.length % 4 > 0) {
-                            value += '=' * (4 - value.length % 4);
-                          }
-
-                          // Convert Base64 String to Image object
-                          var bytesImage = const Base64Decoder().convert(value);
-                          return Image.memory(bytesImage);
-                        }
-                      },
-                    ),
+                        // Convert Base64 String to Image object
+                        var bytesImage = const Base64Decoder().convert(value);
+                        return FadeInImage(
+                          placeholder: MemoryImage(kTransparentImage),
+                          image: MemoryImage(bytesImage),
+                          fadeInDuration: const Duration(milliseconds: 300),
+                        );
+                      }
+                    },
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],

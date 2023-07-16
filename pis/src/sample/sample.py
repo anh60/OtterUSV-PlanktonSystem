@@ -50,7 +50,7 @@ def set_sample_num(n):
 
     sample_num = n
 
-    sample_time = time.strftime('%d%m%Y%H%M%S')
+    sample_time = time.strftime('%Y%m%d%H%M%S')
     sample_dir = samples_path + sample_time
 
     os.mkdir(sample_dir)
@@ -82,7 +82,7 @@ def image():
 
     print("imaging sample", curr_sample, "\n"),
 
-    image_time = time.strftime('%d%m%Y%H%M%S')
+    image_time = time.strftime('%Y%m%d%H%M%S')
     image_path = sample_dir + '/' + image_time + '.jpg'
     cam.capture_image(image_path)
 
