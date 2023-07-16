@@ -196,7 +196,7 @@ def pub_image_times(image_times):
 
 
 # Publish image corresponding to an image time
-def pub_image_times(image):
+def pub_image(image):
     client.publish(
         topic   = con.topic.DATA_IMAGE, 
         payload = image, 
