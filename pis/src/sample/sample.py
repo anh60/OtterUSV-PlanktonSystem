@@ -115,7 +115,7 @@ def flush():
     # Clear sampling flag
     state.set_sys_state(state.status_flag.SAMPLING, 0)
 
-    imgs.get_sample_times()
+    imgs.get_samples()
 
     print("Sampling finished, system ready \n")
 

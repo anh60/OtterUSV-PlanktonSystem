@@ -7,59 +7,102 @@
 
 #---------------------------- PACKAGES -----------------------------------------
 
-from enum import Enum
 import threading
 import os
+import time
 
 import mqtt.mqtt_client as client
 
 
 #---------------------------- GLOBALS ------------------------------------------
 
+# Storage location for samples and images
 samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images'
 
-class column(str, Enum):
-    ST      = 'sample_time'
-    LAT     = 'latitude'
-    LON     = 'longitude'
-    IT      = 'image_times'
+# Current selected sample/image
+curr_sample = 0
+curr_image = 0
+
+# Flags
+images_request = False
+image_request = False
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
-# Get date/time of all samples taken (sample_times)
-def get_sample_times():
-    sample_names = [f.name for f in os.scandir(samples_path) if f.is_dir()]
-    
-    for name in sample_names:
-        print(name)
+# Get date/time of all samples
+def get_samples():
+    samples = [
+        file.name for file in os.scandir(samples_path) if file.is_dir()
+    ]
+    samples = ','.join(samples)
+    return samples
 
-    print('\n')
+
+# Publish list of samples to MQTT broker
+def send_samples():
+    client.pub_sample_times(get_samples())
             
 
-# Get date/time of images (sample_times[i] -> image_times)
-def get_image_times(sample_time):
-    print()
+# Get date/time of all images within a sample
+def get_images(sample):
+    images_path = (samples_path + '/' + sample)
+    images = [
+        file.name for file in os.scandir(images_path)
+    ]
+    images = ','.join(images)
+    return images
 
 
-# Get image (sample_times[i] -> image_times[j] -> image)
-def get_image(sample_time, image_time):
-    print()
+# Get a specific image within a sample
+def get_image(sample, image_time):
+    image = (samples_path + '/' + sample + '/' + image_time)
+    return image
+
+
+# Set current sample
+def set_curr_sample(sample):
+    global curr_sample, images_request
+    curr_sample = sample
+    images_request = True
+
+
+# Set current image
+def set_curr_image(image):
+    global curr_image, image_request
+    curr_image = image
+    image_request = True
 
 
 # Images thread callback function
 def images_thread_cb():
     while True:
-        print()
+        if(images_request == True):
+            print(curr_sample)
+
+            # Get images corresponding to selected sample
+            images = get_images(curr_sample)
+
+            # Publish images
+            client.pub_image_times(images)
+
+            # Reset flag
+            images_request = False
+
+            # Sleep for 1ms
+            time.sleep(0.001)
+
+        if(image_request == True):
+            # Sleep for 1ms
+            time.sleep(0.001)
+
+        else:
+            # Sleep for 1ms
+            time.sleep(0.001)
 
 
 # Initialize images thread
 def init_images_thread():
-    sample_names = [f.name for f in os.scandir(samples_path) if f.is_dir()]
-
-    sample_names = ','.join(sample_names)
-
-    client.pub_sample_times(sample_names)
-    #images_thread = threading.Thread(target = images_thread_cb)
-    #images_thread.daemon = True
-    #images_thread.start()
+    images_thread = threading.Thread(target = images_thread_cb)
+    images_thread.daemon = True
+    images_thread.start()

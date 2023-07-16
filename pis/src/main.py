@@ -28,10 +28,11 @@ cam.init_cal_thread()           # Camera calibration thread
 imgs.init_images_thread()       # Image file system thread
 sample.init_sample_thread()     # Sample routine thread
 
-
-
 # Get state of RMS
 rms.send_status_request()
+
+# Send list of samples
+imgs.send_samples()
 
 print("Init complete, system ready \n")
 

@@ -104,37 +104,45 @@ def msg_handler(topic, msg):
         sample.set_sample_num(int(msg))
         state.set_sys_state(state.status_flag.SAMPLING, 1)
 
+
     # Manual control - 5v pump on/off
     if(topic == con.topic.CTRL_SAMPLE_PUMP):
         state.set_sys_state(state.status_flag.PUMP, 1)
+
     if(topic == con.topic.CTRL_STOP):
         state.set_sys_state(state.status_flag.PUMP, 0)
+
 
     # Manual control - RMS fill, flush, stop
     if(topic == con.topic.CTRL_RMS_FILL):
         rms.send_fill()
+
     if(topic == con.topic.CTRL_RMS_FLUSH):
         rms.send_flush()
+
     if(topic == con.topic.CTRL_RMS_STOP):
         rms.send_stop()
+
 
     # Manual control - capture new image and publish
     if(topic == con.topic.CTRL_IMAGE):
         state.set_sys_state(state.status_flag.IMAGING, 1)
+
 
     # Camera calibration - new position
     if(topic == con.topic.CAL_NEXTPOS):
         cam.set_pos(int(msg))
         state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
+
     # Images file system
-    if(topic == con.topic.GET_SAMPLES):
-        print('getting samples')
-        imgs.get_sample_times()
+    #if(topic == con.topic.GET_SAMPLES):
+
     if(topic == con.topic.GET_IMAGES):
-        print()
+        imgs.set_curr_sample(msg)
+
     if(topic == con.topic.GET_IMAGE):
-        print()
+        imgs.set_curr_image(msg)
 
 
 # Publish current system state to status topic

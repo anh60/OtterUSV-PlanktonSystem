@@ -33,7 +33,22 @@ class _ImagesPageState extends State<ImagesPage> {
 
   // Decode and create the folder names to be displayed on the main tiles
   List<String> buildFolderList(String names) {
-    List<String> folderList = [];
+    List<String> folderList = names.split(',');
+    folderList = folderList..sort();
+
+    for (int i = 0; i < folderList.length; i++) {
+      folderList[i] = folderList[i].substring(0, 2) +
+          "/" +
+          folderList[i].substring(2, 4) +
+          "/" +
+          folderList[i].substring(4, 8) +
+          " " +
+          folderList[i].substring(8, 10) +
+          ":" +
+          folderList[i].substring(10, 12) +
+          ":" +
+          folderList[i].substring(12, 14);
+    }
     return folderList;
   }
 
@@ -96,9 +111,9 @@ class _ImagesPageState extends State<ImagesPage> {
           ValueListenableBuilder(
             valueListenable: widget.mqtt.data_samples,
             builder: (BuildContext context, String value, Widget? child) {
-              print('data $value');
+              List<String> sample_times = buildFolderList(value);
               return ListView.builder(
-                itemCount: folders.length,
+                itemCount: sample_times.length,
                 itemBuilder: (BuildContext context, int index) {
                   return ExpansionTile(
                     // Colors
@@ -111,7 +126,7 @@ class _ImagesPageState extends State<ImagesPage> {
 
                     // Folder name
                     title: Text(
-                      value,
+                      sample_times[index],
                       style: const TextStyle(
                         color: lightBlue,
                         fontSize: 15,
