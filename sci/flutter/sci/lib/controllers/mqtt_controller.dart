@@ -11,7 +11,7 @@ class MQTTController with ChangeNotifier {
   final ValueNotifier<String> cal_pos = ValueNotifier<String>('0');
   final ValueNotifier<String> image = ValueNotifier<String>('0');
   final ValueNotifier<String> data_samples = ValueNotifier<String>('0');
-  final ValueNotifier<String> data_images = ValueNotifier<String>('0');
+  ValueNotifier<String> data_images = ValueNotifier<String>('0');
   final ValueNotifier<String> data_image = ValueNotifier<String>('0');
 
   // Client to be initialized
@@ -98,6 +98,7 @@ class MQTTController with ChangeNotifier {
           data_samples.value = stringMsg;
           break;
         case topics.DATA_IMAGES:
+          data_images.value = stringMsg;
           break;
         case topics.DATA_IMAGE:
           break;

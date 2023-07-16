@@ -89,7 +89,6 @@ class _ImagesPageState extends State<ImagesPage> {
 
           // When tile is clicked
           onTap: () {
-            widget.mqtt.publishMessage(topics.GET_SAMPLES, '');
             setState(() {
               selectedFile = index; // Mark as current file
               currImage = images[index];
@@ -161,6 +160,7 @@ class _ImagesPageState extends State<ImagesPage> {
                         // When clicked
                         onExpansionChanged: (expanding) {
                           if (expanding) {
+                            widget.mqtt.data_images.value = 'Loading . . .';
                             selectedFolder = index;
                             currSample = samples[index];
                             widget.mqtt
