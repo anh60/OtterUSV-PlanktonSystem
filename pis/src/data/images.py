@@ -79,10 +79,10 @@ def images_thread_cb():
     global images_request, image_request
     while True:
         if(images_request == True):
-            print(curr_sample)
+            print(str(curr_sample))
 
             # Get images corresponding to selected sample
-            images = get_images(curr_sample)
+            images = get_images(str(curr_sample))
 
             # Publish images
             client.pub_image_times(images)
