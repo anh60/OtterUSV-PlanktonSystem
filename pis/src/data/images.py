@@ -79,10 +79,14 @@ def images_thread_cb():
     global images_request, image_request
     while True:
         if(images_request == True):
-            print(curr_sample.decode())
+            print('Selected sample:')
+            print(curr_sample.decode(), '\n')
 
             # Get images corresponding to selected sample
             images = get_images(curr_sample.decode())
+
+            print('Images:')
+            print(images, '\n')
 
             # Publish images
             client.pub_image_times(images)
