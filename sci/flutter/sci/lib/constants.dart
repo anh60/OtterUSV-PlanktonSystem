@@ -52,7 +52,7 @@ const Color lightBlue = Color.fromARGB(255, 169, 216, 255);
 const Color lighterBlue = Color.fromARGB(255, 200, 220, 255);
 
 //folder and file placeholders for testing
-List<String> folderList = [
+List<String> samples = [
   "Folder 1",
   "Folder 2",
   "Folder 3",

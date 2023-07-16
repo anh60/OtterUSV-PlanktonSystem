@@ -23,40 +23,49 @@ class _ImagesPageState extends State<ImagesPage> {
   int selectedFolder = -1;
   int selectedFile = -1;
 
-  // Folders
-  List<String> folders = folderList;
+  // Current sample selected
+  String currSample = '';
 
-  // Current files corresponding to folder
-  List<String> files = [];
+  // Current image selected
+  String currImage = '';
 
-  String received = '';
-
-  // Decode and create the folder names to be displayed on the main tiles
-  List<String> buildFolderList(String names) {
+  // Decode samples
+  List<String> buildSampleList(String names) {
     List<String> folderList = names.split(',');
     folderList = folderList..sort();
-
-    for (int i = 0; i < folderList.length; i++) {
-      folderList[i] = folderList[i].substring(0, 2) +
-          "/" +
-          folderList[i].substring(2, 4) +
-          "/" +
-          folderList[i].substring(4, 8) +
-          " " +
-          folderList[i].substring(8, 10) +
-          ":" +
-          folderList[i].substring(10, 12) +
-          ":" +
-          folderList[i].substring(12, 14);
-    }
     return folderList;
   }
 
-  // Creates the tiles (file references) displayed when a folder is clicked
-  List<Material> buildTileList() {
+  // Decode images
+  List<String> buildImagesList(String names) {
+    List<String> imagesList = names.split(',');
+    imagesList = imagesList..sort();
+    return imagesList;
+  }
+
+  // Format sample list to be more readable
+  List<String> formatSampleList(List<String> samples) {
+    for (int i = 0; i < samples.length; i++) {
+      samples[i] = samples[i].substring(0, 2) +
+          "/" +
+          samples[i].substring(2, 4) +
+          "/" +
+          samples[i].substring(4, 8) +
+          " " +
+          samples[i].substring(8, 10) +
+          ":" +
+          samples[i].substring(10, 12) +
+          ":" +
+          samples[i].substring(12, 14);
+    }
+    return samples;
+  }
+
+  // Creates the tiles(images) displayed when a sample(folder) is clicked
+  List<Material> buildTileList(List<String> images) {
     List<Material> tilesList = []; // List of tiles to be returned
     // Build tiles
-    for (int index = 0; index < files.length; index++) {
+    for (int index = 0; index < images.length; index++) {
       // Wrapped in a Material widget to preserve animations/colors
       Material tile = Material(
         color: darkerBlue,
@@ -72,7 +81,7 @@ class _ImagesPageState extends State<ImagesPage> {
           leading: const Icon(Icons.image),
 
           // Content
-          title: Text(files[index]),
+          title: Text(images[index]),
           contentPadding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
 
           // Mark as selected if current index matches
@@ -83,8 +92,9 @@ class _ImagesPageState extends State<ImagesPage> {
             widget.mqtt.publishMessage(topics.GET_SAMPLES, '');
             setState(() {
               selectedFile = index; // Mark as current file
+              currImage = images[index];
             });
-            print('tapped tile: $selectedFile in folder $selectedFolder');
+            print('selected image: $currImage');
           },
         ),
       );
@@ -109,48 +119,62 @@ class _ImagesPageState extends State<ImagesPage> {
 
           // Build expansion tiles (folders)
           ValueListenableBuilder(
+            // Listen to data_samples topic
             valueListenable: widget.mqtt.data_samples,
+
+            // Create tiles from data received
             builder: (BuildContext context, String value, Widget? child) {
-              List<String> sample_times = buildFolderList(value);
+              List<String> samples = buildSampleList(value);
               return ListView.builder(
-                itemCount: sample_times.length,
+                itemCount: samples.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return ExpansionTile(
-                    // Colors
-                    backgroundColor: darkerBlue,
-                    collapsedIconColor: lightBlue,
-                    iconColor: lightBlue,
+                  return ValueListenableBuilder(
+                    // Listen to data_images topic
+                    valueListenable: widget.mqtt.data_images,
+                    builder:
+                        (BuildContext context, String value, Widget? child) {
+                      List<String> images = buildImagesList(value);
+                      return ExpansionTile(
+                        // Colors
+                        backgroundColor: darkerBlue,
+                        collapsedIconColor: lightBlue,
+                        iconColor: lightBlue,
 
-                    // Icon
-                    leading: const Icon(Icons.folder),
+                        // Icon
+                        leading: const Icon(Icons.folder),
 
-                    // Folder name
-                    title: Text(
-                      sample_times[index],
-                      style: const TextStyle(
-                        color: lightBlue,
-                        fontSize: 15,
-                      ),
-                    ),
+                        // Folder name
+                        title: Text(
+                          samples[index],
+                          style: const TextStyle(
+                            color: lightBlue,
+                            fontSize: 15,
+                          ),
+                        ),
 
-                    // Allow only one to be open at a time
-                    key: Key(selectedFolder.toString()),
+                        // Allow only one to be open at a time
+                        key: Key(selectedFolder.toString()),
 
-                    // Initial state of expansion tile
-                    initiallyExpanded: (index == selectedFolder),
+                        // Initial state of expansion tile
+                        initiallyExpanded: (index == selectedFolder),
 
-                    // When clicked
-                    onExpansionChanged: (expanding) {
-                      if (expanding) {
-                        selectedFolder = index;
-                        files = getFiles(index);
-                      }
-                      selectedFile = -1;
-                      setState(() {});
+                        // When clicked
+                        onExpansionChanged: (expanding) {
+                          if (expanding) {
+                            selectedFolder = index;
+                            currSample = samples[index];
+                            widget.mqtt
+                                .publishMessage(topics.GET_IMAGES, currSample);
+                            print('Selected sample: $currSample');
+                          }
+                          selectedFile = -1;
+                          setState(() {});
+                        },
+
+                        // Build ListTiles (Images)
+                        children: buildTileList(images),
+                      );
                     },
-
-                    // Build ListTiles (Images)
-                    children: buildTileList(),
                   );
                 },
               );
@@ -168,7 +192,7 @@ class _ImagesPageState extends State<ImagesPage> {
           boxMargin,
           Align(
             alignment: Alignment.center,
-            child: Text(received),
+            child: Text(''),
           ),
         ),
       ],

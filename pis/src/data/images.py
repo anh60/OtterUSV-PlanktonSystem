@@ -103,6 +103,8 @@ def images_thread_cb():
 
 # Initialize images thread
 def init_images_thread():
+    images_request = False
+    image_request = False
     images_thread = threading.Thread(target = images_thread_cb)
     images_thread.daemon = True
     images_thread.start()
