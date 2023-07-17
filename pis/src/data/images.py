@@ -54,7 +54,7 @@ def get_images(sample):
 
     for file in os.scandir(images_path):
         if file.name.endswith('g'):
-            images.append = file.name[:-4]
+            images.append(file.name[:-4]) 
         else:
             pos = file.name
     
