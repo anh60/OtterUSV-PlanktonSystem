@@ -49,16 +49,14 @@ def send_samples():
 def get_images(sample):
     images_path = (samples_path + '/' + sample)
 
-    pos = ''
     images = []
+    pos = ''
 
-    index = 0
     for file in os.scandir(images_path):
-        if not file.name.endswith('.jpg'):
-            pos = file.name
+        if file.name.endswith('g'):
+            images.append = file.name[:-4]
         else:
-            images[index] = file.name[:-4]
-            index += 1
+            pos = file.name
     
     #images = [
     #    file.name[:-4] for file in os.scandir(images_path)
