@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:sci/widgets/status_page/status_tab.dart';
+import 'package:sci/widgets/string_status_tab.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'package:sci/constants.dart';
@@ -28,7 +28,7 @@ class _ImagesPageState extends State<ImagesPage> {
   double aspectRatio = 9 / 16;
 
   // String printed when loading images
-  String loadingString = 'Loading';
+  String loading = 'Loading';
 
   // Current active folder and file indexes
   int selectedFolder = -1;
@@ -40,6 +40,10 @@ class _ImagesPageState extends State<ImagesPage> {
   // Current image selected
   String currImage = '';
 
+  // Position
+  String lat = '';
+  String lon = '';
+
   // State of the toggle switch
   List<bool> toggleButtonState = [true, false];
 
@@ -50,55 +54,66 @@ class _ImagesPageState extends State<ImagesPage> {
     return folderList;
   }
 
-  // Decode images
-  List<String> buildImagesList(String names) {
-    List<String> imagesList = names.split(',');
-    print(imagesList[imagesList.length]);
-    imagesList.removeLast();
-    imagesList = imagesList..sort();
-    return imagesList;
+  // Decode filenames of images and create list
+  List<String> buildImageList(String names) {
+    // Split the CSVs
+    List<String> imageList = names.split(',');
+
+    // Get and remove position (lat/lon) from the list
+    if (imageList[0] != loading) {
+      lon = imageList.removeAt(imageList.length - 1);
+      lat = imageList.removeAt(imageList.length - 1);
+    }
+
+    // Sort list
+    imageList = imageList..sort();
+    return imageList;
   }
 
   // Format sample/image filenames to be more readable
   String formatDateTime(String filename) {
-    if (filename == loadingString) {
+    // Return loading string when no data has been received
+    if (filename == loading || filename == '') {
       return filename;
     }
+
+    // If data has been received, format the string
     filename =
-        // Day
+        // ignore: prefer_interpolation_to_compose_strings
         filename.substring(6, 8) +
             "/" +
-            // Month
             filename.substring(4, 6) +
             "/" +
-            // Year
             filename.substring(0, 4) +
             " " +
-            // Hour
             filename.substring(8, 10) +
             ":" +
-            // Minute
             filename.substring(10, 12) +
             ":" +
-            // Second
             filename.substring(12, 14);
     return filename;
   }
 
-  Widget checkIfLoading(String value, int index) {
+  // Set the icon for an image tile
+  Widget setTileIcon(String value, int index) {
+    // If loading
     if (index == 0) {
-      if (value == loadingString) {
+      if (value == loading) {
+        // Return the loading animation icon
         return LoadingAnimationWidget.prograssiveDots(
             color: lightBlue, size: 25);
       }
     }
+
+    // If not loading, return the image icon
     return const Icon(Icons.image);
   }
 
   // Creates the tiles(images) displayed when a sample(folder) is clicked
   List<Material> buildTileList(List<String> images) {
-    List<Material> tilesList = []; // List of tiles to be returned
-    // Build tiles
+    // List of tiles to be returned
+    List<Material> tilesList = [];
+    // Create the tiles
     for (int index = 0; index < images.length; index++) {
       // Wrapped in a Material widget to preserve animations/colors
       Material tile = Material(
@@ -112,11 +127,12 @@ class _ImagesPageState extends State<ImagesPage> {
           selectedTileColor: darkerBlue,
 
           // Icon
-          leading: checkIfLoading(images[index], index),
+          leading: setTileIcon(images[index], index),
 
-          // Content
-          //title: Text(formatDateTime(images[index])),
-          title: Text(images[index]),
+          // Title of tile (image capture time)
+          title: Text(formatDateTime(images[index])),
+
+          // Make empty space on left side
           contentPadding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
 
           // Mark as selected if current index matches
@@ -130,7 +146,6 @@ class _ImagesPageState extends State<ImagesPage> {
               currImage = images[index];
             });
             widget.mqtt.publishMessage(topics.GET_IMAGE, currImage);
-            print('selected image: $currImage');
           },
         ),
       );
@@ -140,6 +155,7 @@ class _ImagesPageState extends State<ImagesPage> {
     return tilesList;
   }
 
+  // Check if the sample list is empty
   int checkIfSamples(List<String> sampleList) {
     if (sampleList[0] == '0') {
       return 0;
@@ -147,7 +163,8 @@ class _ImagesPageState extends State<ImagesPage> {
     return sampleList.length;
   }
 
-  double setImageWidth(BuildContext context) {
+  // Returns the current width of the image
+  double getImageWidth(BuildContext context) {
     return ((((MediaQuery.of(context).size.width) / div) * imageBoxRatio) -
         (40) -
         (15 / 2));
@@ -176,16 +193,22 @@ class _ImagesPageState extends State<ImagesPage> {
             builder: (BuildContext context, String value, Widget? child) {
               List<String> samples = buildSampleList(value);
               return ListView.builder(
+                // Get number of samples
                 itemCount: checkIfSamples(samples),
                 itemBuilder: (BuildContext context, int index) {
+                  // Listen to data_images topic
                   return ValueListenableBuilder(
-                    // Listen to data_images topic
                     valueListenable: widget.mqtt.data_images,
                     builder:
                         (BuildContext context, String value, Widget? child) {
-                      List<String> images = buildImagesList(value);
+                      // Get list of images
+                      List<String> images = buildImageList(value);
+
+                      // Set rounded edges
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(5),
+
+                        // Build expansion tile
                         child: ExpansionTile(
                           // Colors
                           backgroundColor: darkerBlue,
@@ -213,12 +236,11 @@ class _ImagesPageState extends State<ImagesPage> {
                           // When clicked
                           onExpansionChanged: (expanding) {
                             if (expanding) {
-                              widget.mqtt.data_images.value = loadingString;
+                              widget.mqtt.data_images.value = loading;
                               selectedFolder = index;
                               currSample = samples[index];
                               widget.mqtt.publishMessage(
                                   topics.GET_IMAGES, currSample);
-                              print('Selected sample: $currSample');
                             }
                             selectedFile = -1;
                             setState(() {});
@@ -248,10 +270,9 @@ class _ImagesPageState extends State<ImagesPage> {
                 // Config
                 padding: const EdgeInsets.all(0),
                 margin: const EdgeInsets.only(top: 15, bottom: 15),
-                width: setImageWidth(context),
-                height: setImageWidth(context) * aspectRatio,
+                width: getImageWidth(context),
+                height: getImageWidth(context) * aspectRatio,
                 decoration: BoxDecoration(
-                  //color: darkBlue,
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5),
                   boxShadow: [
@@ -307,14 +328,11 @@ class _ImagesPageState extends State<ImagesPage> {
                   },
                 ),
               ),
+
+              // Bottom container
               Container(
                 // Config
-                padding: const EdgeInsets.all(15),
-                margin: const EdgeInsets.only(top: 15, bottom: 15),
-                width: ((((MediaQuery.of(context).size.width) / div) *
-                        imageBoxRatio) -
-                    (40) -
-                    (15 / 2)),
+                width: getImageWidth(context),
                 decoration: BoxDecoration(
                   color: darkBlue,
                   shape: BoxShape.rectangle,
@@ -330,78 +348,107 @@ class _ImagesPageState extends State<ImagesPage> {
                 ),
 
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    // Status tabs (time and pos)
                     Container(
+                      padding: EdgeInsets.all(15),
                       constraints:
-                          BoxConstraints(maxWidth: setImageWidth(context) / 2),
-                      child: const Column(
+                          BoxConstraints(maxWidth: getImageWidth(context) / 2),
+                      child: Column(
                         children: [
-                          StatusTab('Time of sample', 0),
-                          SizedBox(height: 15),
-                          StatusTab('Latitude', 0),
-                          SizedBox(height: 15),
-                          StatusTab('Longitude', 0)
+                          // Date
+                          StringStatusTab(
+                            'Date',
+                            formatDateTime(currSample).substring(0, 10),
+                          ),
+
+                          // Vertical gap
+                          const SizedBox(height: 15),
+
+                          // Time
+                          StringStatusTab(
+                            'Time',
+                            formatDateTime(currSample).substring(11, 19),
+                          ),
+
+                          // Vertical gap
+                          const SizedBox(height: 15),
+
+                          // Latitude
+                          StringStatusTab('Latitude', lat),
+
+                          // Vertical gap
+                          const SizedBox(height: 15),
+
+                          // Longitude
+                          StringStatusTab('Longitude', lon),
                         ],
                       ),
                     ),
-                    ToggleButtons(
-                      isSelected: toggleButtonState,
 
-                      onPressed: (int index) {
-                        for (int i = 0; i < toggleButtonState.length; i++) {
-                          if (i == index) {
-                            toggleButtonState[i] = true;
-                          } else {
-                            toggleButtonState[i] = false;
+                    // Toggle switch (image/map)
+                    Container(
+                      alignment: Alignment.center,
+                      constraints:
+                          BoxConstraints(maxWidth: getImageWidth(context) / 2),
+                      child: ToggleButtons(
+                        isSelected: toggleButtonState,
+                        onPressed: (int index) {
+                          for (int i = 0; i < toggleButtonState.length; i++) {
+                            if (i == index) {
+                              toggleButtonState[i] = true;
+                            } else {
+                              toggleButtonState[i] = false;
+                            }
                           }
-                        }
-                        setState(() {});
-                      },
+                          setState(() {});
+                        },
 
-                      // Colors
-                      borderColor: lightBlue,
-                      selectedColor: lightBlue,
-                      color: darkerBlue,
-                      fillColor: darkerBlue,
-                      splashColor: Colors.blue,
-                      selectedBorderColor: lightBlue,
-                      hoverColor: Color.fromARGB(92, 144, 220, 255),
+                        // Colors
+                        borderColor: lightBlue,
+                        selectedColor: lightBlue,
+                        color: darkerBlue,
+                        fillColor: darkerBlue,
+                        splashColor: Colors.blue,
+                        selectedBorderColor: lightBlue,
+                        hoverColor: const Color.fromARGB(92, 144, 220, 255),
 
-                      // Border
-                      renderBorder: true,
-                      borderWidth: 1,
-                      borderRadius: BorderRadius.circular(10),
+                        // Border
+                        renderBorder: true,
+                        borderWidth: 1,
+                        borderRadius: BorderRadius.circular(10),
 
-                      // Content
-                      children: [
-                        Container(
-                          width: 100,
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text('Image'),
-                              Icon(
-                                Icons.image,
-                                size: 25,
-                              ),
-                            ],
+                        // Content
+                        children: const [
+                          SizedBox(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text('Image'),
+                                Icon(
+                                  Icons.image,
+                                  size: 25,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          width: 100,
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text('Map'),
-                              Icon(
-                                Icons.map,
-                                size: 25,
-                              ),
-                            ],
+                          SizedBox(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text('Map'),
+                                Icon(
+                                  Icons.map,
+                                  size: 25,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     )
                   ],
                 ),

@@ -57,10 +57,6 @@ def get_images(sample):
             images.append(file.name[:-4]) 
         else:
             pos = file.name[:-4]
-    
-    #images = [
-    #    file.name[:-4] for file in os.scandir(images_path)
-    #    ]
 
     images = ','.join(images)
     images = images + ',' + pos
