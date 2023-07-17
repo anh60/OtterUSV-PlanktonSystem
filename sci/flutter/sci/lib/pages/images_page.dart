@@ -105,9 +105,9 @@ class _ImagesPageState extends State<ImagesPage> {
           // Colors
           iconColor: lightBlue,
           textColor: lightBlue,
-          selectedColor: lightBlue,
+          selectedColor: Colors.white,
           hoverColor: darkBlue,
-          selectedTileColor: darkBlue,
+          selectedTileColor: darkerBlue,
 
           // Icon
           leading: checkIfLoading(images[index], index),
@@ -181,46 +181,49 @@ class _ImagesPageState extends State<ImagesPage> {
                     builder:
                         (BuildContext context, String value, Widget? child) {
                       List<String> images = buildImagesList(value);
-                      return ExpansionTile(
-                        // Colors
-                        backgroundColor: darkerBlue,
-                        collapsedIconColor: lightBlue,
-                        iconColor: lightBlue,
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: ExpansionTile(
+                          // Colors
+                          backgroundColor: darkerBlue,
+                          collapsedIconColor: lightBlue,
+                          iconColor: lightBlue,
 
-                        // Icon
-                        leading: const Icon(Icons.folder),
+                          // Icon
+                          leading: const Icon(Icons.folder),
 
-                        // Folder name
-                        title: Text(
-                          formatDateTime(samples[index]),
-                          style: const TextStyle(
-                            color: lightBlue,
-                            fontSize: 15,
+                          // Folder name
+                          title: Text(
+                            formatDateTime(samples[index]),
+                            style: const TextStyle(
+                              color: lightBlue,
+                              fontSize: 15,
+                            ),
                           ),
+
+                          // Allow only one to be open at a time
+                          key: Key(selectedFolder.toString()),
+
+                          // Initial state of expansion tile
+                          initiallyExpanded: (index == selectedFolder),
+
+                          // When clicked
+                          onExpansionChanged: (expanding) {
+                            if (expanding) {
+                              widget.mqtt.data_images.value = loadingString;
+                              selectedFolder = index;
+                              currSample = samples[index];
+                              widget.mqtt.publishMessage(
+                                  topics.GET_IMAGES, currSample);
+                              print('Selected sample: $currSample');
+                            }
+                            selectedFile = -1;
+                            setState(() {});
+                          },
+
+                          // Build ListTiles (Images)
+                          children: buildTileList(images),
                         ),
-
-                        // Allow only one to be open at a time
-                        key: Key(selectedFolder.toString()),
-
-                        // Initial state of expansion tile
-                        initiallyExpanded: (index == selectedFolder),
-
-                        // When clicked
-                        onExpansionChanged: (expanding) {
-                          if (expanding) {
-                            widget.mqtt.data_images.value = loadingString;
-                            selectedFolder = index;
-                            currSample = samples[index];
-                            widget.mqtt
-                                .publishMessage(topics.GET_IMAGES, currSample);
-                            print('Selected sample: $currSample');
-                          }
-                          selectedFile = -1;
-                          setState(() {});
-                        },
-
-                        // Build ListTiles (Images)
-                        children: buildTileList(images),
                       );
                     },
                   );
@@ -248,6 +251,14 @@ class _ImagesPageState extends State<ImagesPage> {
                   //color: darkBlue,
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blueGrey.withOpacity(1),
+                      spreadRadius: 3,
+                      blurRadius: 9,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
                 alignment: Alignment.center,
 
@@ -265,10 +276,10 @@ class _ImagesPageState extends State<ImagesPage> {
                         children: [
                           const Text(
                             'Loading image',
-                            style: TextStyle(color: darkBlue, fontSize: 25),
+                            style: TextStyle(color: darkerBlue, fontSize: 25),
                           ),
                           LoadingAnimationWidget.prograssiveDots(
-                              color: darkBlue, size: 50),
+                              color: darkerBlue, size: 50),
                         ],
                       );
                     }
@@ -305,7 +316,16 @@ class _ImagesPageState extends State<ImagesPage> {
                   color: darkBlue,
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blueGrey.withOpacity(1),
+                      spreadRadius: 3,
+                      blurRadius: 9,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
+
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

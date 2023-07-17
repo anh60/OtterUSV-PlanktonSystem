@@ -40,7 +40,7 @@ curr_sample = 0
 samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
 
 # Directory for current sample
-sample_dir = 0
+sample_dir = 0,
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
@@ -53,7 +53,14 @@ def set_sample_num(n):
     sample_time = time.strftime('%Y%m%d%H%M%S')
     sample_dir = samples_path + sample_time
 
+    lat = '63.5'
+    lon = '10.3'
+    pos_file = sample_dir + '/' + lat + lon
+
     os.mkdir(sample_dir)
+    open(pos_file, 'a').close()
+
+
 
 
 def fill():
