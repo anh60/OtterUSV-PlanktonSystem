@@ -48,7 +48,9 @@ def send_samples():
 # Get date/time of all images within a sample
 def get_images(sample):
     images_path = (samples_path + '/' + sample)
+
     pos = ''
+    images = []
 
     index = 0
     for file in os.scandir(images_path):
