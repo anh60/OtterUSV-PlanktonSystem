@@ -56,13 +56,14 @@ def get_images(sample):
         if file.name.endswith('g'):
             images.append(file.name[:-4]) 
         else:
-            pos = file.name
+            pos = file.name[:-4]
     
     #images = [
     #    file.name[:-4] for file in os.scandir(images_path)
     #    ]
 
-    images = ','.join(images) + ',' + pos
+    images = ','.join(images)
+    images = images + ',' + pos
     return images
 
 

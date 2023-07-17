@@ -53,6 +53,8 @@ class _ImagesPageState extends State<ImagesPage> {
   // Decode images
   List<String> buildImagesList(String names) {
     List<String> imagesList = names.split(',');
+    print(imagesList[imagesList.length]);
+    imagesList.removeLast();
     imagesList = imagesList..sort();
     return imagesList;
   }
@@ -113,7 +115,8 @@ class _ImagesPageState extends State<ImagesPage> {
           leading: checkIfLoading(images[index], index),
 
           // Content
-          title: Text(formatDateTime(images[index])),
+          //title: Text(formatDateTime(images[index])),
+          title: Text(images[index]),
           contentPadding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
 
           // Mark as selected if current index matches

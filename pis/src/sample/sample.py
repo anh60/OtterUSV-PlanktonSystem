@@ -55,7 +55,7 @@ def set_sample_num(n):
 
     lat = '63.5'
     lon = '10.3'
-    pos_file = sample_dir + '/' + lat + lon
+    pos_file = sample_dir + '/' + lat + ',' + lon + '.txt'
 
     os.mkdir(sample_dir)
     open(pos_file, 'a').close()
