@@ -58,7 +58,7 @@ def get_images(sample):
             pos = file.name
         else:
             images[index] = file.name[:-4]
-        index += 1
+            index += 1
     
     #images = [
     #    file.name[:-4] for file in os.scandir(images_path)
