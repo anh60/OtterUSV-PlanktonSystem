@@ -27,12 +27,12 @@ class status_flag(int, Enum):
     RMS_LEAK        = 3
 
     # PIS
-    SAMPLING        = 4
-    PUMP            = 5
-    CALIBRATING     = 6
-    LEAK            = 7
-    IMAGING         = 8
-    READY           = 9
+    READY           = 4
+    SAMPLING        = 5
+    PUMP            = 6
+    IMAGING         = 7
+    CALIBRATING     = 8
+    LEAK            = 9
 
 
 #---------------------------- FUNCTIONS ----------------------------------------

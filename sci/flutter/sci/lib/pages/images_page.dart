@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sci/widgets/string_status_tab.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -25,7 +27,7 @@ class _ImagesPageState extends State<ImagesPage> {
   static const double boxMargin = 15;
 
   // Image aspect ratio
-  double aspectRatio = 9 / 16;
+  double imageAspectRatio = 9 / 16;
 
   // String printed when loading images
   String loading = 'Loading';
@@ -37,12 +39,25 @@ class _ImagesPageState extends State<ImagesPage> {
   // Current sample selected
   String currSample = '';
 
+  // Map
+  MapController mapController = MapController();
+  bool mapReady = false;
+
+  // Values to be displayed below image/map
+  String latitude = '';
+  String longitude = '';
+  String sampleTime = '';
+  String imageTime = '';
+
   // Current image selected
   String currImage = '';
 
   // Position
   String lat = '';
   String lon = '';
+
+  // List of markers (holds default position on startup)
+  List<LatLng> markerList = [LatLng(63.43048272294254, 10.395004330455816)];
 
   // State of the toggle switch
   List<bool> toggleButtonState = [true, false];
@@ -76,6 +91,7 @@ class _ImagesPageState extends State<ImagesPage> {
     if (filename == loading || filename == '') {
       return filename;
     }
+    print('error $filename');
 
     // If data has been received, format the string
     filename =
@@ -110,10 +126,8 @@ class _ImagesPageState extends State<ImagesPage> {
   }
 
   // Creates the tiles(images) displayed when a sample(folder) is clicked
-  List<Material> buildTileList(List<String> images) {
-    // List of tiles to be returned
+  List<Material> buildImageTiles(List<String> images) {
     List<Material> tilesList = [];
-    // Create the tiles
     for (int index = 0; index < images.length; index++) {
       // Wrapped in a Material widget to preserve animations/colors
       Material tile = Material(
@@ -141,10 +155,38 @@ class _ImagesPageState extends State<ImagesPage> {
           // When tile is clicked
           onTap: () {
             setState(() {
+              // If loading, ignore tap
+              if (images[index] == loading) {
+                return;
+              }
+
+              // Notify image listener to wait for a new image
               widget.mqtt.data_image.value = '0';
-              selectedFile = index; // Mark as current file
+
+              // Set selected image index to index of selected image
+              selectedFile = index;
+
+              // Set current image name to selected image name
               currImage = images[index];
+
+              // Set values to be displayed below image/map
+              sampleTime = currSample;
+              imageTime = currImage;
+              latitude = lat;
+              longitude = lon;
+
+              // Set map marker to current sample coordinates
+              LatLng marker = LatLng(double.parse(lat), double.parse(lon));
+              markerList.removeAt(0);
+              markerList.add(marker);
+
+              // Move camera to coordinates if active
+              if (mapReady) {
+                mapController.move(marker, mapController.zoom);
+              }
             });
+
+            // Request selected image
             widget.mqtt.publishMessage(topics.GET_IMAGE, currImage);
           },
         ),
@@ -163,11 +205,114 @@ class _ImagesPageState extends State<ImagesPage> {
     return sampleList.length;
   }
 
-  // Returns the current width of the image
-  double getImageWidth(BuildContext context) {
+  // Returns the current possible width of right container
+  double getContainerWidth(BuildContext context) {
     return ((((MediaQuery.of(context).size.width) / div) * imageBoxRatio) -
         (40) -
         (15 / 2));
+  }
+
+  // Build image
+  Widget buildImage() {
+    return ValueListenableBuilder<String>(
+      // Listen to image value received over mqtt
+      valueListenable: widget.mqtt.data_image,
+
+      // Build and display image
+      builder: (BuildContext context, String value, Widget? child) {
+        // If no image is transmitted
+        if (value == '0') {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Loading image',
+                style: TextStyle(color: darkerBlue, fontSize: 25),
+              ),
+              LoadingAnimationWidget.prograssiveDots(
+                  color: darkerBlue, size: 50),
+            ],
+          );
+        }
+
+        // If not multiple of four, append n "="
+        else {
+          if (value.length % 4 > 0) {
+            value += '=' * (4 - value.length % 4);
+          }
+
+          // Convert Base64 String to Image object
+          var bytesImage = const Base64Decoder().convert(value);
+
+          // Return image with rounded edges
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: FadeInImage(
+              placeholder: MemoryImage(kTransparentImage),
+              image: MemoryImage(bytesImage),
+              fadeInDuration: const Duration(milliseconds: 100),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  // Build map markers
+  List<Marker> buildMarkerList() {
+    List<Marker> markers = markerList
+        .map((point) => Marker(
+              point: point,
+              width: 60,
+              height: 60,
+              builder: (context) => const Icon(
+                Icons.location_searching,
+                size: 20,
+                color: darkBlue,
+              ),
+            ))
+        .toList();
+    return markers;
+  }
+
+  // build map
+  Widget buildMap() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(5),
+      child: FlutterMap(
+        mapController: mapController,
+        options: MapOptions(
+          zoom: 10,
+          center: markerList[0],
+          minZoom: 8,
+          maxZoom: 18,
+          keepAlive: true,
+        ),
+        children: [
+          TileLayer(
+            minZoom: 1,
+            maxZoom: 18,
+            backgroundColor: lightBlue,
+            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            subdomains: const ['a', 'b', 'c'],
+          ),
+          MarkerLayer(
+            markers: buildMarkerList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Check toggle button state
+  Widget checkToggleButton(List<bool> buttonState) {
+    if (buttonState[0] == true) {
+      mapReady = false;
+      return buildImage();
+    } else {
+      mapReady = true;
+      return buildMap();
+    }
   }
 
   @override
@@ -236,18 +381,27 @@ class _ImagesPageState extends State<ImagesPage> {
                           // When clicked
                           onExpansionChanged: (expanding) {
                             if (expanding) {
+                              // Clear previous data
                               widget.mqtt.data_images.value = loading;
+
+                              // Set current sample index
                               selectedFolder = index;
+
+                              // Set current sample value
                               currSample = samples[index];
+
+                              // Get images corresponding to selected sample
                               widget.mqtt.publishMessage(
                                   topics.GET_IMAGES, currSample);
                             }
+
+                            // Reset previously selected image
                             selectedFile = -1;
                             setState(() {});
                           },
 
                           // Build ListTiles (Images)
-                          children: buildTileList(images),
+                          children: buildImageTiles(images),
                         ),
                       );
                     },
@@ -261,7 +415,7 @@ class _ImagesPageState extends State<ImagesPage> {
         // Empty gap
         const SizedBox(width: 15),
 
-        // Image box
+        // Image/map and data
         SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
@@ -270,8 +424,8 @@ class _ImagesPageState extends State<ImagesPage> {
                 // Config
                 padding: const EdgeInsets.all(0),
                 margin: const EdgeInsets.only(top: 15, bottom: 15),
-                width: getImageWidth(context),
-                height: getImageWidth(context) * aspectRatio,
+                width: getContainerWidth(context),
+                height: getContainerWidth(context) * imageAspectRatio,
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5),
@@ -287,52 +441,12 @@ class _ImagesPageState extends State<ImagesPage> {
                 alignment: Alignment.center,
 
                 // Image
-                child: ValueListenableBuilder<String>(
-                  // Listen to image value received over mqtt
-                  valueListenable: widget.mqtt.data_image,
-
-                  // Build and display image
-                  builder: (BuildContext context, String value, Widget? child) {
-                    // If no image is transmitted
-                    if (value == '0') {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Loading image',
-                            style: TextStyle(color: darkerBlue, fontSize: 25),
-                          ),
-                          LoadingAnimationWidget.prograssiveDots(
-                              color: darkerBlue, size: 50),
-                        ],
-                      );
-                    }
-
-                    // Append n "=" if size is not multiple of four
-                    else {
-                      if (value.length % 4 > 0) {
-                        value += '=' * (4 - value.length % 4);
-                      }
-
-                      // Convert Base64 String to Image object
-                      var bytesImage = const Base64Decoder().convert(value);
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: FadeInImage(
-                          placeholder: MemoryImage(kTransparentImage),
-                          image: MemoryImage(bytesImage),
-                          fadeInDuration: const Duration(milliseconds: 300),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                child: checkToggleButton(toggleButtonState),
               ),
 
               // Bottom container
               Container(
-                // Config
-                width: getImageWidth(context),
+                width: getContainerWidth(context),
                 decoration: BoxDecoration(
                   color: darkBlue,
                   shape: BoxShape.rectangle,
@@ -347,20 +461,21 @@ class _ImagesPageState extends State<ImagesPage> {
                   ],
                 ),
 
+                // Split container content horizontally
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // Status tabs (time and pos)
+                    // --- Status tabs (time and pos) ---
                     Container(
-                      padding: EdgeInsets.all(15),
-                      constraints:
-                          BoxConstraints(maxWidth: getImageWidth(context) / 2),
+                      padding: const EdgeInsets.all(15),
+                      constraints: BoxConstraints(
+                          maxWidth: getContainerWidth(context) / 2),
                       child: Column(
                         children: [
                           // Date
                           StringStatusTab(
-                            'Date',
-                            formatDateTime(currSample).substring(0, 10),
+                            'Sample time',
+                            formatDateTime(sampleTime),
                           ),
 
                           // Vertical gap
@@ -368,30 +483,30 @@ class _ImagesPageState extends State<ImagesPage> {
 
                           // Time
                           StringStatusTab(
-                            'Time',
-                            formatDateTime(currSample).substring(11, 19),
+                            'Image time',
+                            formatDateTime(imageTime),
                           ),
 
                           // Vertical gap
                           const SizedBox(height: 15),
 
                           // Latitude
-                          StringStatusTab('Latitude', lat),
+                          StringStatusTab('Latitude', latitude),
 
                           // Vertical gap
                           const SizedBox(height: 15),
 
                           // Longitude
-                          StringStatusTab('Longitude', lon),
+                          StringStatusTab('Longitude', longitude),
                         ],
                       ),
                     ),
 
-                    // Toggle switch (image/map)
+                    // --- Toggle switch (image/map) ---
                     Container(
                       alignment: Alignment.center,
-                      constraints:
-                          BoxConstraints(maxWidth: getImageWidth(context) / 2),
+                      constraints: BoxConstraints(
+                          maxWidth: getContainerWidth(context) / 2),
                       child: ToggleButtons(
                         isSelected: toggleButtonState,
                         onPressed: (int index) {

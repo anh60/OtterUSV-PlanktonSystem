@@ -123,7 +123,7 @@ def flush():
     next_sample_state = sample_state.FILL
 
     # Clear sampling flag
-    state.set_sys_state(state.status_flag.SAMPLING, 0)
+    state.set_sys_state(state.status_flag.READY, 0)
 
     print("Sampling finished, system ready \n")
 
@@ -160,7 +160,7 @@ def sample_state_handler():
 
 def sample_thread_cb():
     while True:
-        if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
+        if((state.get_sys_state() >> state.status_flag.READY) & 1):
             sample_state_handler()
         else:
             time.sleep(0.1)

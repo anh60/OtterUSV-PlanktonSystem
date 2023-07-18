@@ -1,10 +1,10 @@
 const List<String> pscopeLabels = [
+  'Ready',
   'Sampling',
   'Pump',
+  'Imaging',
   'Calibrating',
   'Leak',
-  '-',
-  '-',
   '-',
   '-',
 ];
@@ -24,10 +24,12 @@ const int rms_pump = 0;
 const int rms_valve = 1;
 const int rms_full = 2;
 const int rms_leak = 3;
-const int sampling = 4;
-const int pump = 5;
-const int calibrating = 6;
-const int leak = 7;
+const int ready = 4;
+const int sampling = 5;
+const int pump = 6;
+const int imaging = 7;
+const int calibrating = 8;
+const int leak = 9;
 
 class StatusController {
   StatusByte pscope = StatusByte('PIS', pscopeLabels, 0);
@@ -41,10 +43,12 @@ class StatusController {
     rms.setFlag(2, (status >> rms_full) & 1);
     rms.setFlag(3, (status >> rms_leak) & 1);
 
-    pscope.setFlag(0, (status >> sampling) & 1);
-    pscope.setFlag(1, (status >> pump) & 1);
-    pscope.setFlag(2, (status >> leak) & 1);
-    pscope.setFlag(3, (status >> calibrating) & 1);
+    pscope.setFlag(0, (status >> ready) & 1);
+    pscope.setFlag(1, (status >> sampling) & 1);
+    pscope.setFlag(2, (status >> pump) & 1);
+    pscope.setFlag(3, (status >> imaging) & 1);
+    pscope.setFlag(4, (status >> calibrating) & 1);
+    pscope.setFlag(5, (status >> leak) & 1);
   }
 }
 

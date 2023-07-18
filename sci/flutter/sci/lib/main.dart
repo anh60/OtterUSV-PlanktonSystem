@@ -38,7 +38,9 @@ class _RootPageState extends State<RootPage> {
 
   // Pages
   late List<Widget> pages;
-  int currentPage = 0; // Current page index
+  int currentPage = 0;
+
+  List<bool> visible = [false, false, false, false];
 
   // Init
   @override

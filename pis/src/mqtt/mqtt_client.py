@@ -102,7 +102,7 @@ def msg_handler(topic, msg):
     # Begin sample routine
     if(topic == con.topic.CTRL_SAMPLE):
         sample.set_sample_num(int(msg))
-        state.set_sys_state(state.status_flag.SAMPLING, 1)
+        state.set_sys_state(state.status_flag.READY, 1)
 
 
     # Manual control - 5v pump on/off

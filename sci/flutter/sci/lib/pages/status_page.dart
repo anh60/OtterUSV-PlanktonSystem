@@ -36,6 +36,13 @@ class _StatusPageState extends State<StatusPage> {
   bool manualSampling = false;
   bool manualControl = false;
 
+  // Returns the available width for right container
+  double getContainerWidth(BuildContext context) {
+    return ((((MediaQuery.of(context).size.width) / div) * statusFieldRatio) -
+        (40) -
+        (15 / 2));
+  }
+
   void sampleButtonPressed() {
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE, textFieldController.text);
     textFieldController.clear();
@@ -252,10 +259,7 @@ class _StatusPageState extends State<StatusPage> {
                   constraints: const BoxConstraints(
                     maxHeight: 325,
                   ),
-                  width: ((((MediaQuery.of(context).size.width) / div) *
-                          statusFieldRatio) -
-                      (40) -
-                      (15 / 2)),
+                  width: getContainerWidth(context),
 
                   // Horizontal scroll
                   child: ListView(
@@ -312,10 +316,7 @@ class _StatusPageState extends State<StatusPage> {
                   // Config
                   padding: const EdgeInsets.all(0),
                   margin: const EdgeInsets.only(top: 15, bottom: 15),
-                  width: ((((MediaQuery.of(context).size.width) / div) *
-                          statusFieldRatio) -
-                      (40) -
-                      (15 / 2)),
+                  width: getContainerWidth(context),
                   decoration: BoxDecoration(
                     color: darkBlue,
                     shape: BoxShape.rectangle,
