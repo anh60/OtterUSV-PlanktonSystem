@@ -124,6 +124,7 @@ def flush():
 
     # Clear sampling flag
     state.set_sys_state(state.status_flag.SAMPLING, 0)
+    state.set_sys_state(state.status_flag.READY, 1)
 
     print("Sampling finished, system ready \n")
 

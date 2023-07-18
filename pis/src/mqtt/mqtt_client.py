@@ -102,14 +102,17 @@ def msg_handler(topic, msg):
     # Begin sample routine
     if(topic == con.topic.CTRL_SAMPLE):
         sample.set_sample_num(int(msg))
+        state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.SAMPLING, 1)
 
 
     # Manual control - 5v pump on/off
     if(topic == con.topic.CTRL_SAMPLE_PUMP):
+        state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.PUMP, 1)
 
     if(topic == con.topic.CTRL_STOP):
+        state.set_sys_state(state.status_flag.READY, 1)
         state.set_sys_state(state.status_flag.PUMP, 0)
 
 
@@ -126,12 +129,14 @@ def msg_handler(topic, msg):
 
     # Manual control - capture new image and publish
     if(topic == con.topic.CTRL_IMAGE):
+        state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.IMAGING, 1)
 
 
     # Camera calibration - new position
     if(topic == con.topic.CAL_NEXTPOS):
         cam.set_pos(int(msg))
+        state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
 

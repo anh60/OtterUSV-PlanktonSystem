@@ -327,54 +327,59 @@ class _StatusPageState extends State<StatusPage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blueGrey.withOpacity(1),
+                        spreadRadius: 3,
+                        blurRadius: 9,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
                   alignment: Alignment.topCenter,
 
                   // Image
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: ValueListenableBuilder<String>(
-                      // Listen to image value received over mqtt
-                      valueListenable: widget.mqtt.image,
+                  child: ValueListenableBuilder<String>(
+                    // Listen to image value received over mqtt
+                    valueListenable: widget.mqtt.image,
 
-                      // Build and display image
-                      builder:
-                          (BuildContext context, String value, Widget? child) {
-                        // If no image is transmitted, return placeholder
-                        if (value == '0') {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Loading image',
-                                style: TextStyle(color: darkBlue, fontSize: 25),
-                              ),
-                              LoadingAnimationWidget.prograssiveDots(
-                                  color: darkBlue, size: 50),
-                            ],
-                          );
-                        }
-
-                        // Append n "=" if size is not multiple of four
-                        else {
-                          if (value.length % 4 > 0) {
-                            value += '=' * (4 - value.length % 4);
-                          }
-
-                          // Convert Base64 String to Image object
-                          var bytesImage = const Base64Decoder().convert(value);
-                          // Return image with rounded edges
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
-                            child: FadeInImage(
-                              placeholder: MemoryImage(kTransparentImage),
-                              image: MemoryImage(bytesImage),
-                              fadeInDuration: const Duration(milliseconds: 100),
+                    // Build and display image
+                    builder:
+                        (BuildContext context, String value, Widget? child) {
+                      // If no image is transmitted, return placeholder
+                      if (value == '0') {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Capturing image',
+                              style: TextStyle(color: darkBlue, fontSize: 25),
                             ),
-                          );
+                            LoadingAnimationWidget.prograssiveDots(
+                                color: darkBlue, size: 50),
+                          ],
+                        );
+                      }
+
+                      // Append n "=" if size is not multiple of four
+                      else {
+                        if (value.length % 4 > 0) {
+                          value += '=' * (4 - value.length % 4);
                         }
-                      },
-                    ),
+
+                        // Convert Base64 String to Image object
+                        var bytesImage = const Base64Decoder().convert(value);
+                        // Return image with rounded edges
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: FadeInImage(
+                            placeholder: MemoryImage(kTransparentImage),
+                            image: MemoryImage(bytesImage),
+                            fadeInDuration: const Duration(milliseconds: 100),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
               ],

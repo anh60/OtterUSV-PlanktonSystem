@@ -71,6 +71,7 @@ def image_thread_cb():
             print("Image published \n")
                 
             state.set_sys_state(state.status_flag.IMAGING, 0)
+            state.set_sys_state(state.status_flag.READY, 1)
 
             time.sleep(0.1)
 
@@ -119,6 +120,7 @@ def cal_thread_cb():
                 time.sleep(0.01)
 
             state.set_sys_state(state.status_flag.CALIBRATING, 0)
+            state.set_sys_state(state.status_flag.READY, 1)
             client.pub_cam_pos(curr_pos)
             next_pos = curr_pos
 

@@ -28,6 +28,7 @@ class _CalibrationBoxState extends State<CalibrationBox> {
   void onSendPressed() {
     widget.mqtt.publishMessage(
         topics.CAL_NEXTPOS, textFieldController.text.toString());
+    textFieldController.clear();
   }
 
   @override
