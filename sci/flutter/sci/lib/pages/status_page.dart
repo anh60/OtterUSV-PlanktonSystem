@@ -1,6 +1,7 @@
 import "dart:convert";
 
 import "package:flutter/material.dart";
+import "package:loading_animation_widget/loading_animation_widget.dart";
 
 import "package:sci/constants.dart";
 import "package:sci/controllers/status_controller.dart";
@@ -11,6 +12,7 @@ import "package:sci/widgets/outlined_text_field.dart";
 import "package:sci/widgets/status_page/calibration_box.dart";
 import "package:sci/widgets/status_page/reservoir_box.dart";
 import "package:sci/widgets/status_page/status_box.dart";
+import "package:transparent_image/transparent_image.dart";
 
 class StatusPage extends StatefulWidget {
   final MQTTController mqtt;
@@ -43,6 +45,9 @@ class _StatusPageState extends State<StatusPage> {
         (15 / 2));
   }
 
+  // Image aspect ratio
+  double imageAspectRatio = 9 / 16;
+
   void sampleButtonPressed() {
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE, textFieldController.text);
     textFieldController.clear();
@@ -67,6 +72,7 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   void cameraButtonPressed() {
+    widget.mqtt.image.value = '0';
     widget.mqtt.publishMessage(topics.CTRL_IMAGE, '1');
   }
 
@@ -317,8 +323,8 @@ class _StatusPageState extends State<StatusPage> {
                   padding: const EdgeInsets.all(0),
                   margin: const EdgeInsets.only(top: 15, bottom: 15),
                   width: getContainerWidth(context),
+                  height: getContainerWidth(context) * imageAspectRatio,
                   decoration: BoxDecoration(
-                    color: darkBlue,
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(5),
                   ),
@@ -336,7 +342,17 @@ class _StatusPageState extends State<StatusPage> {
                           (BuildContext context, String value, Widget? child) {
                         // If no image is transmitted, return placeholder
                         if (value == '0') {
-                          return Image.asset('lib/image.jpg');
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Loading image',
+                                style: TextStyle(color: darkBlue, fontSize: 25),
+                              ),
+                              LoadingAnimationWidget.prograssiveDots(
+                                  color: darkBlue, size: 50),
+                            ],
+                          );
                         }
 
                         // Append n "=" if size is not multiple of four
@@ -347,7 +363,15 @@ class _StatusPageState extends State<StatusPage> {
 
                           // Convert Base64 String to Image object
                           var bytesImage = const Base64Decoder().convert(value);
-                          return Image.memory(bytesImage);
+                          // Return image with rounded edges
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: FadeInImage(
+                              placeholder: MemoryImage(kTransparentImage),
+                              image: MemoryImage(bytesImage),
+                              fadeInDuration: const Duration(milliseconds: 100),
+                            ),
+                          );
                         }
                       },
                     ),
