@@ -7,7 +7,6 @@ import 'package:sci/constants.dart';
 import 'package:sci/pages/status_page.dart';
 import 'package:sci/pages/images_page.dart';
 import 'package:sci/pages/vehicle_page.dart';
-import 'package:sci/pages/logs_page.dart';
 
 void main() {
   runApp(const MyApp());

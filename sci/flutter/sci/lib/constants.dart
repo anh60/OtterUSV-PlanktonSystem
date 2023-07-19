@@ -46,6 +46,16 @@ abstract class topics {
   static const String DATA_IMAGE = "planktoscope/data/image";
 }
 
+// Returns the available width for right container
+double getContainerWidth(BuildContext context, double div, double ratio) {
+  return ((((MediaQuery.of(context).size.width) / div) * ratio) -
+      (40) -
+      (15 / 2));
+}
+
+// Image aspect ratio
+double imageAspectRatio = 9 / 16;
+
 const Color darkBlue = Color.fromARGB(255, 77, 90, 114);
 const Color darkerBlue = Color.fromARGB(255, 54, 67, 92);
 const Color lightBlue = Color.fromARGB(255, 169, 216, 255);

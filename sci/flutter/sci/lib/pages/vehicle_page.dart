@@ -4,9 +4,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:sci/constants.dart';
-import 'package:sci/widgets/container_scaled.dart';
-import 'package:sci/widgets/outlined_button_dark.dart';
-import 'package:sci/widgets/outlined_text_field.dart';
+import 'package:sci/widgets/general/container_scaled.dart';
+import 'package:sci/widgets/general/outlined_button_dark.dart';
+import 'package:sci/widgets/general/outlined_text_field.dart';
 
 class VehiclePage extends StatefulWidget {
   const VehiclePage({super.key});

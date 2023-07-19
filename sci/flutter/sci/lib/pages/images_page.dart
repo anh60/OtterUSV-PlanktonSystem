@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:sci/widgets/string_status_tab.dart';
+import 'package:sci/widgets/images_page/string_status_tab.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'package:sci/constants.dart';
-import 'package:sci/widgets/container_scaled.dart';
+import 'package:sci/widgets/general/container_scaled.dart';
 import 'package:sci/controllers/mqtt_controller.dart';
 
 class ImagesPage extends StatefulWidget {
@@ -22,12 +22,9 @@ class ImagesPage extends StatefulWidget {
 class _ImagesPageState extends State<ImagesPage> {
   // Page layout constants
   static const double div = 3;
-  static const double controlBoxRatio = 1;
-  static const double imageBoxRatio = 2;
+  static const double leftRatio = 1;
+  static const double rightRatio = 2;
   static const double boxMargin = 15;
-
-  // Image aspect ratio
-  double imageAspectRatio = 9 / 16;
 
   // String printed when loading images
   String loading = 'Loading';
@@ -91,7 +88,6 @@ class _ImagesPageState extends State<ImagesPage> {
     if (filename == loading || filename == '') {
       return filename;
     }
-    print('error $filename');
 
     // If data has been received, format the string
     filename =
@@ -203,13 +199,6 @@ class _ImagesPageState extends State<ImagesPage> {
       return 0;
     }
     return sampleList.length;
-  }
-
-  // Returns the current possible width of right container
-  double getContainerWidth(BuildContext context) {
-    return ((((MediaQuery.of(context).size.width) / div) * imageBoxRatio) -
-        (40) -
-        (15 / 2));
   }
 
   // Build image
@@ -326,7 +315,7 @@ class _ImagesPageState extends State<ImagesPage> {
         // Folder/file browser box
         ContainerScaled(
           div,
-          controlBoxRatio,
+          leftRatio,
           boxMargin,
 
           // Build expansion tiles (folders)
@@ -418,14 +407,16 @@ class _ImagesPageState extends State<ImagesPage> {
         // Image/map and data
         SingleChildScrollView(
           scrollDirection: Axis.vertical,
+
+          // Scrollable column
           child: Column(
             children: [
               Container(
                 // Config
-                padding: const EdgeInsets.all(0),
                 margin: const EdgeInsets.only(top: 15, bottom: 15),
-                width: getContainerWidth(context),
-                height: getContainerWidth(context) * imageAspectRatio,
+                width: getContainerWidth(context, div, rightRatio),
+                height: getContainerWidth(context, div, rightRatio) *
+                    imageAspectRatio,
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5),
@@ -446,7 +437,7 @@ class _ImagesPageState extends State<ImagesPage> {
 
               // Bottom container
               Container(
-                width: getContainerWidth(context),
+                width: getContainerWidth(context, div, rightRatio),
                 decoration: BoxDecoration(
                   color: darkBlue,
                   shape: BoxShape.rectangle,
@@ -469,7 +460,8 @@ class _ImagesPageState extends State<ImagesPage> {
                     Container(
                       padding: const EdgeInsets.all(15),
                       constraints: BoxConstraints(
-                          maxWidth: getContainerWidth(context) / 2),
+                          maxWidth:
+                              getContainerWidth(context, div, rightRatio) / 2),
                       child: Column(
                         children: [
                           // Date
@@ -506,7 +498,8 @@ class _ImagesPageState extends State<ImagesPage> {
                     Container(
                       alignment: Alignment.center,
                       constraints: BoxConstraints(
-                          maxWidth: getContainerWidth(context) / 2),
+                          maxWidth:
+                              getContainerWidth(context, div, rightRatio) / 2),
                       child: ToggleButtons(
                         isSelected: toggleButtonState,
                         onPressed: (int index) {

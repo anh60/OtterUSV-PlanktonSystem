@@ -6,7 +6,7 @@ class ContainerScaled extends StatelessWidget {
   final double div; // Divisor for horizontal scaling
   final double ratio; // Ratio of container with respect to divisor
   final double margin; // x margin
-  final Widget child; // Content within ocntainer
+  final Widget child; // Content within conntainer
 
   const ContainerScaled(this.div, this.ratio, this.margin, this.child,
       {super.key});

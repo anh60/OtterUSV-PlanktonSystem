@@ -1,16 +1,15 @@
 import "package:flutter/material.dart";
 import "package:sci/constants.dart";
-import "package:sci/widgets/status_page/status_container.dart";
-import "package:sci/widgets/status_page/status_tab.dart";
+import 'package:sci/widgets/status_page/status_boxes/status_container.dart';
 
-class ReservoirBox extends StatefulWidget {
-  const ReservoirBox({super.key});
+class SampleBox extends StatefulWidget {
+  const SampleBox({super.key});
 
   @override
-  State<ReservoirBox> createState() => _ReservoirBoxState();
+  State<SampleBox> createState() => _SampleBoxState();
 }
 
-class _ReservoirBoxState extends State<ReservoirBox> {
+class _SampleBoxState extends State<SampleBox> {
   @override
   Widget build(BuildContext context) {
     return const StatusContainer(
@@ -22,18 +21,12 @@ class _ReservoirBoxState extends State<ReservoirBox> {
 
           // Label
           Text(
-            'RESERVOIR',
+            'SAMPLE',
             style: TextStyle(
               color: lightBlue,
               fontWeight: FontWeight.bold,
             ),
           ),
-
-          // Vertical gap
-          SizedBox(height: 15),
-
-          // Estimated water levels
-          StatusTab('mL', 1000),
         ],
       ),
     );

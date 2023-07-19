@@ -1,11 +1,11 @@
 import "package:flutter/material.dart";
 import "package:sci/constants.dart";
-import "package:sci/widgets/outlined_button_dark.dart";
-import "package:sci/widgets/outlined_text_field.dart";
-import "package:sci/widgets/status_page/status_container.dart";
-import "package:sci/widgets/status_page/status_tab.dart";
+import 'package:sci/widgets/general/outlined_button_dark.dart';
+import 'package:sci/widgets/general/outlined_text_field.dart';
+import 'package:sci/widgets/status_page/status_boxes/status_container.dart';
+import 'package:sci/widgets/status_page/status_boxes/status_tab.dart';
 
-import "../../controllers/mqtt_controller.dart";
+import '../../../controllers/mqtt_controller.dart';
 
 class CalibrationBox extends StatefulWidget {
   final MQTTController mqtt;

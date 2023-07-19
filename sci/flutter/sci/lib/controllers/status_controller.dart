@@ -1,3 +1,15 @@
+// --- Page layout constants ---
+const double div = 4;
+const double leftRatio = 1;
+const double rightRatio = 3;
+const double boxMargin = 15;
+const double buttonSpacing = 10;
+
+// --- Button states ---
+bool manualSampling = false;
+bool manualControl = false;
+
+// --- PIS status labels ---
 const List<String> pscopeLabels = [
   'Ready',
   'Sampling',
@@ -9,6 +21,7 @@ const List<String> pscopeLabels = [
   '-',
 ];
 
+// --- RMS status labels ---
 const List<String> rmsLabels = [
   'Pump',
   'Valve',
@@ -20,6 +33,7 @@ const List<String> rmsLabels = [
   '-',
 ];
 
+// --- PIS status flag positions ---
 const int rms_pump = 0;
 const int rms_valve = 1;
 const int rms_full = 2;
@@ -31,6 +45,7 @@ const int imaging = 7;
 const int calibrating = 8;
 const int leak = 9;
 
+// --- StatusController class ---
 class StatusController {
   StatusByte pscope = StatusByte('PIS', pscopeLabels, 0);
   StatusByte rms = StatusByte('RMS', rmsLabels, 0);

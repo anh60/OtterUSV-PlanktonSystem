@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:sci/constants.dart";
-import "package:sci/widgets/status_page/status_container.dart";
+import 'package:sci/widgets/status_page/status_boxes/status_container.dart';
 
-import "package:sci/widgets/status_page/status_tab.dart";
+import 'package:sci/widgets/status_page/status_boxes/status_tab.dart';
 
 class StatusBox extends StatefulWidget {
   final String label;
