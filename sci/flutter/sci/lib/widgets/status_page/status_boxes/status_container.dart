@@ -1,5 +1,12 @@
-import 'package:flutter/material.dart';
+// ignore: slash_for_doc_comments
+/**
+ * status_container.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
 
+import 'package:flutter/material.dart';
 import 'package:sci/constants.dart';
 
 class StatusContainer extends StatelessWidget {

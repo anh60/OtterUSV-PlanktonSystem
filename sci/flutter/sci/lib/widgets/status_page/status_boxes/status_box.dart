@@ -1,3 +1,11 @@
+// ignore: slash_for_doc_comments
+/**
+ * status_box.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
+
 import "package:flutter/material.dart";
 import "package:sci/constants.dart";
 import 'package:sci/widgets/status_page/status_boxes/status_container.dart';

@@ -1,3 +1,11 @@
+// ignore: slash_for_doc_comments
+/**
+ * constants.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
+
 import 'package:flutter/material.dart';
 
 const String mqtt_broker = "mqtt.eclipseprojects.io";

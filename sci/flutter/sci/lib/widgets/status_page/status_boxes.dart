@@ -1,3 +1,11 @@
+// ignore: slash_for_doc_comments
+/**
+ * status_boxes.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
+
 import 'package:flutter/material.dart';
 import 'package:sci/widgets/status_page/status_boxes/reservoir_box.dart';
 import 'package:sci/widgets/status_page/status_boxes/sample_box.dart';
@@ -18,7 +26,6 @@ class StatusBoxes extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // Configuration
-      margin: const EdgeInsets.only(top: 15),
       width: getContainerWidth(context, div, rightRatio),
       height: 325,
 

@@ -1,9 +1,15 @@
-import 'dart:convert';
+// ignore: slash_for_doc_comments
+/**
+ * microscope_image.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:transparent_image/transparent_image.dart';
-
 import '../../constants.dart';
 
 class MicroscopeImage extends StatelessWidget {
@@ -18,12 +24,19 @@ class MicroscopeImage extends StatelessWidget {
     // Container for wrapping image
     return Container(
       // Config
-      margin: const EdgeInsets.only(top: 15, bottom: 15),
       width: getContainerWidth(context, div, ratio),
       height: getContainerWidth(context, div, ratio) * imageAspectRatio,
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(1),
+            spreadRadius: 3,
+            blurRadius: 9,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       alignment: Alignment.center,
 

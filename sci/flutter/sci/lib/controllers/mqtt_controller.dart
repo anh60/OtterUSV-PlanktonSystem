@@ -1,8 +1,19 @@
+// ignore: slash_for_doc_comments
+/**
+ * mqtt_controller.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
+
+//---------------------------- PACKAGES ----------------------------------------
+
 import "package:flutter/material.dart";
 import "package:mqtt_client/mqtt_client.dart";
 import "package:mqtt_client/mqtt_server_client.dart";
-
 import "package:sci/constants.dart";
+
+//---------------------------- CONTROLLER --------------------------------------
 
 class MQTTController with ChangeNotifier {
   // Value notifiers
@@ -17,7 +28,11 @@ class MQTTController with ChangeNotifier {
   // Client to be initialized
   late MqttServerClient client;
 
+  //---------------------------- OBJECT ----------------------------------------
+
   Future<Object> connect() async {
+    //---------------------------- SETTINGS ------------------------------------
+
     client = MqttServerClient.withPort(
         mqtt_broker, mqtt_client_name, mqtt_broker_port);
     client.logging(on: false);
@@ -29,6 +44,8 @@ class MQTTController with ChangeNotifier {
     client.keepAlivePeriod = 60;
     client.logging(on: false);
     client.setProtocolV311();
+
+    //---------------------------- INIT ----------------------------------------
 
     // Configure connection will-message and set clean session
     final connMessage = MqttConnectMessage()
@@ -66,7 +83,8 @@ class MQTTController with ChangeNotifier {
     client.subscribe(topics.DATA_IMAGES, MqttQos.atLeastOnce);
     client.subscribe(topics.DATA_IMAGE, MqttQos.atLeastOnce);
 
-    // Listen for messages on subscribed topics
+    //---------------------------- LOOP ----------------------------------------
+
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? msg) {
       // Convert payload to MqttPublishMessage
       final data = msg![0].payload as MqttPublishMessage;
@@ -113,6 +131,8 @@ class MQTTController with ChangeNotifier {
 
     return client;
   }
+
+  //---------------------------- FUNCTIONS -------------------------------------
 
   void onConnected() {
     print('MQTT | Connected');

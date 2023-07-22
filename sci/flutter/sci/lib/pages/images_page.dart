@@ -1,12 +1,18 @@
-import 'dart:convert';
+// ignore: slash_for_doc_comments
+/**
+ * images_page.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sci/widgets/images_page/string_status_tab.dart';
 import 'package:transparent_image/transparent_image.dart';
-
 import 'package:sci/constants.dart';
 import 'package:sci/widgets/general/container_scaled.dart';
 import 'package:sci/controllers/mqtt_controller.dart';
@@ -312,7 +318,7 @@ class _ImagesPageState extends State<ImagesPage> {
         // Empty gap
         const SizedBox(width: 15),
 
-        // Folder/file browser box
+        // Folder/file browser (left)
         ContainerScaled(
           div,
           leftRatio,
@@ -404,16 +410,18 @@ class _ImagesPageState extends State<ImagesPage> {
         // Empty gap
         const SizedBox(width: 15),
 
-        // Image/map and data
+        // Image/map and data (right)
         SingleChildScrollView(
           scrollDirection: Axis.vertical,
-
-          // Scrollable column
+          clipBehavior: Clip.none,
           child: Column(
             children: [
+              // Empty gap
+              const SizedBox(height: 15),
+
+              // Image and map
               Container(
                 // Config
-                margin: const EdgeInsets.only(top: 15, bottom: 15),
                 width: getContainerWidth(context, div, rightRatio),
                 height: getContainerWidth(context, div, rightRatio) *
                     imageAspectRatio,
@@ -430,12 +438,13 @@ class _ImagesPageState extends State<ImagesPage> {
                   ],
                 ),
                 alignment: Alignment.center,
-
-                // Image
                 child: checkToggleButton(toggleButtonState),
               ),
 
-              // Bottom container
+              // Empty gap
+              const SizedBox(height: 15),
+
+              // Image info
               Container(
                 width: getContainerWidth(context, div, rightRatio),
                 decoration: BoxDecoration(
@@ -557,10 +566,13 @@ class _ImagesPageState extends State<ImagesPage> {
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
+
+              // Empty gap
+              const SizedBox(height: 15),
             ],
           ),
         ),

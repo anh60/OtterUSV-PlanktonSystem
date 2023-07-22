@@ -1,12 +1,22 @@
-import "package:flutter/material.dart";
+// ignore: slash_for_doc_comments
+/**
+ * status_page.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
 
+//---------------------------- PACKAGES ----------------------------------------
+
+import "package:flutter/material.dart";
 import "package:sci/controllers/status_controller.dart";
 import "package:sci/controllers/mqtt_controller.dart";
 import 'package:sci/widgets/general/microscope_image.dart';
 import 'package:sci/widgets/status_page/control_panel.dart';
 import 'package:sci/widgets/status_page/status_boxes.dart';
 
-// Constructor
+//---------------------------- WIDGET ------------------------------------------
+
 class StatusPage extends StatefulWidget {
   final MQTTController mqtt;
   const StatusPage(this.mqtt, {super.key});
@@ -15,10 +25,14 @@ class StatusPage extends StatefulWidget {
   State<StatusPage> createState() => _StatusPageState();
 }
 
-// Stateful widget
+//---------------------------- STATE -------------------------------------------
+
 class _StatusPageState extends State<StatusPage> {
-  // Controller for this page
+  //---------------------------- INIT ------------------------------------------
+
   StatusController status = StatusController();
+
+  //---------------------------- BUILD WIDGET ----------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +51,14 @@ class _StatusPageState extends State<StatusPage> {
         // Status boxes and image (right)
         SingleChildScrollView(
           scrollDirection: Axis.vertical,
+          clipBehavior: Clip.none,
           child: Column(
             children: [
+              const SizedBox(height: 15),
               StatusBoxes(status, widget.mqtt),
+              const SizedBox(height: 15),
               MicroscopeImage(widget.mqtt.image, div, rightRatio),
+              const SizedBox(height: 15),
             ],
           ),
         ),

@@ -1,5 +1,12 @@
-import 'package:flutter/material.dart';
+// ignore: slash_for_doc_comments
+/**
+ * outlined_button_dark.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
 
+import 'package:flutter/material.dart';
 import 'package:sci/constants.dart';
 
 class OutlinedButtonDark extends StatelessWidget {

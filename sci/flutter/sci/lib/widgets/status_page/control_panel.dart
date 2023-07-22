@@ -1,3 +1,11 @@
+// ignore: slash_for_doc_comments
+/**
+ * control_panel.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
+
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';

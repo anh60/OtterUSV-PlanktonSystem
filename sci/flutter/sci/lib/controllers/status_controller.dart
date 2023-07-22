@@ -1,3 +1,15 @@
+// ignore: slash_for_doc_comments
+/**
+ * status_controller.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
+
+//---------------------------- PACKAGES ----------------------------------------
+
+//---------------------------- GLOBALS -----------------------------------------
+
 // --- Page layout constants ---
 const double div = 4;
 const double leftRatio = 1;
@@ -45,7 +57,8 @@ const int imaging = 7;
 const int calibrating = 8;
 const int leak = 9;
 
-// --- StatusController class ---
+//---------------------------- CONTROLLER --------------------------------------
+
 class StatusController {
   StatusByte pscope = StatusByte('PIS', pscopeLabels, 0);
   StatusByte rms = StatusByte('RMS', rmsLabels, 0);
@@ -66,6 +79,8 @@ class StatusController {
     pscope.setFlag(5, (status >> leak) & 1);
   }
 }
+
+//---------------------------- STATUS BYTE -------------------------------------
 
 class StatusByte {
   String label;

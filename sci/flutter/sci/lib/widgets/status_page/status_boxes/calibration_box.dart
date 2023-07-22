@@ -1,3 +1,11 @@
+// ignore: slash_for_doc_comments
+/**
+ * calibration_box.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
+
 import "package:flutter/material.dart";
 import "package:sci/constants.dart";
 import 'package:sci/widgets/general/outlined_button_dark.dart';

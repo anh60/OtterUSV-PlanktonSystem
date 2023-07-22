@@ -1,12 +1,21 @@
+// ignore: slash_for_doc_comments
+/**
+ * main.dart
+ * 
+ * Andreas Holleland
+ * 2023
+ */
+
+//---------------------------- PACKAGES ----------------------------------------
+
 import 'package:flutter/material.dart';
-
 import 'package:sci/controllers/mqtt_controller.dart';
-
 import 'package:sci/constants.dart';
-
 import 'package:sci/pages/status_page.dart';
 import 'package:sci/pages/images_page.dart';
 import 'package:sci/pages/vehicle_page.dart';
+
+//---------------------------- MAIN --------------------------------------------
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +33,18 @@ class MyApp extends StatelessWidget {
   }
 }
 
+//---------------------------- FUNCTIONS ---------------------------------------
+
+// Set the connection status symbol
+Icon setConnectionIcon(int connection) {
+  if (connection == 1) {
+    return const Icon(Icons.wifi, color: Colors.green);
+  }
+  return const Icon(Icons.wifi_off, color: Colors.red);
+}
+
+//---------------------------- WIDGET ------------------------------------------
+
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
 
@@ -31,7 +52,11 @@ class RootPage extends StatefulWidget {
   State<RootPage> createState() => _RootPageState();
 }
 
+//---------------------------- STATE -------------------------------------------
+
 class _RootPageState extends State<RootPage> {
+  //---------------------------- INIT ------------------------------------------
+
   // MQTT Client
   MQTTController mqtt = MQTTController();
 
@@ -39,9 +64,7 @@ class _RootPageState extends State<RootPage> {
   late List<Widget> pages;
   int currentPage = 0;
 
-  List<bool> visible = [false, false, false, false];
-
-  // Init
+  // Initial state
   @override
   void initState() {
     super.initState();
@@ -57,15 +80,8 @@ class _RootPageState extends State<RootPage> {
     mqtt.connect();
   }
 
-  // Function for setting the connection status symbol
-  Icon setConnectionIcon(int connection) {
-    if (connection == 1) {
-      return const Icon(Icons.wifi, color: Colors.green);
-    }
-    return const Icon(Icons.wifi_off, color: Colors.red);
-  }
+  //---------------------------- BUILD WIDGET ----------------------------------
 
-  // Rootpage Widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
