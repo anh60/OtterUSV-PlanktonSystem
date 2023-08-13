@@ -207,5 +207,5 @@ def pub_image(image):
         topic   = con.topic.DATA_IMAGE, 
         payload = image, 
         qos     = 1, 
-        retain  = True
+        retain  = False
     )
