@@ -110,16 +110,23 @@ def images_thread_cb():
             image_path = get_image(curr_sample.decode(), img_file)
 
             # Read image file
-            with open(image_path, 'rb') as image:
-                img = image.read()
+            try:
+                with open(image_path, 'rb') as image:
+                    img = image.read()
+            
+            # If image doesn't exist, ignore request
+            except:
+                continue
+            
+            # If image exists, encode and publish image
+            else:
+                # Convert image to a base64 String for transmission
+                msg = img
+                base64_bytes = base64.b64encode(msg)
+                base64_msg = base64_bytes.decode('ascii')
 
-            # Convert image to a base64 String for transmission
-            msg = img
-            base64_bytes = base64.b64encode(msg)
-            base64_msg = base64_bytes.decode('ascii')
-
-            # Publish image
-            client.pub_image(base64_msg)
+                # Publish image
+                client.pub_image(base64_msg)
 
             # Reset flag
             image_request = False

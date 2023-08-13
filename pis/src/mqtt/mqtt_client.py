@@ -141,9 +141,6 @@ def msg_handler(topic, msg):
 
 
     # Images file system
-    #if(topic == con.topic.GET_SAMPLES):
-    #    pub_sample_times(imgs.get_samples())
-
     if(topic == con.topic.GET_IMAGES):
         imgs.set_curr_sample(msg)
 
@@ -197,7 +194,7 @@ def pub_image_times(image_times):
         topic   = con.topic.DATA_IMAGES, 
         payload = image_times, 
         qos     = 1, 
-        retain  = True
+        retain  = False
     )
 
 
