@@ -8,6 +8,7 @@
 
 //---------------------------- PACKAGES ----------------------------------------
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:sci/controllers/mqtt_controller.dart';
 import 'package:sci/constants.dart';
@@ -180,7 +181,17 @@ class _RootPageState extends State<RootPage> {
           ),
 
           // Current page
-          pages[currentPage],
+          PageTransitionSwitcher(
+            duration: const Duration(milliseconds: 1000),
+            transitionBuilder: (child, animation, secondaryAnimation) =>
+                FadeThroughTransition(
+              fillColor: lightBlue.withOpacity(0),
+              animation: animation,
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            ),
+            child: pages[currentPage],
+          ),
         ],
       ),
     );

@@ -10,11 +10,13 @@
 
 #define PUMP_PIN 2
 
-uint16_t pumpTimer;
+uint16_t maxTime = 5;
+uint16_t minTime = 3;
+uint16_t currTime;
 
 void pump_init(){
     pinMode(PUMP_PIN, OUTPUT);
-    pumpTimer = 0;
+    currTime = 0;
 }
 
 void switch_pump(){
