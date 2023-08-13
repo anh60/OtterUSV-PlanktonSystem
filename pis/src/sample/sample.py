@@ -16,6 +16,7 @@ import state.sys_state      as state
 import cam.camera           as cam
 import data.images          as imgs
 import mqtt.mqtt_client     as client
+import rms.rms_com          as rms
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -61,29 +62,32 @@ def set_sample_num(n):
     open(pos_file, 'a').close()
 
 
-
-
+# Filling reservoir
 def fill():
     global next_sample_state
 
-    print("filling reservoir \n")
+    rms.send_fill()
     time.sleep(2)
+    rms.send_stop()
 
     # Set next state
     next_sample_state = sample_state.PUMP
 
 
+# Pumping sample from reservoir
 def pump():
     global next_sample_state, curr_sample
 
     curr_sample += 1
-    print("collecting sample", curr_sample, "\n")
+    state.set_sys_state(state.status_flag.PUMP, 1)
     time.sleep(2)
+    state.set_sys_state(state.status_flag.PUMP, 0)
 
     # Set next state
     next_sample_state = sample_state.IMAGE
 
 
+# Imaging a sample
 def image():
     global next_sample_state
 
@@ -100,6 +104,7 @@ def image():
         next_sample_state = sample_state.PUMP
 
 
+# Uploading/updating sample list
 def upload():
     global next_sample_state
 
@@ -112,11 +117,13 @@ def upload():
     next_sample_state = sample_state.FLUSH
 
 
+# Flushing reservoir
 def flush():
     global next_sample_state, curr_sample
 
-    print("flushing system \n")
+    rms.send_flush()
     time.sleep(2)
+    rms.send_stop()
 
     # Reset thread
     curr_sample = 0
