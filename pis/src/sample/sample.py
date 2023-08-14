@@ -43,6 +43,10 @@ samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
 # Directory for current sample
 sample_dir = 0,
 
+# Flags for sending RMS commands only once
+fill_sent = False
+flush_sent = False
+
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
@@ -66,12 +70,14 @@ def set_sample_num(n):
 def fill():
     global next_sample_state
 
-    rms.send_fill()
-    time.sleep(2)
-    rms.send_stop()
+    # Send FILL command
+    if(fill_sent == False):
+        rms.send_fill()
+        fill_sent = True
 
-    # Set next state
-    next_sample_state = sample_state.PUMP
+    # If reservoir full
+    if(((state.get_sys_state() >> state.status_flag.RMS_FULL) & 1) == 1):
+        next_sample_state = sample_state.PUMP
 
 
 # Pumping sample from reservoir
@@ -121,21 +127,27 @@ def upload():
 def flush():
     global next_sample_state, curr_sample
 
-    rms.send_flush()
-    time.sleep(2)
-    rms.send_stop()
+    # Send FLUSH command
+    if(flush_sent == False):
+        rms.send_fill()
+        flush_sent = True
 
-    # Reset thread
-    curr_sample = 0
-    next_sample_state = sample_state.FILL
+    # If reservoir empty
+    if(((state.get_sys_state() >> state.status_flag.RMS_FULL) & 1) == 0):
 
-    # Clear sampling flag
-    state.set_sys_state(state.status_flag.SAMPLING, 0)
-    state.set_sys_state(state.status_flag.READY, 1)
+        # Reset thread
+        curr_sample = 0
+        fill_sent = False
+        flush_sent = False
+        next_sample_state = sample_state.FILL
 
-    print("Sampling finished, system ready \n")
+        # Clear sampling flag
+        state.set_sys_state(state.status_flag.SAMPLING, 0)
+        state.set_sys_state(state.status_flag.READY, 1)
 
-    time.sleep(0.1)
+        print("Sampling finished, system ready \n")
+
+        time.sleep(0.1)
 
 
 def sample_state_handler():

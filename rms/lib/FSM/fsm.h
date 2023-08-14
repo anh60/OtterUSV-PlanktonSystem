@@ -27,7 +27,7 @@ uint8_t get_sys_state();
 
 void set_sys_state(status_bit k, bool val);
 
-bool update_sys_state();
+bool check_sys_state();
 
 void reset_sys();
 

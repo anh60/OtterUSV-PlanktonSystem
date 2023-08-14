@@ -29,9 +29,10 @@ void loop() {
 
   check_ctrl_msg();
 
-  if(update_sys_state()){
+  if(check_sys_state()){
     transmit_status();
-    switch_pump();
-    switch_valve();
   }
+
+  switch_pump();
+  switch_valve();
 }
