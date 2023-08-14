@@ -68,7 +68,7 @@ def set_sample_num(n):
 
 # Filling reservoir
 def fill():
-    global next_sample_state
+    global next_sample_state, fill_sent
 
     # Send FILL command
     if(fill_sent == False):
@@ -125,7 +125,7 @@ def upload():
 
 # Flushing reservoir
 def flush():
-    global next_sample_state, curr_sample
+    global next_sample_state, curr_sample, fill_sent, flush_sent
 
     # Send FLUSH command
     if(flush_sent == False):
