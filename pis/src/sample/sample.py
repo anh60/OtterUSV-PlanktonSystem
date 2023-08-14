@@ -129,7 +129,7 @@ def flush():
 
     # Send FLUSH command
     if(flush_sent == False):
-        rms.send_fill()
+        rms.send_flush()
         flush_sent = True
 
     # If reservoir empty
