@@ -37,8 +37,8 @@ const List<String> pscopeLabels = [
 const List<String> rmsLabels = [
   'Pump',
   'Valve',
-  'Leak',
   'Full',
+  'Leak',
   '-',
   '-',
   '-',
