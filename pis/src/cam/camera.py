@@ -31,9 +31,12 @@ mqtt_image_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/mqtt_image/image.jp
 # Motor interface board
 kit = MotorKit(i2c=board.I2C())
 
-# Min/max positions of camera lens (distance from slide)
-min_pos = 0
-max_pos = 10000
+# File storing current position of uScope
+posfile = '../data/position.txt'
+
+# Min/max positions of camera lens (micrometer)
+min_pos = 5000
+max_pos = 40000
 
 # Current position and new position(received over MQTT)
 curr_pos = 0
@@ -49,6 +52,19 @@ def capture_image(path):
 def set_pos(new_pos):
     global curr_pos, next_pos
     next_pos = new_pos 
+
+
+def readLensPosition():
+    f = open(posfile, 'r')
+    pos = int(f.readline())
+    f.close()
+    return pos
+
+
+def writeLensPosition(pos):
+    f = open(posfile, 'w')
+    f.write(str(pos))
+    f.close()
 
 
 def image_thread_cb():
@@ -83,6 +99,8 @@ def cal_thread_cb():
 
     while True:
         if(((state.get_sys_state() >> state.status_flag.CALIBRATING) & 1) == 1):
+            # Get current position from file
+            curr_pos = readLensPosition()
 
             # Set direction
             if(next_pos < curr_pos):
@@ -98,14 +116,12 @@ def cal_thread_cb():
             for i in range(n_steps):
 
                 # Check if min/max limit is reached
-                #if(direction == stepper.BACKWARD):
-                #    if(curr_pos == min_pos):
-                #        print("limit reached")
-                #        break
-                #else:
-                #    if(curr_pos == max_pos):
-                #        print("limit reached")
-                #        break
+                if(direction == stepper.BACKWARD):
+                    if(curr_pos == min_pos):
+                        break
+                else:
+                    if(curr_pos == max_pos):
+                        break
                 
                 # Move stepper motor
                 kit.stepper1.onestep(direction=direction)
@@ -117,13 +133,14 @@ def cal_thread_cb():
                 # If backward, increment
                 else:
                     curr_pos += 1
+            
+            writeLensPosition(curr_pos)
+            client.pub_cam_pos(curr_pos)
+
+            next_pos = curr_pos
 
             state.set_sys_state(state.status_flag.CALIBRATING, 0)
             state.set_sys_state(state.status_flag.READY, 1)
-            client.pub_cam_pos(curr_pos)
-            next_pos = curr_pos
-
-            print("moved to new position", curr_pos)
             
             kit.stepper1.release()
 
@@ -139,7 +156,15 @@ def init_cam_thread():
 
 
 def init_cal_thread():
+    global curr_pos
+
+    # Release stepper so it doesn't draw power
     kit.stepper1.release()
+
+    # Get and publish current position
+    curr_pos = readLensPosition()
+    client.pub_cam_pos(curr_pos)
+
     cal_thread = threading.Thread(target = cal_thread_cb)
     cal_thread.daemon = True
     cal_thread.start()
