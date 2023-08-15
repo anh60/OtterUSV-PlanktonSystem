@@ -77,6 +77,15 @@ def image_thread_cb():
 
 
 def cal_thread_cb():
+    while True:
+        if(((state.get_sys_state() >> state.status_flag.CALIBRATING) & 1) == 1):
+            for i in range(100):
+                kit.stepper1.onestep()
+                time.sleep(0.01)
+        else:
+            time.sleep(0.001)
+
+def cal_thread_cb_t():
     global curr_pos, next_pos
 
     while True:
