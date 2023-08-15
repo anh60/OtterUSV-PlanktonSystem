@@ -79,11 +79,6 @@ def image_thread_cb():
 
 
 def cal_thread_cb():
-    while True:
-        kit.stepper1.onestep()
-        time.sleep(0.01)
-
-def cal_thread_cb_t():
     global curr_pos, next_pos
 
     while True:

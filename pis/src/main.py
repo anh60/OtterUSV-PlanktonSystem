@@ -41,7 +41,7 @@ state.set_sys_state(state.status_flag.READY, 1)
 
 # Loop main thread
 while True:
-    time.sleep(0.001)
+    time.sleep(1)
 
 if __name__ == '__main__':
     pass
