@@ -7,6 +7,8 @@
 
 #---------------------------- PACKAGES -----------------------------------------
 
+import time
+
 import state.sys_state              as state
 import rms.rms_com                  as rms
 import mqtt.mqtt_client             as client
@@ -39,7 +41,7 @@ state.set_sys_state(state.status_flag.READY, 1)
 
 # Loop main thread
 while True:
-    continue
+    time.sleep(0.001)
 
 if __name__ == '__main__':
     pass
