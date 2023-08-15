@@ -80,8 +80,7 @@ def cal_thread_cb():
     global curr_pos, next_pos
 
     while True:
-        if((state.get_sys_state() >> state.status_flag.CALIBRATING) & 1):
-            print("Calibrating \n")
+        if(((state.get_sys_state() >> state.status_flag.CALIBRATING) & 1) == 1):
 
             # Set direction
             if(next_pos < curr_pos):
@@ -107,7 +106,7 @@ def cal_thread_cb():
                         break
                 
                 # Move stepper motor
-                kit.stepper1.onestep(direction=direction, style=stepper.DOUBLE)
+                kit.stepper1.onestep(direction=direction)
 
                 # If moving camera forward, decrement curr_pos
                 if(direction == stepper.BACKWARD):
@@ -129,6 +128,8 @@ def cal_thread_cb():
             kit.stepper1.release()
 
             time.sleep(0.1)
+        else:
+            time.sleep(0.001)
 
 
 def init_cam_thread():
@@ -138,6 +139,7 @@ def init_cam_thread():
 
 
 def init_cal_thread():
+    kit.stepper1.release()
     cal_thread = threading.Thread(target = cal_thread_cb)
     cal_thread.daemon = True
     cal_thread.start()
