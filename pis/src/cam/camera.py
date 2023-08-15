@@ -98,14 +98,14 @@ def cal_thread_cb():
             for i in range(n_steps):
 
                 # Check if min/max limit is reached
-                if(direction == stepper.BACKWARD):
-                    if(curr_pos == min_pos):
-                        print("limit reached")
-                        break
-                else:
-                    if(curr_pos == max_pos):
-                        print("limit reached")
-                        break
+                #if(direction == stepper.BACKWARD):
+                #    if(curr_pos == min_pos):
+                #        print("limit reached")
+                #        break
+                #else:
+                #    if(curr_pos == max_pos):
+                #        print("limit reached")
+                #        break
                 
                 # Move stepper motor
                 kit.stepper1.onestep(direction=direction)
