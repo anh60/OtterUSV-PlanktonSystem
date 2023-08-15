@@ -7,6 +7,5 @@ kit = MotorKit(i2c=board.I2C())
 
 i = 0
 for i in range(100):
-    kit.stepper1.onestep()
+    kit.stepper1.onestep(direction = stepper.BACKWARD)
     time.sleep(0.01)
-    kit.stepper1.release()
