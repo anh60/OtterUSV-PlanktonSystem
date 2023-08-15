@@ -9,6 +9,7 @@
 
 from enum import Enum
 import threading
+import time
 
 import mqtt.mqtt_client as client
 
@@ -64,6 +65,8 @@ def status_thread_cb():
     while True:
         if(update_sys_state()):
             client.pub_status()
+        else:
+            time.sleep(0.001)
             
 
 def init_state_thread():

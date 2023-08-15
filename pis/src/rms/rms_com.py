@@ -8,6 +8,7 @@
 #---------------------------- PACKAGES -----------------------------------------
 
 import serial
+import time
 import threading
 import state.sys_state as state
 
@@ -66,6 +67,8 @@ def rx_thread_cb():
         if msg:
             rms_state = int.from_bytes(msg, 'big')
             set_rms_flags(rms_state)
+        else:
+            time.sleep(0.001)
 
 
 def init_rms_thread():

@@ -74,6 +74,8 @@ def image_thread_cb():
             state.set_sys_state(state.status_flag.READY, 1)
 
             time.sleep(0.1)
+        else:
+            time.sleep(0.001)
 
 
 def cal_thread_cb():
