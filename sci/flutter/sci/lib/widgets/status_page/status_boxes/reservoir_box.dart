@@ -8,8 +8,11 @@
 
 import "package:flutter/material.dart";
 import "package:sci/constants.dart";
+import 'package:sci/widgets/general/outlined_button_dark.dart';
 import 'package:sci/widgets/status_page/status_boxes/status_container.dart';
 import 'package:sci/widgets/status_page/status_boxes/status_tab.dart';
+
+import '../../general/outlined_text_field.dart';
 
 class ReservoirBox extends StatefulWidget {
   const ReservoirBox({super.key});
@@ -19,17 +22,27 @@ class ReservoirBox extends StatefulWidget {
 }
 
 class _ReservoirBoxState extends State<ReservoirBox> {
+  final pumpFieldController = TextEditingController();
+  final valveFieldCOntroller = TextEditingController();
+
+  @override
+  void dispose() {
+    pumpFieldController.dispose();
+    valveFieldCOntroller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const StatusContainer(
+    return StatusContainer(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           // Vertical gap
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
 
           // Label
-          Text(
+          const Text(
             'RESERVOIR',
             style: TextStyle(
               color: lightBlue,
@@ -38,10 +51,38 @@ class _ReservoirBoxState extends State<ReservoirBox> {
           ),
 
           // Vertical gap
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
 
-          // Estimated water levels
-          StatusTab('mL', 1000),
+          // Current fill time
+          const StatusTab('Fill time', 1000),
+
+          // Vertical gap
+          const SizedBox(height: 5),
+
+          // Current flush time
+          const StatusTab('Flush time', 1000),
+
+          // Vertical gap
+          const SizedBox(height: 15),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              OutlinedTextField(pumpFieldController, 'Fill time', true),
+              OutlinedButtonDark(() => null, 'Send', false),
+            ],
+          ),
+
+          // Vertical gap
+          const SizedBox(height: 5),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              OutlinedTextField(valveFieldCOntroller, 'Flush time', true),
+              OutlinedButtonDark(() => null, 'Send', false),
+            ],
+          ),
         ],
       ),
     );

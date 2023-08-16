@@ -78,7 +78,7 @@ class _ImagesPageState extends State<ImagesPage> {
     List<String> imageList = names.split(',');
 
     // Get and remove position (lat/lon) from the list
-    if (imageList[0] != loading || imageList[0].isNotEmpty) {
+    if (imageList[0] != loading) {
       lon = imageList.removeAt(imageList.length - 1);
       lat = imageList.removeAt(imageList.length - 1);
     }
@@ -342,7 +342,13 @@ class _ImagesPageState extends State<ImagesPage> {
                     builder:
                         (BuildContext context, String value, Widget? child) {
                       // Get list of images
-                      List<String> images = buildImageList(value);
+                      List<String> images;
+
+                      if (value != '0') {
+                        images = buildImageList(value);
+                      } else {
+                        images = buildImageList(loading);
+                      }
 
                       // Set rounded edges
                       return ClipRRect(

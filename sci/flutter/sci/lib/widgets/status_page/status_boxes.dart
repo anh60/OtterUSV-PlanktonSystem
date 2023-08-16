@@ -63,10 +63,9 @@ class StatusBoxes extends StatelessWidget {
           ),
 
           // Horizontal gap
-          const SizedBox(width: 15),
-
+          //const SizedBox(width: 15),
           // Sample routine box
-          SampleBox(),
+          //SampleBox(),
 
           // Horizontal gap
           const SizedBox(width: 15),
