@@ -78,7 +78,7 @@ class _ImagesPageState extends State<ImagesPage> {
     List<String> imageList = names.split(',');
 
     // Get and remove position (lat/lon) from the list
-    if (imageList[0] != loading) {
+    if (imageList[0] != loading || imageList[0].isNotEmpty) {
       lon = imageList.removeAt(imageList.length - 1);
       lat = imageList.removeAt(imageList.length - 1);
     }
