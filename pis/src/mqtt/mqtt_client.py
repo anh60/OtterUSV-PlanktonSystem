@@ -194,7 +194,7 @@ def pub_image_times(image_times):
         topic   = con.topic.DATA_IMAGES, 
         payload = image_times, 
         qos     = 1, 
-        retain  = False
+        retain  = True
     )
 
 
@@ -204,5 +204,5 @@ def pub_image(image):
         topic   = con.topic.DATA_IMAGE, 
         payload = image, 
         qos     = 1, 
-        retain  = False
+        retain  = True
     )

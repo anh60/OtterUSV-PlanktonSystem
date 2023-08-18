@@ -23,12 +23,14 @@ class ReservoirBox extends StatefulWidget {
 
 class _ReservoirBoxState extends State<ReservoirBox> {
   final pumpFieldController = TextEditingController();
-  final valveFieldCOntroller = TextEditingController();
+  final valveFieldController = TextEditingController();
+  final depthFieldCondtroller = TextEditingController();
 
   @override
   void dispose() {
     pumpFieldController.dispose();
-    valveFieldCOntroller.dispose();
+    valveFieldController.dispose();
+    depthFieldCondtroller.dispose();
     super.dispose();
   }
 
@@ -54,13 +56,19 @@ class _ReservoirBoxState extends State<ReservoirBox> {
           const SizedBox(height: 15),
 
           // Current fill time
-          const StatusTab('Fill time', 1000),
+          const StatusTab('Fill time', 5000),
 
           // Vertical gap
           const SizedBox(height: 5),
 
           // Current flush time
-          const StatusTab('Flush time', 1000),
+          const StatusTab('Flush time', 5000),
+
+          // Vertical gap
+          const SizedBox(height: 5),
+
+          // Current flush time
+          const StatusTab('Depth', 50),
 
           // Vertical gap
           const SizedBox(height: 15),
@@ -79,7 +87,7 @@ class _ReservoirBoxState extends State<ReservoirBox> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              OutlinedTextField(valveFieldCOntroller, 'Flush time', true),
+              OutlinedTextField(valveFieldController, 'Flush time', true),
               OutlinedButtonDark(() => null, 'Send', false),
             ],
           ),
