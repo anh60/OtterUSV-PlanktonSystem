@@ -89,7 +89,7 @@ def set_curr_image(image):
 
 # Images thread callback function
 def images_thread_cb():
-    global images_request, image_request
+    global samples_request, images_request, image_request
     while True:
 
         # If list of samples have been requested from MQTT broker
