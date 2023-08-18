@@ -203,7 +203,7 @@ class _ImagesPageState extends State<ImagesPage> {
   int checkIfSamples(List<String> sampleList) {
     if (sampleList[0] == '0') {
       widget.mqtt.publishMessage(topics.GET_SAMPLES, '');
-      return 0;
+      sampleList.length = 0;
     }
     return sampleList.length;
   }

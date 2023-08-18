@@ -95,7 +95,7 @@ def images_thread_cb():
         # If list of samples have been requested from MQTT broker
         if(samples_request == True):
             send_samples()
-            images_request = False
+            samples_request = False
             time.sleep(0.001)
 
         # If list of images have been requested from MQTT broker
