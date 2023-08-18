@@ -110,7 +110,7 @@ class _ControlPanelState extends State<ControlPanel> {
               // N-Samples text field
               const SizedBox(height: buttonSpacing),
               OutlinedTextField(
-                  sampleInputController, 'N Samples', manualSampling),
+                  sampleInputController, 'N Samples', !manualSampling),
 
               // Start sampling button
               const SizedBox(height: buttonSpacing),

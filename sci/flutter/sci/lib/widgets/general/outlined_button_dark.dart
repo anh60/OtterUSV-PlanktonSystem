@@ -36,17 +36,17 @@ class OutlinedButtonDark extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
       constraints: const BoxConstraints(
-        minWidth: 100,
-        maxWidth: 100,
-        minHeight: 50,
-        maxHeight: 50,
+        minWidth: 90,
+        maxWidth: 90,
+        minHeight: 30,
+        maxHeight: 30,
       ),
       child: FloatingActionButton.extended(
         label: Text(
           label,
           style: TextStyle(
             color: textColor,
-            fontSize: 15,
+            fontSize: 12.5,
           ),
         ),
         backgroundColor: darkerBlue,

@@ -37,6 +37,7 @@ class _StatusBoxState extends State<StatusBox> {
           Text(
             widget.label,
             style: const TextStyle(
+              fontSize: 12.5,
               color: lightBlue,
               fontWeight: FontWeight.bold,
             ),

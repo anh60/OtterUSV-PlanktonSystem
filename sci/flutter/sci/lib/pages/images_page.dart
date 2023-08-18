@@ -202,6 +202,7 @@ class _ImagesPageState extends State<ImagesPage> {
   // Check if the sample list is empty
   int checkIfSamples(List<String> sampleList) {
     if (sampleList[0] == '0') {
+      widget.mqtt.publishMessage(topics.GET_SAMPLES, '');
       return 0;
     }
     return sampleList.length;

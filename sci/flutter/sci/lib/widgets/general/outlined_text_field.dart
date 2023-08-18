@@ -26,17 +26,17 @@ class OutlinedTextField extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       constraints: const BoxConstraints(
-        minWidth: 100,
-        maxWidth: 100,
-        minHeight: 0,
-        maxHeight: 50,
+        minWidth: 90,
+        maxWidth: 90,
+        minHeight: 30,
+        maxHeight: 30,
       ),
       child: TextFormField(
-        enabled: notActive,
+        enabled: !notActive,
         controller: controller,
         textAlign: TextAlign.center,
         style: const TextStyle(
-          fontSize: 15,
+          fontSize: 12.5,
           color: lighterBlue,
         ),
         decoration: InputDecoration(
@@ -50,7 +50,7 @@ class OutlinedTextField extends StatelessWidget {
           border: const OutlineInputBorder(),
           labelText: label,
           labelStyle: const TextStyle(
-            fontSize: 15,
+            fontSize: 10,
             color: Colors.grey,
           ),
         ),

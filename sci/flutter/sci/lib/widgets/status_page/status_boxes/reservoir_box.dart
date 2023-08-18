@@ -47,6 +47,7 @@ class _ReservoirBoxState extends State<ReservoirBox> {
           const Text(
             'RESERVOIR',
             style: TextStyle(
+              fontSize: 12.5,
               color: lightBlue,
               fontWeight: FontWeight.bold,
             ),
@@ -76,7 +77,7 @@ class _ReservoirBoxState extends State<ReservoirBox> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              OutlinedTextField(pumpFieldController, 'Fill time', true),
+              OutlinedTextField(pumpFieldController, 'Fill time', false),
               OutlinedButtonDark(() => null, 'Send', false),
             ],
           ),
@@ -87,7 +88,7 @@ class _ReservoirBoxState extends State<ReservoirBox> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              OutlinedTextField(valveFieldController, 'Flush time', true),
+              OutlinedTextField(valveFieldController, 'Flush time', false),
               OutlinedButtonDark(() => null, 'Send', false),
             ],
           ),

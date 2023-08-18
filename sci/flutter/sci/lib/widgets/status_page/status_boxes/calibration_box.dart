@@ -52,6 +52,7 @@ class _CalibrationBoxState extends State<CalibrationBox> {
           const Text(
             'MICROSCOPE',
             style: TextStyle(
+              fontSize: 12.5,
               color: lightBlue,
               fontWeight: FontWeight.bold,
             ),
@@ -65,32 +66,47 @@ class _CalibrationBoxState extends State<CalibrationBox> {
             valueListenable: widget.mqtt.cal_pos,
             builder: (BuildContext context, String value, Widget? child) {
               int currPos = int.parse(value);
-              return StatusTab('Position', currPos);
+              return StatusTab('Distance', currPos);
             },
           ),
 
           // Vertical gap
-          const SizedBox(height: 30),
+          const SizedBox(height: 5),
 
-          // New position text field
-          OutlinedTextField(
-            textFieldController,
-            'New pos',
-            true,
-          ),
+          // Max distance
+          const StatusTab('Max distance', 40000),
+
+          // Vertical gap
+          const SizedBox(height: 5),
+
+          // Min distance
+          const StatusTab('Min distance', 5000),
 
           // Vertical gap
           const SizedBox(height: 15),
 
-          // Send new position button¨
-          OutlinedButtonDark(
-            onSendPressed,
-            'Send',
-            false,
+          // New position text field
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // New position text field
+              OutlinedTextField(
+                textFieldController,
+                'New pos',
+                false,
+              ),
+
+              // Send new position button
+              OutlinedButtonDark(
+                onSendPressed,
+                'Send',
+                false,
+              ),
+            ],
           ),
 
           // Vertical gap
-          const SizedBox(height: 30),
+          const SizedBox(height: 15),
 
           // Image received date
           // Label

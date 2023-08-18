@@ -25,6 +25,7 @@ curr_sample = 0
 curr_image = 0
 
 # Flags
+samples_request = True
 images_request = False
 image_request = False
 
@@ -68,6 +69,9 @@ def get_image(sample, image_time):
     image = (samples_path + '/' + sample + '/' + image_time)
     return image
 
+def set_sample_request_flag():
+    global samples_request
+    samples_request = True
 
 # Set current sample
 def set_curr_sample(sample):
@@ -87,6 +91,12 @@ def set_curr_image(image):
 def images_thread_cb():
     global images_request, image_request
     while True:
+
+        # If list of samples have been requested from MQTT broker
+        if(samples_request == True):
+            send_samples()
+            images_request = False
+            time.sleep(0.001)
 
         # If list of images have been requested from MQTT broker
         if(images_request == True):
