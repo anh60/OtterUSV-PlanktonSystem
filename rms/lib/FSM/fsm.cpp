@@ -13,9 +13,9 @@ uint32_t vT;    // CPU time when valve starts
 uint32_t cT;    // Current CPU time
 
 // Timer thresholds (milliseconds)
-const uint32_t pMin = 5000;    // Pump lower threshold
+const uint32_t pMin = 20000;    // Pump lower threshold
 const uint32_t pMax = 5000;    // Pump upper threshold  
-const uint32_t vMin = 5000;    // Valve lower threshold
+const uint32_t vMin = 10000;    // Valve lower threshold
 const uint32_t vMax = 5000;    // Valve upper threshold
 
 // Estimated water level of reservoir (mL)
@@ -94,7 +94,7 @@ void checkFlags(){
     // If valve flag is 1
     if((vCurr == 1) && (vNext == 1)){
         cT = millis();
-        if(cT - vT >= pMin){
+        if(cT - vT >= vMin){
             set_sys_state(VALVE_BIT, 0);
             set_sys_state(WATER_BIT, 0);
         }

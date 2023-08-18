@@ -141,6 +141,9 @@ def msg_handler(topic, msg):
 
 
     # Images file system
+    if(topic == con.topic.GET_SAMPLES):
+        imgs.get_samples()
+
     if(topic == con.topic.GET_IMAGES):
         imgs.set_curr_sample(msg)
 
