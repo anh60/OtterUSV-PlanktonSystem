@@ -25,7 +25,7 @@ curr_sample = 0
 curr_image = 0
 
 # Flags
-samples_request = True
+samples_request = False
 images_request = False
 image_request = False
 
