@@ -46,7 +46,11 @@ next_pos = 0
 #---------------------------- FUNCTIONS ----------------------------------------
 
 def capture_image(path):
+    kit.motor4.throttle = 1.0
+    time.sleep(1)
     camera.capture(path)
+    time.sleep(1)
+    kit.motor4.throttle = None
 
 
 def set_pos(new_pos):
@@ -150,6 +154,7 @@ def cal_thread_cb():
 
 
 def init_cam_thread():
+    kit.motor4.throttle = None
     cam_thread = threading.Thread(target = image_thread_cb)
     cam_thread.daemon = True
     cam_thread.start()
