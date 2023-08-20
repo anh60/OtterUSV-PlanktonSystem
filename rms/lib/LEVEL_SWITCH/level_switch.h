@@ -11,5 +11,6 @@
 #include <Arduino.h>
 
 void level_switch_init();
+void readLevel();
 
 #endif /* LEVEL_SWITCH_H_ */

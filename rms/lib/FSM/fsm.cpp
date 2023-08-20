@@ -7,6 +7,8 @@
 
 #include "fsm.h"
 
+#include "level_switch.h"
+
 // Timers (milliseconds)
 uint32_t pT;    // CPU time when pump start
 uint32_t vT;    // CPU time when valve starts
@@ -14,9 +16,8 @@ uint32_t cT;    // Current CPU time
 
 // Timer thresholds (milliseconds)
 const uint32_t pMin = 20000;    // Pump lower threshold
-const uint32_t pMax = 5000;    // Pump upper threshold  
-const uint32_t vMin = 10000;    // Valve lower threshold
-const uint32_t vMax = 5000;    // Valve upper threshold
+const uint32_t pMax = 25000;    // Pump upper threshold  
+const uint32_t vMin = 25000;    // Valve threshold
 
 // Estimated water level of reservoir (mL)
 uint16_t resLevel;
@@ -69,9 +70,13 @@ void checkFlags(){
 
     // If pump flag changes to 1
     if((pCurr == 0) && (pNext == 1)){
+
+        // Check if full, if true -> revert flag
         if(((curr_sys_state >> WATER_BIT) & 1) == 1){
             set_sys_state(PUMP_BIT, 0);
         }
+
+        // If not full, start the timer
         else{
             pT = millis();
         }
@@ -79,8 +84,22 @@ void checkFlags(){
 
     // If pump flag is 1
     if((pCurr == 1) && (pNext == 1)){
+
+        // Get current time
         cT = millis();
-        if(cT - pT >= pMin){
+
+        // If bigger than pMin and less than pMax
+        if((cT - pT >= pMin) && (cT - pT < pMax)){
+
+            // Check sensor
+            if(readLevel()){
+                set_sys_state(PUMP_BIT, 0);
+                set_sys_state(WATER_BIT, 1);
+            }
+        }
+
+        // If pMax reached
+        else if (cT - pT >= pMax){
             set_sys_state(PUMP_BIT, 0);
             set_sys_state(WATER_BIT, 1);
         }
