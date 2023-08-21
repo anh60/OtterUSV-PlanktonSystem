@@ -6,7 +6,8 @@
 
 from enum import Enum
 
-broker = "mqtt.eclipseprojects.io"
+#broker = "mqtt.eclipseprojects.io"
+broker = "broker.hivemq.com"
 
 class topic(str, Enum):
 
