@@ -92,7 +92,7 @@ def readLedBrightness():
 
 def writeLedBrightness(brightness):
     f = open(ledFile, 'w')
-    f.write(str(brightness * 100))
+    f.write(str(int(brightness * 100)))
     f.close()
 
 
