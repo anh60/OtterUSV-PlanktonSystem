@@ -59,10 +59,7 @@ def init_mqtt_thread():
 
     # Set last-will topic
     client.will_set(
-        topic = con.topic.STATUS_CONNECTED,
-        payload = 0,
-        qos = 1,
-        retain = True
+        con.topic.STATUS_CONNECTED, 0, 1, True
     )
 
     # Connect and start thread
@@ -77,10 +74,7 @@ def on_connect(client, userdata, flags, rc):
     if(rc == 0):
         # Publish to connected topic
         client.publish(
-            topic = con.topic.STATUS_CONNECTED, 
-            payload = 1, 
-            qos = 1,
-            retain = True
+            con.topic.STATUS_CONNECTED, 1, 1, True
         )
 
     # If connection fails
@@ -162,22 +156,12 @@ def msg_handler(topic, msg):
 
 # Publish current system state to status topic
 def pub_status():
-    client.publish(
-        topic   = con.topic.STATUS_FLAGS, 
-        payload = state.get_sys_state(), 
-        qos     = 1, 
-        retain  = True
-    )
+    client.publish(con.topic.STATUS_FLAGS, state.get_sys_state(), 1, True)
 
 
 # Publish current camera position
 def pub_cam_pos(pos):
-    client.publish(
-        topic   = con.topic.CAL_CURRPOS, 
-        payload = pos, 
-        qos     = 1, 
-        retain  = True
-    )
+    client.publish(con.topic.CAL_CURRPOS, pos, 1, True)
 
 
 # Publish current LED brightness
@@ -187,39 +171,19 @@ def pub_led_brightness(brightness):
 
 # Publish an image to photo topic
 def pub_photo(picture):
-    client.publish(
-        topic   = con.topic.IMAGE, 
-        payload = picture, 
-        qos     = 1, 
-        retain  = True
-    )
+    client.publish(con.topic.IMAGE, picture, 1, True)
 
 
 # Publish sample times to samples topic
 def pub_sample_times(sample_times):
-    client.publish(
-        topic   = con.topic.DATA_SAMPLES, 
-        payload = sample_times, 
-        qos     = 1, 
-        retain  = True
-    )
+    client.publish(con.topic.DATA_SAMPLES, sample_times, 1, True)
 
 
 # Publish image times of a sample to images topic
 def pub_image_times(image_times):
-    client.publish(
-        topic   = con.topic.DATA_IMAGES, 
-        payload = image_times, 
-        qos     = 1, 
-        retain  = True
-    )
+    client.publish(con.topic.DATA_IMAGES, image_times, 1, True)
 
 
 # Publish image corresponding to an image time
 def pub_image(image):
-    client.publish(
-        topic   = con.topic.DATA_IMAGE, 
-        payload = image, 
-        qos     = 1, 
-        retain  = True
-    )
+    client.publish(con.topic.DATA_IMAGE, image, 1, True)
