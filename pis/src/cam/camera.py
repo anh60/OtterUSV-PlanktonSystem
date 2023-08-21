@@ -79,8 +79,8 @@ def writeLensPosition(pos):
 
 def setLed(new_led):
     global next_led
-    print('setting next led')
-    next_led = new_led
+    next_led = new_led / 100
+    print('setting new led ', next_led)
 
 
 def readLedBrightness():
@@ -166,8 +166,7 @@ def cal_thread_cb():
                 next_pos = curr_pos
 
             if(curr_led != next_led):
-                print('calculating new lens pos')
-                curr_led = next_led / 100
+                curr_led = next_led
 
                 if(curr_led < 0):
                     curr_led = 0
@@ -175,7 +174,7 @@ def cal_thread_cb():
                     curr_led = 1
 
                 writeLedBrightness(curr_led)
-                client.pub_led_brightness(curr_led * 100)
+                client.pub_led_brightness(int(curr_led * 100))
 
                 next_led = curr_led
 
@@ -213,7 +212,7 @@ def init_cal_thread():
     # Get and publish current LED brightness
     curr_led = readLedBrightness()
     next_led = curr_led
-    client.pub_led_brightness(curr_led * 100)
+    client.pub_led_brightness(int(curr_led * 100))
 
     # Begin thread
     cal_thread = threading.Thread(target = cal_thread_cb)
