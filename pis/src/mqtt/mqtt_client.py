@@ -139,8 +139,11 @@ def msg_handler(topic, msg):
         state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
+    # Camera calibration - new LED brightness
     if(topic == con.topic.CAL_NEXTLED):
-        print()
+        cam.setLed(int(msg))
+        state.set_sys_state(state.status_flag.READY, 0)
+        state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
 
     # Images file system
