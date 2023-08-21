@@ -30,7 +30,10 @@ topics_sub = [
     con.topic.CTRL_IMAGE,
     con.topic.CTRL_SAMPLE_PUMP,
     con.topic.CTRL_STOP,
+
+    # PIS calibration
     con.topic.CAL_NEXTPOS,
+    con.topic.CAL_NEXTLED,
 
     # RMS control
     con.topic.CTRL_RMS_FILL,
