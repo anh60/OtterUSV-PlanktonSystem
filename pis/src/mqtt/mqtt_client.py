@@ -139,6 +139,9 @@ def msg_handler(topic, msg):
         state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
+    if(topic == con.topic.CAL_NEXTLED):
+        print()
+
 
     # Images file system
     if(topic == con.topic.GET_SAMPLES):
@@ -161,11 +164,21 @@ def pub_status():
     )
 
 
-# Publish current camera position (relative to slide)
+# Publish current camera position
 def pub_cam_pos(pos):
     client.publish(
         topic   = con.topic.CAL_CURRPOS, 
         payload = pos, 
+        qos     = 1, 
+        retain  = True
+    )
+
+
+# Publish current LED brightness
+def pub_led_brightness(brightness):
+        client.publish(
+        topic   = con.topic.CAL_CURRLED, 
+        payload = brightness, 
         qos     = 1, 
         retain  = True
     )

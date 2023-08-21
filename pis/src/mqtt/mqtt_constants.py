@@ -43,6 +43,10 @@ class topic(str, Enum):
     CAL_CURRPOS         = "planktoscope/calibrate/currpos"
     CAL_NEXTPOS         = "planktoscope/calibrate/nextpos"
 
+    # LED brightness
+    CAL_CURRLED         = "planktoscope/calibrate/currled"
+    CAL_NEXTLED         = "planktoscope/calibrate/nextled"
+
     # Image from picamera
     IMAGE               = "planktoscope/calibrate/photo"
 
