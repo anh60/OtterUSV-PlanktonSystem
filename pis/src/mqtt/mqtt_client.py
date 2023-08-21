@@ -182,12 +182,7 @@ def pub_cam_pos(pos):
 
 # Publish current LED brightness
 def pub_led_brightness(brightness):
-        client.publish(
-        topic   = con.topic.CAL_CURRLED, 
-        payload = brightness, 
-        qos     = 1, 
-        retain  = True
-    )
+        client.publish(con.topic.CAL_CURRLED, brightness, 1, True)
 
 
 # Publish an image to photo topic
@@ -205,7 +200,7 @@ def pub_sample_times(sample_times):
     client.publish(
         topic   = con.topic.DATA_SAMPLES, 
         payload = sample_times, 
-        qos     = 2, 
+        qos     = 1, 
         retain  = True
     )
 
