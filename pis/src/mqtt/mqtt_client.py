@@ -182,7 +182,7 @@ def pub_cam_pos(pos):
 
 # Publish current LED brightness
 def pub_led_brightness(brightness):
-        client.publish(con.topic.CAL_CURRLED, brightness, 1, True)
+    client.publish(con.topic.CAL_CURRLED, brightness, 1, True)
 
 
 # Publish an image to photo topic
