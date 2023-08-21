@@ -205,7 +205,7 @@ def pub_sample_times(sample_times):
     client.publish(
         topic   = con.topic.DATA_SAMPLES, 
         payload = sample_times, 
-        qos     = 1, 
+        qos     = 2, 
         retain  = True
     )
 
