@@ -174,7 +174,7 @@ def cal_thread_cb():
                     curr_led = 1
 
                 writeLedBrightness(curr_led)
-                client.pub_led_brightness(int(curr_led * 100))
+                client.pub_led_brightness(str(curr_led * 100))
 
                 next_led = curr_led
 
@@ -213,7 +213,7 @@ def init_cal_thread():
     curr_led = readLedBrightness()
     next_led = curr_led
     pubValue = curr_led * 100
-    pubValue = int(pubValue)
+    pubValue = str(pubValue)
     client.pub_led_brightness(pubValue)
 
     # Begin thread
