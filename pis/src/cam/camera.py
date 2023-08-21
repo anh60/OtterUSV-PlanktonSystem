@@ -209,7 +209,7 @@ def init_cal_thread():
     kit.motor4.throttle = None
 
     # Get and publish current LED brightness
-    curr_led = readLedBrightness()
+    curr_led = readLedBrightness() / 100
     next_led = curr_led
     client.pub_led_brightness
 
