@@ -79,6 +79,7 @@ def writeLensPosition(pos):
 
 def setLed(new_led):
     global next_led
+    print('setting next led')
     next_led = new_led
 
 
@@ -165,6 +166,7 @@ def cal_thread_cb():
                 next_pos = curr_pos
 
             if(curr_led != next_led):
+                print('calculating new lens pos')
                 curr_led = next_led / 100
 
                 if(curr_led < 0):
