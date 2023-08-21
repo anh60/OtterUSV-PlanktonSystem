@@ -18,8 +18,8 @@ import data.images                  as imgs
 
 #---------------------------- GLOBALS ------------------------------------------
 
-clientname = "pis"
-client = mqtt.Client(clientname)
+clientname = "pscope_pis"
+client = mqtt.Client(client_id=clientname, clean_session=True)
 
 
 # Topics subscribed to by the PIS

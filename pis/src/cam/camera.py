@@ -79,8 +79,11 @@ def writeLensPosition(pos):
 
 def setLed(new_led):
     global next_led
-    next_led = new_led / 100
-    print('setting new led ', next_led)
+
+    try:
+        next_led = new_led / 100
+    except:
+        next_led = curr_led
 
 
 def readLedBrightness():

@@ -32,15 +32,12 @@ sample.init_sample_thread()     # Sample routine thread
 
 # Send list of samples
 imgs.send_samples()
-time.sleep(0.1)
 
 # Get state of RMS
 rms.send_status_request()
-time.sleep(0.1)
 
 # Set ready flag
 state.set_sys_state(state.status_flag.READY, 1)
-time.sleep(0.1)
 
 # Loop main thread
 while True:
