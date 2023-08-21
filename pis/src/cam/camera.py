@@ -85,14 +85,14 @@ def setLed(new_led):
 
 def readLedBrightness():
     f = open(ledFile, 'r')
-    brightness = int(f.readline())
+    brightness = f.readline()
     f.close()
     return brightness
 
 
 def writeLedBrightness(brightness):
     f = open(ledFile, 'w')
-    f.write(str(int(brightness * 100)))
+    f.write(str(brightness))
     f.close()
 
 
@@ -175,7 +175,7 @@ def cal_thread_cb():
                     curr_led = 1
 
                 writeLedBrightness(curr_led)
-                client.pub_led_brightness(curr_led)
+                client.pub_led_brightness(curr_led * 100)
 
                 next_led = curr_led
 
@@ -211,9 +211,9 @@ def init_cal_thread():
     kit.motor4.throttle = None
 
     # Get and publish current LED brightness
-    curr_led = readLedBrightness() / 100
+    curr_led = readLedBrightness()
     next_led = curr_led
-    client.pub_led_brightness
+    client.pub_led_brightness(curr_led * 100)
 
     # Begin thread
     cal_thread = threading.Thread(target = cal_thread_cb)
