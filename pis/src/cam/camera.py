@@ -52,7 +52,7 @@ next_led = 0
 #---------------------------- FUNCTIONS ----------------------------------------
 
 def capture_image(path):
-    kit.motor4.throttle = 1.0
+    kit.motor4.throttle = curr_led
     time.sleep(1)
     camera.capture(path)
     time.sleep(1)
