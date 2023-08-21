@@ -85,7 +85,7 @@ def setLed(new_led):
 
 def readLedBrightness():
     f = open(ledFile, 'r')
-    brightness = f.readline()
+    brightness = float(f.readline())
     f.close()
     return brightness
 
