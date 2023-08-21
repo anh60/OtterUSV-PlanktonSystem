@@ -144,7 +144,7 @@ def msg_handler(topic, msg):
 
     # Camera calibration - new LED brightness
     if(topic == con.topic.CAL_NEXTLED):
-        cam.setLed(int(msg))
+        cam.setLed(float(msg))
         state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
