@@ -16,8 +16,8 @@ uint32_t lT;    // CPU time when level switch gets toggled
 uint32_t cT;    // Current CPU time
 
 // Timer thresholds (milliseconds)
-const uint32_t pMax = 25000;    // Pump upper threshold  
-const uint32_t vMin = 25000;    // Valve threshold
+const uint32_t pMax = 30000;    // Pump upper threshold  
+const uint32_t vMin = 30000;    // Valve threshold
 const uint32_t lMin = 1000;
 
 bool checkLevel = false;
