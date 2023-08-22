@@ -86,7 +86,10 @@ def pump():
 
     curr_sample += 1
     state.set_sys_state(state.status_flag.PUMP, 1)
-    time.sleep(2)
+    if(curr_sample == 1):
+        time.sleep(10)
+    else:
+        time.sleep(5)
     state.set_sys_state(state.status_flag.PUMP, 0)
 
     # Set next state
@@ -134,6 +137,10 @@ def flush():
 
     # If reservoir empty
     if(((state.get_sys_state() >> state.status_flag.RMS_FULL) & 1) == 0):
+
+        state.set_sys_state(state.status_flag.PUMP, 1)
+        time.sleep(10)
+        state.set_sys_state(state.status_flag.PUMP, 0)
 
         # Reset thread
         curr_sample = 0
