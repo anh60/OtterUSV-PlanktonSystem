@@ -20,7 +20,7 @@ void setup() {
   pump_init();
   valve_init();
 
-  //level_switch_init();
+  level_switch_init();
   //water_sensor_init();
 
 }

@@ -8,11 +8,11 @@
 
 import 'package:flutter/material.dart';
 
-const String mqtt_broker = "mqtt.eclipseprojects.io";
-const String mqtt_client_name = "sci_client";
+// MQTT setup
+//const String mqtt_broker = "mqtt.eclipseprojects.io";
+const String mqtt_broker = "broker.hivemq.com";
+const String mqtt_client_name = "pscope_sci";
 const int mqtt_broker_port = 1883;
-
-const String db_server_address = "127.0.0.1";
 
 // MQTT Topics
 abstract class topics {
@@ -20,16 +20,11 @@ abstract class topics {
   static const String STATUS_FLAGS = "planktoscope/status/flags";
   static const String STATUS_CONNECTED = "planktoscope/status/connected";
 
-  // Mode
-  static const String MODE_AUTO = "planktoscope/mode/autonomous";
-
-  // Control
+  // PIS Control
   static const String CTRL_SAMPLE = "planktoscope/control/sample";
-
-  static const String CTRL_IMAGE = "planktoscope/control/capture_image";
-
   static const String CTRL_SAMPLE_PUMP = "planktoscope/control/sample_pump";
   static const String CTRL_STOP = "planktoscope/control/stop";
+  static const String CTRL_IMAGE = "planktoscope/control/capture_image";
 
   // RMS Control
   static const String CTRL_RMS_PUMP = "planktoscope/control/pump";
@@ -39,6 +34,8 @@ abstract class topics {
   // Calibrate
   static const String CAL_CURRPOS = "planktoscope/calibrate/currpos";
   static const String CAL_NEXTPOS = "planktoscope/calibrate/nextpos";
+  static const String CAL_CURRLED = "planktoscope/calibrate/currled";
+  static const String CAL_NEXTLED = "planktoscope/calibrate/nextled";
   static const String IMAGE = "planktoscope/calibrate/photo";
 
   // --- Images file system
@@ -64,6 +61,7 @@ double getContainerWidth(BuildContext context, double div, double ratio) {
 // Image aspect ratio
 double imageAspectRatio = 9 / 16;
 
+// Color pallet
 const Color darkBlue = Color.fromARGB(255, 77, 90, 114);
 const Color darkerBlue = Color.fromARGB(255, 54, 67, 92);
 const Color lightBlue = Color.fromARGB(255, 169, 216, 255);

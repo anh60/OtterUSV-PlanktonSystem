@@ -36,61 +36,21 @@ class _ReservoirBoxState extends State<ReservoirBox> {
 
   @override
   Widget build(BuildContext context) {
-    return StatusContainer(
+    return const StatusContainer(
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           // Vertical gap
-          const SizedBox(height: 5),
+          SizedBox(height: 5),
 
           // Label
-          const Text(
+          Text(
             'RESERVOIR',
             style: TextStyle(
               fontSize: 12.5,
               color: lightBlue,
               fontWeight: FontWeight.bold,
             ),
-          ),
-
-          // Vertical gap
-          const SizedBox(height: 15),
-
-          // Current fill time
-          const StatusTab('Fill time', 5000),
-
-          // Vertical gap
-          const SizedBox(height: 5),
-
-          // Current flush time
-          const StatusTab('Flush time', 5000),
-
-          // Vertical gap
-          const SizedBox(height: 5),
-
-          // Current flush time
-          const StatusTab('Depth', 50),
-
-          // Vertical gap
-          const SizedBox(height: 15),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              OutlinedTextField(pumpFieldController, 'Fill time', false),
-              OutlinedButtonDark(() => null, 'Send', false),
-            ],
-          ),
-
-          // Vertical gap
-          const SizedBox(height: 5),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              OutlinedTextField(valveFieldController, 'Flush time', false),
-              OutlinedButtonDark(() => null, 'Send', false),
-            ],
           ),
         ],
       ),

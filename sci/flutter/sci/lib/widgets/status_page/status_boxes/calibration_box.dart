@@ -10,6 +10,7 @@ import "package:flutter/material.dart";
 import "package:sci/constants.dart";
 import 'package:sci/widgets/general/outlined_button_dark.dart';
 import 'package:sci/widgets/general/outlined_text_field.dart';
+import 'package:sci/widgets/images_page/string_status_tab.dart';
 import 'package:sci/widgets/status_page/status_boxes/status_container.dart';
 import 'package:sci/widgets/status_page/status_boxes/status_tab.dart';
 
@@ -25,18 +26,26 @@ class CalibrationBox extends StatefulWidget {
 }
 
 class _CalibrationBoxState extends State<CalibrationBox> {
-  final textFieldController = TextEditingController();
+  final distanceFieldController = TextEditingController();
+  final brightnessFieldController = TextEditingController();
 
   @override
   void dispose() {
-    textFieldController.dispose();
+    distanceFieldController.dispose();
+    brightnessFieldController.dispose();
     super.dispose();
   }
 
-  void onSendPressed() {
+  void sendDistance() {
     widget.mqtt.publishMessage(
-        topics.CAL_NEXTPOS, textFieldController.text.toString());
-    textFieldController.clear();
+        topics.CAL_NEXTPOS, distanceFieldController.text.toString());
+    distanceFieldController.clear();
+  }
+
+  void sendBrightness() {
+    widget.mqtt.publishMessage(
+        topics.CAL_NEXTLED, brightnessFieldController.text.toString());
+    brightnessFieldController.clear();
   }
 
   @override
@@ -45,9 +54,6 @@ class _CalibrationBoxState extends State<CalibrationBox> {
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          // Vertical gap
-          const SizedBox(height: 5),
-
           // Label
           const Text(
             'MICROSCOPE',
@@ -83,7 +89,18 @@ class _CalibrationBoxState extends State<CalibrationBox> {
           const StatusTab('Min distance', 5000),
 
           // Vertical gap
-          const SizedBox(height: 15),
+          const SizedBox(height: 5),
+
+          // Current LED brightness
+          ValueListenableBuilder(
+            valueListenable: widget.mqtt.cal_led,
+            builder: (BuildContext context, String value, Widget? child) {
+              return StringStatusTab('LED Brightness (%)', value);
+            },
+          ),
+
+          // Vertical gap
+          const SizedBox(height: 30),
 
           // New position text field
           Row(
@@ -91,14 +108,14 @@ class _CalibrationBoxState extends State<CalibrationBox> {
             children: [
               // New position text field
               OutlinedTextField(
-                textFieldController,
-                'New pos',
+                distanceFieldController,
+                'Distance',
                 false,
               ),
 
               // Send new position button
               OutlinedButtonDark(
-                onSendPressed,
+                sendDistance,
                 'Send',
                 false,
               ),
@@ -108,20 +125,23 @@ class _CalibrationBoxState extends State<CalibrationBox> {
           // Vertical gap
           const SizedBox(height: 15),
 
-          // Image received date
-          // Label
-          const Text(
-            'Image receieved',
-            style: TextStyle(color: lightBlue),
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // New LED brightness field
+              OutlinedTextField(
+                brightnessFieldController,
+                'Brightness',
+                false,
+              ),
 
-          // Vertical gap
-          const SizedBox(height: 5),
-
-          // Date
-          const Text(
-            '05/07/2023/20:00',
-            style: TextStyle(color: lightBlue),
+              // Send new position button
+              OutlinedButtonDark(
+                sendBrightness,
+                'Send',
+                false,
+              ),
+            ],
           ),
         ],
       ),

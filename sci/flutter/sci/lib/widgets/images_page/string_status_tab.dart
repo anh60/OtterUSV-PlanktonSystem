@@ -20,7 +20,7 @@ class StringStatusTab extends StatefulWidget {
 }
 
 class _StringStatusTabState extends State<StringStatusTab> {
-  static const double fontsize = 15;
+  static const double fontsize = 12.5;
   static const double radius = 10;
   static const double xPadding = 10;
   static const double yPadding = 5;

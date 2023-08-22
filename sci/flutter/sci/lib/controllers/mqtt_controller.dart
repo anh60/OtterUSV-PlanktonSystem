@@ -20,6 +20,7 @@ class MQTTController with ChangeNotifier {
   final ValueNotifier<String> status_connected = ValueNotifier<String>('0');
   final ValueNotifier<String> status_flags = ValueNotifier<String>('0');
   final ValueNotifier<String> cal_pos = ValueNotifier<String>('0');
+  final ValueNotifier<String> cal_led = ValueNotifier<String>('0');
   final ValueNotifier<String> image = ValueNotifier<String>('0');
   final ValueNotifier<String> data_samples = ValueNotifier<String>('0');
   ValueNotifier<String> data_images = ValueNotifier<String>('0');
@@ -41,7 +42,7 @@ class MQTTController with ChangeNotifier {
     client.onSubscribed = onSubscribed;
     client.onSubscribeFail = onSubscribeFail;
     client.pongCallback = pong;
-    client.keepAlivePeriod = 60;
+    //client.keepAlivePeriod = 60;
     client.logging(on: false);
     client.setProtocolV311();
 
@@ -49,8 +50,8 @@ class MQTTController with ChangeNotifier {
 
     // Configure connection will-message and set clean session
     final connMessage = MqttConnectMessage()
-        .withWillTopic('willtopic')
-        .withWillMessage('Will message')
+        .withWillTopic('pscope_sci_lw')
+        .withWillMessage('lw')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
 
@@ -65,23 +66,11 @@ class MQTTController with ChangeNotifier {
     }
 
     // Check if connected, if not disconnect properly
-    if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      print('MQTT | Client connected');
-    } else {
-      print(
-          'MQTT | ERROR client connection failed - disconnecting, status is ${client.connectionStatus}');
+    if (client.connectionStatus!.state != MqttConnectionState.connected) {
+      print('MQTT | Connection failed, status = ${client.connectionStatus}');
       client.disconnect();
       return -1;
     }
-
-    // Subscribe to topics
-    client.subscribe(topics.STATUS_FLAGS, MqttQos.atLeastOnce);
-    client.subscribe(topics.STATUS_CONNECTED, MqttQos.atLeastOnce);
-    client.subscribe(topics.CAL_CURRPOS, MqttQos.atLeastOnce);
-    client.subscribe(topics.IMAGE, MqttQos.atLeastOnce);
-    client.subscribe(topics.DATA_SAMPLES, MqttQos.atLeastOnce);
-    client.subscribe(topics.DATA_IMAGES, MqttQos.atLeastOnce);
-    client.subscribe(topics.DATA_IMAGE, MqttQos.atLeastOnce);
 
     //---------------------------- LOOP ----------------------------------------
 
@@ -98,31 +87,8 @@ class MQTTController with ChangeNotifier {
       // Get topic
       String topic = msg[0].topic;
 
-      // Filter topics and update corresponding ValueNotifier
-      switch (topic) {
-        case topics.STATUS_CONNECTED:
-          status_connected.value = stringMsg;
-          break;
-        case topics.STATUS_FLAGS:
-          status_flags.value = stringMsg;
-          break;
-        case topics.CAL_CURRPOS:
-          cal_pos.value = stringMsg;
-          break;
-        case topics.IMAGE:
-          image.value = stringMsg;
-          break;
-        case topics.DATA_SAMPLES:
-          data_samples.value = stringMsg;
-          break;
-        case topics.DATA_IMAGES:
-          data_images.value = stringMsg;
-          break;
-        case topics.DATA_IMAGE:
-          data_image.value = stringMsg;
-          break;
-        default:
-      }
+      // Filter messages and update corresponding ValueNotifier
+      filterMessages(topic, stringMsg);
 
       print('MQTT | Data received on topic: $topic');
       print('MQTT | Payload size = ${message.length}');
@@ -135,6 +101,15 @@ class MQTTController with ChangeNotifier {
   //---------------------------- FUNCTIONS -------------------------------------
 
   void onConnected() {
+    // Subscribe to topics
+    client.subscribe(topics.STATUS_FLAGS, MqttQos.atLeastOnce);
+    client.subscribe(topics.STATUS_CONNECTED, MqttQos.atLeastOnce);
+    client.subscribe(topics.CAL_CURRPOS, MqttQos.atLeastOnce);
+    client.subscribe(topics.CAL_CURRLED, MqttQos.atLeastOnce);
+    client.subscribe(topics.IMAGE, MqttQos.atLeastOnce);
+    client.subscribe(topics.DATA_SAMPLES, MqttQos.atLeastOnce);
+    client.subscribe(topics.DATA_IMAGES, MqttQos.atLeastOnce);
+    client.subscribe(topics.DATA_IMAGE, MqttQos.atLeastOnce);
     print('MQTT | Connected');
   }
 
@@ -159,6 +134,7 @@ class MQTTController with ChangeNotifier {
   }
 
   void publishMessage(String t, String m) {
+    print('publishing');
     final builder = MqttClientPayloadBuilder();
     builder.addString(m);
     client.publishMessage(
@@ -167,5 +143,35 @@ class MQTTController with ChangeNotifier {
       builder.payload!,
       retain: false,
     );
+  }
+
+  void filterMessages(String t, String m) {
+    switch (t) {
+      case topics.STATUS_CONNECTED:
+        status_connected.value = m;
+        break;
+      case topics.STATUS_FLAGS:
+        status_flags.value = m;
+        break;
+      case topics.CAL_CURRPOS:
+        cal_pos.value = m;
+        break;
+      case topics.CAL_CURRLED:
+        cal_led.value = m;
+        break;
+      case topics.IMAGE:
+        image.value = m;
+        break;
+      case topics.DATA_SAMPLES:
+        data_samples.value = m;
+        break;
+      case topics.DATA_IMAGES:
+        data_images.value = m;
+        break;
+      case topics.DATA_IMAGE:
+        data_image.value = m;
+        break;
+      default:
+    }
   }
 }

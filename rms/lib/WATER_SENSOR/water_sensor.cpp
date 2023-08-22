@@ -8,7 +8,7 @@
 #include "water_sensor.h"
 #include "fsm.h"
 
-#define WATER_PIN 5
+#define WATER_PIN 4
 
 void ISR_WATER(){
     set_sys_state(WATER_BIT, (~(get_sys_state() >> WATER_BIT) & 1));

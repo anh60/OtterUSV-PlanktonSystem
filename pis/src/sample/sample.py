@@ -100,8 +100,6 @@ def pump():
 def image():
     global next_sample_state
 
-    print("imaging sample", curr_sample, "\n"),
-
     image_time = time.strftime('%Y%m%d%H%M%S')
     image_path = sample_dir + '/' + image_time + '.jpg'
     cam.capture_image(image_path)
@@ -116,8 +114,6 @@ def image():
 # Uploading/updating sample list
 def upload():
     global next_sample_state
-
-    print("uploading", sample_num, "images \n")
 
     # Publish list of samples to MQTT broker
     imgs.send_samples()
@@ -137,9 +133,10 @@ def flush():
 
     # If reservoir empty
     if(((state.get_sys_state() >> state.status_flag.RMS_FULL) & 1) == 0):
-
+        
+        # Remove water from 5v
         state.set_sys_state(state.status_flag.PUMP, 1)
-        time.sleep(10)
+        time.sleep(20)
         state.set_sys_state(state.status_flag.PUMP, 0)
 
         # Reset thread

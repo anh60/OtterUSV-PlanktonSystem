@@ -12,15 +12,16 @@
 // Timers (milliseconds)
 uint32_t pT;    // CPU time when pump start
 uint32_t vT;    // CPU time when valve starts
+uint32_t lT;    // CPU time when level switch gets toggled
 uint32_t cT;    // Current CPU time
 
 // Timer thresholds (milliseconds)
-const uint32_t pMin = 20000;    // Pump lower threshold
 const uint32_t pMax = 25000;    // Pump upper threshold  
 const uint32_t vMin = 25000;    // Valve threshold
+const uint32_t lMin = 1000;
 
-// Estimated water level of reservoir (mL)
-uint16_t resLevel;
+bool checkLevel = false;
+
 
 // Current and next system state
 uint8_t curr_sys_state;
@@ -88,18 +89,30 @@ void checkFlags(){
         // Get current time
         cT = millis();
 
-        // If bigger than pMin and less than pMax
-        if((cT - pT >= pMin) && (cT - pT < pMax)){
-
-            // Check sensor
-            if(readLevel()){
-                set_sys_state(PUMP_BIT, 0);
-                set_sys_state(WATER_BIT, 1);
+        // If less than max time
+        if(cT - pT < pMax){
+            
+            // If level-switch has not been triggered
+            if(checkLevel == false){
+                // Check level switch
+                if((readLevel() == true)){
+                    lT = millis();
+                    checkLevel = true;
+                }
+            }
+            // If level switch was triggered
+            else{
+                // Check again after a short delay (in case of noise)
+                if(((cT - lT) >= lMin) && (readLevel() == true)){
+                    set_sys_state(PUMP_BIT, 0);
+                    set_sys_state(WATER_BIT, 1);
+                    checkLevel = false;
+                }
             }
         }
 
         // If pMax reached
-        else if (cT - pT >= pMax){
+        else if ((cT - pT) >= pMax){
             set_sys_state(PUMP_BIT, 0);
             set_sys_state(WATER_BIT, 1);
         }
@@ -113,7 +126,7 @@ void checkFlags(){
     // If valve flag is 1
     if((vCurr == 1) && (vNext == 1)){
         cT = millis();
-        if(cT - vT >= vMin){
+        if((cT - vT) >= vMin){
             set_sys_state(VALVE_BIT, 0);
             set_sys_state(WATER_BIT, 0);
         }
