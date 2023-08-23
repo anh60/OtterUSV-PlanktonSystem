@@ -117,7 +117,7 @@ def msg_handler(topic, msg):
         handle_rms_flush(msg)
 
     # RMS STOP (force IDLE)
-    elif(topic == con.topic.CTRL_RMS_STOP):
+    if(topic == con.topic.CTRL_RMS_STOP):
         handle_rms_stop(msg)
 
     # Capture image
