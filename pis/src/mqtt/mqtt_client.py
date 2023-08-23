@@ -50,7 +50,7 @@ topics_sub = [
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
-# Initialize MQTT client thread
+# --- Initialize MQTT client thread ---
 def init_mqtt_thread():
     
     # Set callbacks
@@ -67,7 +67,7 @@ def init_mqtt_thread():
     client.loop_start()
 
 
-# On-connect callback function
+# --- On-connect callback function ---
 def on_connect(client, userdata, flags, rc):
 
     # If connection succeeds
@@ -86,73 +86,135 @@ def on_connect(client, userdata, flags, rc):
         client.subscribe(topic, 1)
 
 
-# On-message received callback function
+# --- On-message received callback function ---
 def on_message(client, userdata, message):
     msg = message.payload
     topic = message.topic
     msg_handler(topic, msg)
 
 
-# Filter incoming messages in on_message callback
+# --- Filter incoming topics/messages in on_message callback ---
 def msg_handler(topic, msg):
 
-    # Begin sample routine
+    # Sample
     if(topic == con.topic.CTRL_SAMPLE):
+        handle_sample(msg)
+
+    # Pump on
+    elif(topic == con.topic.CTRL_SAMPLE_PUMP):
+        handle_pump(msg)
+
+    # Pump off
+    elif(topic == con.topic.CTRL_STOP):
+        handle_stop(msg)
+
+    # RMS FILL
+    elif(topic == con.topic.CTRL_RMS_FILL):
+        handle_rms_fill(msg)
+
+    # RMS FLUSH
+    elif(topic == con.topic.CTRL_RMS_FLUSH):
+        handle_rms_flush(msg)
+
+    # RMS STOP (force IDLE)
+    elif(topic == con.topic.CTRL_RMS_STOP):
+        handle_rms_stop(msg)
+
+    # Capture image
+    elif(topic == con.topic.CTRL_IMAGE):
+        handle_cal_image(msg)
+
+    # Lens position
+    elif(topic == con.topic.CAL_NEXTPOS):
+        handle_lens(msg)
+
+    # Led brightness
+    elif(topic == con.topic.CAL_NEXTLED):
+        handle_led(msg)
+
+    # List of samples
+    elif(topic == con.topic.GET_SAMPLES):
+        handle_samples(msg)
+
+    # List of images from sample
+    elif(topic == con.topic.GET_IMAGES):
+        handle_images(msg)
+
+    # Image from sample
+    elif(topic == con.topic.GET_IMAGE):
+        handle_image(msg)
+
+
+# --- MESSAGE HANDLERS ---
+
+# Sample
+def handle_sample(msg):
+    if((state.get_sys_state() >> state.status_flag.READY) & 1):
         sample.set_sample_num(int(msg))
         state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.SAMPLING, 1)
 
-
-    # Manual control - 5v pump on/off
-    if(topic == con.topic.CTRL_SAMPLE_PUMP):
+# Pump on
+def handle_pump(msg):
+    if((state.get_sys_state() >> state.status_flag.READY) & 1):
         state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.PUMP, 1)
 
-    if(topic == con.topic.CTRL_STOP):
+# Pump off
+def handle_stop(msg):
+    if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
+        pass
+    elif((state.get_sys_state() >> state.status_flag.PUMP) & 1):
         state.set_sys_state(state.status_flag.READY, 1)
         state.set_sys_state(state.status_flag.PUMP, 0)
 
-
-    # Manual control - RMS fill, flush, stop
-    if(topic == con.topic.CTRL_RMS_FILL):
+# RMS FILL
+def handle_rms_fill(msg):
+    if((state.get_sys_state() >> state.status_flag.READY) & 1):
         rms.send_fill()
 
-    if(topic == con.topic.CTRL_RMS_FLUSH):
+# RMS FLUSH
+def handle_rms_flush(msg):
+    if((state.get_sys_state() >> state.status_flag.READY) & 1):
         rms.send_flush()
 
-    if(topic == con.topic.CTRL_RMS_STOP):
+# RMS STOP (force IDLE)
+def handle_rms_stop(msg):
+    if((state.get_sys_state() >> state.status_flag.READY) & 1):
         rms.send_stop()
 
-
-    # Manual control - capture new image and publish
-    if(topic == con.topic.CTRL_IMAGE):
+# Capture image
+def handle_cal_image(msg):
+    if((state.get_sys_state() >> state.status_flag.READY) & 1):
         state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.IMAGING, 1)
 
+# Lens position
+def handle_lens(msg):
+    cam.set_pos(int(msg))
+    state.set_sys_state(state.status_flag.READY, 0)
+    state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
-    # Camera calibration - new position
-    if(topic == con.topic.CAL_NEXTPOS):
-        cam.set_pos(int(msg))
-        state.set_sys_state(state.status_flag.READY, 0)
-        state.set_sys_state(state.status_flag.CALIBRATING, 1)
+# LED Brightness
+def handle_led(msg):
+    cam.setLed(float(msg))
+    state.set_sys_state(state.status_flag.READY, 0)
+    state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
-    # Camera calibration - new LED brightness
-    if(topic == con.topic.CAL_NEXTLED):
-        cam.setLed(float(msg))
-        state.set_sys_state(state.status_flag.READY, 0)
-        state.set_sys_state(state.status_flag.CALIBRATING, 1)
+# List of samples
+def handle_samples(msg):
+    imgs.send_samples()
+
+# List of images from sample
+def handle_images(msg):
+    imgs.set_curr_sample(msg)
+
+# Image from sample
+def handle_image(msg):
+    imgs.set_curr_image(msg)
 
 
-    # Images file system
-    if(topic == con.topic.GET_SAMPLES):
-        imgs.get_samples()
-
-    if(topic == con.topic.GET_IMAGES):
-        imgs.set_curr_sample(msg)
-
-    if(topic == con.topic.GET_IMAGE):
-        imgs.set_curr_image(msg)
-
+# --- PUBLISHERS ---
 
 # Publish current system state to status topic
 def pub_status():
