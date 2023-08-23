@@ -79,7 +79,8 @@ def on_connect(client, userdata, flags, rc):
 
     # If connection fails
     else:
-        print("Connection failed, returned code: ", rc)
+        #print("Connection failed, returned code: ", rc)
+        pass
 
     # Subscribe to relevant topics with QOS=1
     for topic in topics_sub:
@@ -101,19 +102,19 @@ def msg_handler(topic, msg):
         handle_sample(msg)
 
     # Pump on
-    elif(topic == con.topic.CTRL_SAMPLE_PUMP):
+    if(topic == con.topic.CTRL_SAMPLE_PUMP):
         handle_pump(msg)
 
     # Pump off
-    elif(topic == con.topic.CTRL_STOP):
+    if(topic == con.topic.CTRL_STOP):
         handle_stop(msg)
 
     # RMS FILL
-    elif(topic == con.topic.CTRL_RMS_FILL):
+    if(topic == con.topic.CTRL_RMS_FILL):
         handle_rms_fill(msg)
 
     # RMS FLUSH
-    elif(topic == con.topic.CTRL_RMS_FLUSH):
+    if(topic == con.topic.CTRL_RMS_FLUSH):
         handle_rms_flush(msg)
 
     # RMS STOP (force IDLE)
@@ -121,27 +122,27 @@ def msg_handler(topic, msg):
         handle_rms_stop(msg)
 
     # Capture image
-    elif(topic == con.topic.CTRL_IMAGE):
+    if(topic == con.topic.CTRL_IMAGE):
         handle_cal_image(msg)
 
     # Lens position
-    elif(topic == con.topic.CAL_NEXTPOS):
+    if(topic == con.topic.CAL_NEXTPOS):
         handle_lens(msg)
 
     # Led brightness
-    elif(topic == con.topic.CAL_NEXTLED):
+    if(topic == con.topic.CAL_NEXTLED):
         handle_led(msg)
 
     # List of samples
-    elif(topic == con.topic.GET_SAMPLES):
+    if(topic == con.topic.GET_SAMPLES):
         handle_samples(msg)
 
     # List of images from sample
-    elif(topic == con.topic.GET_IMAGES):
+    if(topic == con.topic.GET_IMAGES):
         handle_images(msg)
 
     # Image from sample
-    elif(topic == con.topic.GET_IMAGE):
+    if(topic == con.topic.GET_IMAGE):
         handle_image(msg)
 
 
