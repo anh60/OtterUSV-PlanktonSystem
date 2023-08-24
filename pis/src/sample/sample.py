@@ -106,18 +106,12 @@ def image():
 # Uploading/updating sample list
 def upload():
     global next_sample_state
-
-    # If imaging in progress
-    if((state.get_sys_state() >> state.status_flag.IMAGING) & 1):
-        pass
     
-    # If imaging done
-    else:
-        # Publish list of samples to MQTT broker
-        imgs.publishSamples()
+    # Publish list of samples to MQTT broker
+    imgs.publishSamples()
 
-        # Set next state
-        next_sample_state = sample_state.FLUSH
+    # Set next state
+    next_sample_state = sample_state.FLUSH
 
 
 # Flushing reservoir
