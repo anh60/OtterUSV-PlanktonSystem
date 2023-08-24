@@ -19,6 +19,7 @@ import mqtt.mqtt_client as client
 
 # Storage location for samples and images
 samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images'
+samples_path2 = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
 
 # Current selected sample/image
 curr_sample = 0
@@ -35,7 +36,8 @@ image_request = False
 # --- Creates a time/position tagged sample directory ---
 def create_sample_dir():
     sample_time = time.strftime('%Y%m%d%H%M%S')
-    sample_dir = samples_path + '/' + sample_time
+    sample_dir = samples_path2 + sample_time
+    print(sample_dir)
 
     lat = '63.5'
     lon = '10.3'
