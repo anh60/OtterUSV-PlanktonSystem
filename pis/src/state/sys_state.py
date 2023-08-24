@@ -62,11 +62,12 @@ def update_sys_state():
     
 
 def publishState(state):
-    client.publishMessage(
-        t = client.con.topic.CAL_CURRPOS,
-        m = state,
-        r = True
-    )
+    client.pubStatus()
+    #client.publishMessage(
+    #    t = client.con.topic.CAL_CURRPOS,
+    #    m = state,
+    #    r = True
+    #)
     
 
 def status_thread_cb():
