@@ -55,7 +55,7 @@ def set_sample_num(n):
 
     sample_num = n
     sample_dir = imgs.create_sample_dir()
-    cam.set_sample_dir(sample_dir)
+    #cam.set_sample_dir(sample_dir)
 
 
 # Filling reservoir
@@ -93,23 +93,14 @@ def image():
     global next_sample_state, image_taken
 
     # Capture image
-    #image_path = imgs.create_image_path(sample_dir)
-    #cam.capture_image(image_path)
+    image_path = imgs.create_image_path(sample_dir)
+    cam.capture_image(image_path)
 
-    if(image_taken == False):
-        state.set_sys_state(state.status_flag.IMAGING, 1)
-        image_taken = True
-
-    if(((state.get_sys_state() >> state.status_flag.IMAGING) & 1) == 1):
-        pass 
+    # Set next state
+    if(curr_sample >= sample_num):
+        next_sample_state = sample_state.UPLOAD
     else:
-        # Set next state
-        if(curr_sample >= sample_num):
-            next_sample_state = sample_state.UPLOAD
-        else:
-            next_sample_state = sample_state.PUMP
-            
-        image_taken = False
+        next_sample_state = sample_state.PUMP
 
 
 # Uploading/updating sample list
