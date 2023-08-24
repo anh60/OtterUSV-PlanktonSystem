@@ -45,6 +45,7 @@ sample_dir = 0,
 # Flags for sending RMS commands only once
 fill_sent = False
 flush_sent = False
+image_taken = False
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
@@ -75,16 +76,20 @@ def fill():
 def pump():
     global next_sample_state, curr_sample
 
-    curr_sample += 1
-    state.set_sys_state(state.status_flag.PUMP, 1)
-    if(curr_sample == 1):
-        time.sleep(10)
+    # If imaging in progress
+    if((state.get_sys_state() >> state.status_flag.IMAGING) & 1):
+        pass
     else:
-        time.sleep(5)
-    state.set_sys_state(state.status_flag.PUMP, 0)
+        curr_sample += 1
+        state.set_sys_state(state.status_flag.PUMP, 1)
+        if(curr_sample == 1):
+            time.sleep(10)
+        else:
+            time.sleep(5)
+        state.set_sys_state(state.status_flag.PUMP, 0)
 
-    # Set next state
-    next_sample_state = sample_state.IMAGE
+        # Set next state
+        next_sample_state = sample_state.IMAGE
 
 
 # Imaging a sample
@@ -120,7 +125,7 @@ def upload():
 
 # Flushing reservoir
 def flush():
-    global next_sample_state, curr_sample, fill_sent, flush_sent
+    global next_sample_state, curr_sample, fill_sent, flush_sent, image_taken
 
     # Send FLUSH command
     if(flush_sent == False):
