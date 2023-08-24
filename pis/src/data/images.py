@@ -32,7 +32,7 @@ image_request = False
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
-# Get date/time of all samples
+# --- Get date/time of all samples ---
 def get_samples():
     samples = [
         file.name for file in os.scandir(samples_path) if file.is_dir()
@@ -41,10 +41,14 @@ def get_samples():
     return samples
 
 
-# Publish list of samples to MQTT broker
-def send_samples():
-    client.pub_sample_times(get_samples())
-            
+# --- Publish list of samples to MQTT broker ---
+def publishSamples():
+    client.publishMessage(
+        t = client.con.topic.DATA_SAMPLES,
+        m = get_samples(),
+        r = True,
+    )
+    
 
 # Get date/time of all images within a sample
 def get_images(sample):
@@ -64,10 +68,29 @@ def get_images(sample):
     return images
 
 
+# --- Publish list of images to MQTT broker ---
+def publishImages(images):
+    client.publishMessage(
+        t = client.con.topic.DATA_IMAGES,
+        m = images,
+        r = True,
+    )
+
+
 # Get a specific image within a sample
 def get_image(sample, image_time):
     image = (samples_path + '/' + sample + '/' + image_time)
     return image
+
+
+# --- Publish an image within a sample to MQTT broker ---
+def publishImage(image):
+    client.publishMessage(
+        t = client.con.topic.DATA_IMAGE,
+        m = image,
+        r = True,
+    )
+
 
 def set_sample_request_flag():
     global samples_request
@@ -94,7 +117,7 @@ def images_thread_cb():
 
         # If list of samples have been requested from MQTT broker
         if(samples_request == True):
-            send_samples()
+            publishSamples()
             samples_request = False
             time.sleep(0.001)
 
@@ -103,8 +126,8 @@ def images_thread_cb():
             # Get images corresponding to selected sample
             images = get_images(curr_sample.decode())
 
-            # Publish images
-            client.pub_image_times(images)
+            # Publish
+            publishImages(images)
 
             # Reset flag
             images_request = False
@@ -131,12 +154,12 @@ def images_thread_cb():
             # If image exists, encode and publish image
             else:
                 # Convert image to a base64 String for transmission
-                msg = img
-                base64_bytes = base64.b64encode(msg)
-                base64_msg = base64_bytes.decode('ascii')
+                message = img
+                base64_bytes = base64.b64encode(message)
+                base64_string = base64_bytes.decode('ascii')
 
                 # Publish image
-                client.pub_image(base64_msg)
+                publishImage(base64_string)
 
             # Reset flag
             image_request = False

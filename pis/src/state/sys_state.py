@@ -61,10 +61,18 @@ def update_sys_state():
         return False
     
 
+def publishState(state):
+    client.publishMessage(
+        t = client.con.topic.CAL_CURRPOS,
+        m = state,
+        r = True
+    )
+    
+
 def status_thread_cb():
     while True:
         if(update_sys_state()):
-            client.pub_status()
+            publishState(curr_sys_state)
         else:
             time.sleep(0.001)
             

@@ -146,22 +146,22 @@ def msg_handler(topic, msg):
         handle_image(msg)
 
 
-# --- MESSAGE HANDLERS ---
-
-# Sample
+# --- Sample ---
 def handle_sample(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
         sample.set_sample_num(int(msg))
         state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.SAMPLING, 1)
 
-# Pump on
+
+# --- Pump on ---
 def handle_pump(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
         state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.PUMP, 1)
 
-# Pump off
+
+# --- Pump off ---
 def handle_stop(msg):
     if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
         pass
@@ -169,84 +169,66 @@ def handle_stop(msg):
         state.set_sys_state(state.status_flag.READY, 1)
         state.set_sys_state(state.status_flag.PUMP, 0)
 
-# RMS FILL
+
+# --- RMS FILL ---
 def handle_rms_fill(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
         rms.send_fill()
 
-# RMS FLUSH
+
+# --- RMS FLUSH ---
 def handle_rms_flush(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
         rms.send_flush()
 
-# RMS STOP (force IDLE)
+
+# --- RMS STOP (force IDLE) ---
 def handle_rms_stop(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
         rms.send_stop()
 
-# Capture image
+
+# --- Capture image ---
 def handle_cal_image(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
         state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.IMAGING, 1)
 
-# Lens position
+
+# --- Lens position ---
 def handle_lens(msg):
-    cam.set_pos(int(msg))
+    cam.setLensPosition(int(msg))
     state.set_sys_state(state.status_flag.READY, 0)
     state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
-# LED Brightness
+
+# --- LED Brightness ---
 def handle_led(msg):
-    cam.setLed(float(msg))
+    cam.setLedBrightness(float(msg))
     state.set_sys_state(state.status_flag.READY, 0)
     state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
-# List of samples
-def handle_samples(msg):
-    imgs.send_samples()
 
-# List of images from sample
+# --- List of samples ---
+def handle_samples(msg):
+    imgs.publishSamples()
+
+
+# --- List of images from sample ---
 def handle_images(msg):
     imgs.set_curr_sample(msg)
 
-# Image from sample
+
+# --- Image from sample ---
 def handle_image(msg):
     imgs.set_curr_image(msg)
 
 
-# --- PUBLISHERS ---
-
-# Publish current system state to status topic
-def pub_status():
-    client.publish(con.topic.STATUS_FLAGS, state.get_sys_state(), 1, True)
-
-
-# Publish current camera position
-def pub_cam_pos(pos):
-    client.publish(con.topic.CAL_CURRPOS, pos, 1, True)
-
-
-# Publish current LED brightness
-def pub_led_brightness(brightness):
-    client.publish(con.topic.CAL_CURRLED, brightness, 1, True)
-
-
-# Publish an image to photo topic
-def pub_photo(picture):
-    client.publish(con.topic.IMAGE, picture, 1, True)
-
-
-# Publish sample times to samples topic
-def pub_sample_times(sample_times):
-    client.publish(con.topic.DATA_SAMPLES, sample_times, 1, True)
-
-
-# Publish image times of a sample to images topic
-def pub_image_times(image_times):
-    client.publish(con.topic.DATA_IMAGES, image_times, 1, True)
-
-
-# Publish image corresponding to an image time
-def pub_image(image):
-    client.publish(con.topic.DATA_IMAGE, image, 1, True)
+# --- Publish a message with QOS=1 ---
+def publishMessage(t, m, r):
+    client.publish(
+        topic   = t,
+        payload = m,
+        qos     = 1,
+        retain  = r
+    )

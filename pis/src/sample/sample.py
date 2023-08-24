@@ -116,7 +116,7 @@ def upload():
     global next_sample_state
 
     # Publish list of samples to MQTT broker
-    imgs.send_samples()
+    imgs.publishSamples()
 
     # Set next state
     next_sample_state = sample_state.FLUSH
