@@ -90,17 +90,26 @@ def pump():
 
 # Imaging a sample
 def image():
-    global next_sample_state
+    global next_sample_state, image_taken
 
     # Capture image
-    image_path = imgs.create_image_path(sample_dir)
-    cam.capture_image(image_path)
+    #image_path = imgs.create_image_path(sample_dir)
+    #cam.capture_image(image_path)
 
-    # Set next state
-    if(curr_sample >= sample_num):
-        next_sample_state = sample_state.UPLOAD
+    if(image_taken == False):
+        state.set_sys_state(state.status_flag.IMAGING, 1)
+        image_taken = True
+
+    if(((state.get_sys_state() >> state.status_flag.IMAGING) & 1) == 1):
+        pass 
     else:
-        next_sample_state = sample_state.PUMP
+        # Set next state
+        if(curr_sample >= sample_num):
+            next_sample_state = sample_state.UPLOAD
+        else:
+            next_sample_state = sample_state.PUMP
+            
+        image_taken = False
 
 
 # Uploading/updating sample list
