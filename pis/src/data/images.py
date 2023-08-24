@@ -35,7 +35,7 @@ image_request = False
 # --- Creates a time/position tagged sample directory ---
 def create_sample_dir():
     sample_time = time.strftime('%Y%m%d%H%M%S')
-    sample_dir = samples_path + sample_time
+    sample_dir = samples_path + '/' + sample_time
 
     lat = '63.5'
     lon = '10.3'
