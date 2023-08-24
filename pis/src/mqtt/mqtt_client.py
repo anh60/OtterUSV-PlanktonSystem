@@ -150,14 +150,12 @@ def msg_handler(topic, msg):
 def handle_sample(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
         sample.set_sample_num(int(msg))
-        state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.SAMPLING, 1)
 
 
 # --- Pump on ---
 def handle_pump(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
-        state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.PUMP, 1)
 
 
@@ -166,7 +164,6 @@ def handle_stop(msg):
     if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
         pass
     elif((state.get_sys_state() >> state.status_flag.PUMP) & 1):
-        state.set_sys_state(state.status_flag.READY, 1)
         state.set_sys_state(state.status_flag.PUMP, 0)
 
 
@@ -191,21 +188,18 @@ def handle_rms_stop(msg):
 # --- Capture image ---
 def handle_cal_image(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
-        state.set_sys_state(state.status_flag.READY, 0)
         state.set_sys_state(state.status_flag.IMAGING, 1)
 
 
 # --- Lens position ---
 def handle_lens(msg):
     cam.setLensPosition(int(msg))
-    state.set_sys_state(state.status_flag.READY, 0)
     state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
 
 # --- LED Brightness ---
 def handle_led(msg):
     cam.setLedBrightness(float(msg))
-    state.set_sys_state(state.status_flag.READY, 0)
     state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
 
