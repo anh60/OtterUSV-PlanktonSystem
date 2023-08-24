@@ -32,6 +32,28 @@ image_request = False
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
+# --- Creates a time/position tagged sample directory ---
+def create_sample_dir():
+    sample_time = time.strftime('%Y%m%d%H%M%S')
+    sample_dir = samples_path + sample_time
+
+    lat = '63.5'
+    lon = '10.3'
+    pos_file = sample_dir + '/' + lat + ',' + lon + '.txt'
+
+    os.mkdir(sample_dir)
+    open(pos_file, 'a').close()
+
+    return sample_dir
+
+
+# --- Generates a filename for an image within a sample ---
+def create_image_path(sample_dir):
+    image_time = time.strftime('%Y%m%d%H%M%S')
+    image_path = sample_dir + '/' + image_time + '.jpg'
+
+    return image_path
+
 # --- Get date/time of all samples ---
 def get_samples():
     samples = [

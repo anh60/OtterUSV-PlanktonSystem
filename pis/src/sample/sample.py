@@ -7,7 +7,6 @@
 
 #---------------------------- PACKAGES -----------------------------------------
 
-import os
 import threading
 import time
 from enum import Enum
@@ -51,19 +50,11 @@ flush_sent = False
 #---------------------------- FUNCTIONS ----------------------------------------
 
 def set_sample_num(n):
-    global sample_num, sample_time, sample_dir
+    global sample_num, sample_dir
 
     sample_num = n
-
-    sample_time = time.strftime('%Y%m%d%H%M%S')
-    sample_dir = samples_path + sample_time
-
-    lat = '63.5'
-    lon = '10.3'
-    pos_file = sample_dir + '/' + lat + ',' + lon + '.txt'
-
-    os.mkdir(sample_dir)
-    open(pos_file, 'a').close()
+    sample_dir = imgs.create_sample_dir()
+    cam.set_sample_dir(sample_dir)
 
 
 # Filling reservoir
@@ -100,9 +91,8 @@ def pump():
 def image():
     global next_sample_state
 
-    image_time = time.strftime('%Y%m%d%H%M%S')
-    image_path = sample_dir + '/' + image_time + '.jpg'
-    cam.capture_image(image_path)
+    # Capture image
+    state.set_sys_state(state.status_flag.IMAGING, 1)
 
     # Set next state
     if(curr_sample >= sample_num):
@@ -115,11 +105,17 @@ def image():
 def upload():
     global next_sample_state
 
-    # Publish list of samples to MQTT broker
-    imgs.publishSamples()
+    # If imaging in progress
+    if((state.get_sys_state() >> state.status_flag.IMAGING) & 1):
+        pass
+    
+    # If imaging done
+    else:
+        # Publish list of samples to MQTT broker
+        imgs.publishSamples()
 
-    # Set next state
-    next_sample_state = sample_state.FLUSH
+        # Set next state
+        next_sample_state = sample_state.FLUSH
 
 
 # Flushing reservoir

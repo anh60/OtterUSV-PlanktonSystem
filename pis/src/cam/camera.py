@@ -16,8 +16,9 @@ import board
 from adafruit_motorkit import MotorKit
 from adafruit_motor import stepper
 
-import state.sys_state as state
+import state.sys_state  as state
 import mqtt.mqtt_client as client
+import data.images      as imgs
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -30,6 +31,9 @@ kit = MotorKit(i2c=board.I2C())
 
 # Path to image for MQTT transfer over 'image' topic
 mqtt_image_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/mqtt_image/image.jpg'
+
+# Current sample directory
+curr_sample_dir = ''
 
 # File storing position data for microscope
 posfile = '../data/position.txt'
@@ -51,6 +55,13 @@ next_brightness = 0
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
+
+# --- Set current sample directory ---
+def set_sample_dir(sample_dir):
+    global curr_sample_dir
+
+    curr_sample_dir = sample_dir
+
 
 # --- Capture an image and store it in given path ---
 def capture_image(path):
@@ -242,9 +253,16 @@ def image_thread_cb():
 
         # If imaging flag = 1, execute thread
         if((state.get_sys_state() >> state.status_flag.IMAGING) & 1):
+            
+            # If sampling, capture and store image
+            if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
+                image_path = imgs.create_image_path(curr_sample_dir)
+                capture_image(image_path)
 
-            capture_image(mqtt_image_path)
-            publishImage(mqtt_image_path)
+            # If not sampling, capture and publish image
+            else:
+                capture_image(mqtt_image_path)
+                publishImage(mqtt_image_path)
                 
             state.set_sys_state(state.status_flag.IMAGING, 0)
 
