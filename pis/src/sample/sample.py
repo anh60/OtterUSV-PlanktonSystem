@@ -76,20 +76,16 @@ def fill():
 def pump():
     global next_sample_state, curr_sample
 
-    # If imaging in progress
-    if((state.get_sys_state() >> state.status_flag.IMAGING) & 1):
-        pass
+    curr_sample += 1
+    state.set_sys_state(state.status_flag.PUMP, 1)
+    if(curr_sample == 1):
+        time.sleep(10)
     else:
-        curr_sample += 1
-        state.set_sys_state(state.status_flag.PUMP, 1)
-        if(curr_sample == 1):
-            time.sleep(10)
-        else:
-            time.sleep(5)
-        state.set_sys_state(state.status_flag.PUMP, 0)
+        time.sleep(5)
+    state.set_sys_state(state.status_flag.PUMP, 0)
 
-        # Set next state
-        next_sample_state = sample_state.IMAGE
+    # Set next state
+    next_sample_state = sample_state.IMAGE
 
 
 # Imaging a sample
@@ -97,7 +93,8 @@ def image():
     global next_sample_state
 
     # Capture image
-    state.set_sys_state(state.status_flag.IMAGING, 1)
+    image_path = imgs.create_image_path(sample_dir)
+    cam.capture_image(image_path)
 
     # Set next state
     if(curr_sample >= sample_num):

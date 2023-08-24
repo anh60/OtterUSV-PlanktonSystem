@@ -47,7 +47,7 @@ def create_sample_dir():
     return sample_dir
 
 
-# --- Generates a filename for an image within a sample ---
+# --- Generates a filename for an image from a sample ---
 def create_image_path(sample_dir):
     image_time = time.strftime('%Y%m%d%H%M%S')
     image_path = sample_dir + '/' + image_time + '.jpg'
