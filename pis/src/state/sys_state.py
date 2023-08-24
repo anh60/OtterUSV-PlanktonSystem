@@ -62,9 +62,8 @@ def update_sys_state():
     
 
 def publishState(state):
-    #client.pubStatus()
     client.publishMessage(
-        t = client.con.topic.CAL_CURRPOS,
+        t = client.con.topic.STATUS_FLAGS,
         m = state,
         r = True
     )
