@@ -234,4 +234,8 @@ def publishMessage(t, m, r):
     )
 
 def pubStatus():
-    client.publish(con.topic.STATUS_FLAGS, state.get_sys_state(), 1, True)
+    client.publish(
+        topic = con.topic.STATUS_FLAGS, 
+        payload = state.get_sys_state(), 
+        qos = 1, 
+        retain = True)
