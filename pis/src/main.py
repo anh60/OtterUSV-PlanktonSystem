@@ -35,16 +35,16 @@ imgs.init_images_thread()       # Image file system thread
 rms.send_status_request()
 
 # Publish system state
-state.publishState(state.get_sys_state())
+state.publish_state(state.get_sys_state())
 
 # Publish lens position
-cam.publishLensPosition(cam.getLensPosition())
+cam.publish_lens_position(cam.get_lens_position())
 
 # Publish LED brightness
-cam.publishLedBrightness(cam.getLedBrightness())
+cam.publish_led_brightness(cam.get_led_brightness())
 
 # Publish list of samples
-imgs.publishSamples()
+imgs.publish_samples()
 
 # Set ready flag
 state.set_sys_state(state.status_flag.READY, 1)

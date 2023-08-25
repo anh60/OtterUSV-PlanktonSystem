@@ -14,7 +14,6 @@ from enum import Enum
 import state.sys_state      as state
 import cam.camera           as cam
 import data.images          as imgs
-import mqtt.mqtt_client     as client
 import rms.rms_com          as rms
 
 
@@ -108,7 +107,7 @@ def upload():
     global next_sample_state
     
     # Publish list of samples to MQTT broker
-    imgs.publishSamples()
+    imgs.publish_samples()
 
     # Set next state
     next_sample_state = sample_state.FLUSH
@@ -126,7 +125,7 @@ def flush():
     # If reservoir empty
     if(((state.get_sys_state() >> state.status_flag.RMS_FULL) & 1) == 0):
         
-        # Remove water from 5v
+        # Remove water from payload
         state.set_sys_state(state.status_flag.PUMP, 1)
         time.sleep(20)
         state.set_sys_state(state.status_flag.PUMP, 0)

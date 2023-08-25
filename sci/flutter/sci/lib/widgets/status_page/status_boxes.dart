@@ -74,10 +74,10 @@ class StatusBoxes extends StatelessWidget {
           CalibrationBox(mqtt),
 
           // Horizontal gap
-          const SizedBox(width: 15),
+          //const SizedBox(width: 15),
 
           // Reservoir status box
-          ReservoirBox(),
+          //ReservoirBox(),
         ],
       ),
     );

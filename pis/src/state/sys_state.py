@@ -94,8 +94,8 @@ def check_sys_state():
     
 
 # --- Publish to the status flag topic ---
-def publishState(state):
-    client.publishMessage(
+def publish_state(state):
+    client.publish_message(
         t = client.con.topic.STATUS_FLAGS,
         m = state,
         r = True
@@ -106,7 +106,7 @@ def publishState(state):
 def status_thread_cb():
     while True:
         if(check_sys_state()):
-            publishState(get_sys_state())
+            publish_state(get_sys_state())
         else:
             time.sleep(0.001)
             

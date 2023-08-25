@@ -73,7 +73,7 @@ def capture_image(path):
 
 
 # --- Publish an image from a given path ---
-def publishImage(path):
+def publish_image(path):
 
     # Read image file from path
     with open(path, "rb") as image:
@@ -85,25 +85,25 @@ def publishImage(path):
     base64_string = base64_bytes.decode('ascii')
 
     # Publish
-    client.publishMessage(
+    client.publish_message(
         t = client.con.topic.IMAGE,
         m = base64_string,
         r = True,
     )
 
 # --- Get curr_position ---
-def getLensPosition():
+def get_lens_position():
     return curr_pos
 
 
 # --- Set next_position ---
-def setLensPosition(new_pos):
+def set_lens_position(new_pos):
     global curr_pos, next_pos
     next_pos = new_pos 
 
 
 # --- Read position from file ---
-def readLensPosition():
+def read_lens_position():
     f = open(posfile, 'r')
     pos = int(f.readline())
     f.close()
@@ -111,15 +111,15 @@ def readLensPosition():
 
 
 # --- Write position to file ---
-def writeLensPosition(pos):
+def write_lens_position(pos):
     f = open(posfile, 'w')
     f.write(str(pos))
     f.close()
 
 
 # --- Publish lens position to MQTT broker ---
-def publishLensPosition(pos):
-    client.publishMessage(
+def publish_lens_position(pos):
+    client.publish_message(
         t = client.con.topic.CAL_CURRPOS,
         m = pos,
         r = True
@@ -127,9 +127,9 @@ def publishLensPosition(pos):
 
 
 # --- Move camera to new position ---
-def moveCamera(curr_pos, next_pos):
+def move_camera(curr_pos, next_pos):
     # Get current position from file
-    curr_pos = readLensPosition()
+    curr_pos = read_lens_position()
 
     # Set direction
     if(next_pos < curr_pos):
@@ -164,10 +164,10 @@ def moveCamera(curr_pos, next_pos):
             curr_pos += 1
     
     # Write new position to file
-    writeLensPosition(curr_pos)
+    write_lens_position(curr_pos)
 
     # Publish new position
-    publishLensPosition(curr_pos)
+    publish_lens_position(curr_pos)
 
     # Release stepper so it doesn't draw current/overheat
     kit.stepper1.release()
@@ -179,12 +179,12 @@ def moveCamera(curr_pos, next_pos):
 
 
 # --- Get curr_brightness ---
-def getLedBrightness():
+def get_led_brightness():
     return curr_brightness
 
 
 # --- Set next_brightness ---
-def setLedBrightness(new_brightness):
+def set_led_brightness(new_brightness):
     global next_brightness
 
     # Convert from percentage to range [0,1] (values clamped later)
@@ -197,7 +197,7 @@ def setLedBrightness(new_brightness):
 
 
 # --- Read brightness from file ---
-def readLedBrightness():
+def read_led_brightness():
     f = open(ledFile, 'r')
     brightness = float(f.readline())
     f.close()
@@ -205,20 +205,20 @@ def readLedBrightness():
 
 
 # --- Write brightness to file ---
-def writeLedBrightness(brightness):
+def write_led_brightness(brightness):
     f = open(ledFile, 'w')
     f.write(str(brightness))
     f.close()
 
 
 # --- Publish brightness to MQTT broker ---
-def publishLedBrightness(brightness):
+def publish_led_brightness(brightness):
 
     # Convert to percentage
     brightness = brightness * 100
 
     # Publish
-    client.publishMessage(
+    client.publish_message(
         t = client.con.topic.CAL_CURRLED,
         m = brightness,
         r = True
@@ -226,7 +226,7 @@ def publishLedBrightness(brightness):
 
 
 # --- Set LED brightness to value next value ---
-def applyBrightness(curr_brightness, next_brightness):
+def apply_brightness(curr_brightness, next_brightness):
     curr_brightness = next_brightness
 
     # Clamp values
@@ -236,10 +236,10 @@ def applyBrightness(curr_brightness, next_brightness):
         curr_brightness = 1
 
     # Write new brightness to file
-    writeLedBrightness(curr_brightness)
+    write_led_brightness(curr_brightness)
 
     # Publish new brightnes
-    publishLedBrightness(curr_brightness)
+    publish_led_brightness(curr_brightness)
 
     # Reset variables
     next_brightness = curr_brightness
@@ -262,7 +262,7 @@ def image_thread_cb():
             # If not sampling, capture and publish image
             else:
                 capture_image(mqtt_image_path)
-                publishImage(mqtt_image_path)
+                publish_image(mqtt_image_path)
                 
             state.set_sys_state(state.status_flag.IMAGING, 0)
 
@@ -286,7 +286,7 @@ def cal_thread_cb():
             if(curr_pos != next_pos):
                 
                 # Move camera
-                curr_pos, next_pos = moveCamera(
+                curr_pos, next_pos = move_camera(
                     curr_pos, next_pos
                 )
 
@@ -294,7 +294,7 @@ def cal_thread_cb():
             if(curr_brightness != next_brightness):
                 
                 # Apply new brightness
-                curr_brightness, next_brightness = applyBrightness(
+                curr_brightness, next_brightness = apply_brightness(
                     curr_brightness, next_brightness
                 )
 
@@ -322,14 +322,14 @@ def init_cal_thread():
     kit.stepper1.release()
 
     # Get current position
-    curr_pos = readLensPosition()
+    curr_pos = read_lens_position()
     next_pos = curr_pos
 
     # Force LED off
     kit.motor4.throttle = None
 
     # Get current brightness
-    curr_brightness = readLedBrightness()
+    curr_brightness = read_led_brightness()
     next_brightness = curr_brightness
 
     # Begin thread

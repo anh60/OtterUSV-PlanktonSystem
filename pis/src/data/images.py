@@ -49,12 +49,13 @@ def create_sample_dir():
     return sample_dir
 
 
-# --- Generates a filename for an image from a sample ---
+# --- Generates a filename for an image within a sample ---
 def create_image_path(sample_dir):
     image_time = time.strftime('%Y%m%d%H%M%S')
     image_path = sample_dir + '/' + image_time + '.jpg'
 
     return image_path
+
 
 # --- Get date/time of all samples ---
 def get_samples():
@@ -66,15 +67,15 @@ def get_samples():
 
 
 # --- Publish list of samples to MQTT broker ---
-def publishSamples():
-    client.publishMessage(
+def publish_samples():
+    client.publish_message(
         t = client.con.topic.DATA_SAMPLES,
         m = get_samples(),
         r = True,
     )
     
 
-# Get date/time of all images within a sample
+# --- Get date/time of all images within a sample ---
 def get_images(sample):
     images_path = (samples_path + '/' + sample)
 
@@ -93,56 +94,64 @@ def get_images(sample):
 
 
 # --- Publish list of images to MQTT broker ---
-def publishImages(images):
-    client.publishMessage(
+def publish_images(images):
+    client.publish_message(
         t = client.con.topic.DATA_IMAGES,
         m = images,
         r = True,
     )
 
 
-# Get a specific image within a sample
+# --- Get a specific image within a sample ---
 def get_image(sample, image_time):
     image = (samples_path + '/' + sample + '/' + image_time)
     return image
 
 
 # --- Publish an image within a sample to MQTT broker ---
-def publishImage(image):
-    client.publishMessage(
+def publish_image(image):
+    client.publish_message(
         t = client.con.topic.DATA_IMAGE,
         m = image,
         r = True,
     )
 
 
+# --- Set sample request flag ---
 def set_sample_request_flag():
     global samples_request
     samples_request = True
 
-# Set current sample
+
+# --- Set current sample directory and image request flag ---
 def set_curr_sample(sample):
     global curr_sample, images_request
     curr_sample = sample
     images_request = True
 
 
-# Set current image
+# --- Set current image ---
 def set_curr_image(image):
     global curr_image, image_request
     curr_image = image
     image_request = True
 
 
-# Images thread callback function
+# --- Images thread callback function --
 def images_thread_cb():
     global samples_request, images_request, image_request
     while True:
 
         # If list of samples have been requested from MQTT broker
         if(samples_request == True):
-            publishSamples()
+
+            # Publish
+            publish_samples()
+
+            # Reset flag
             samples_request = False
+
+            # Sleep for 1ms
             time.sleep(0.001)
 
         # If list of images have been requested from MQTT broker
@@ -151,7 +160,7 @@ def images_thread_cb():
             images = get_images(curr_sample.decode())
 
             # Publish
-            publishImages(images)
+            publish_images(images)
 
             # Reset flag
             images_request = False
@@ -183,7 +192,7 @@ def images_thread_cb():
                 base64_string = base64_bytes.decode('ascii')
 
                 # Publish image
-                publishImage(base64_string)
+                publish_image(base64_string)
 
             # Reset flag
             image_request = False

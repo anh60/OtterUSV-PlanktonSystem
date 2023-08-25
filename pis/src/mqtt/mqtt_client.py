@@ -193,19 +193,19 @@ def handle_cal_image(msg):
 
 # --- Lens position ---
 def handle_lens(msg):
-    cam.setLensPosition(int(msg))
+    cam.set_lens_position(int(msg))
     state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
 
 # --- LED Brightness ---
 def handle_led(msg):
-    cam.setLedBrightness(float(msg))
+    cam.set_led_brightness(float(msg))
     state.set_sys_state(state.status_flag.CALIBRATING, 1)
 
 
 # --- List of samples ---
 def handle_samples(msg):
-    imgs.publishSamples()
+    imgs.publish_samples()
 
 
 # --- List of images from sample ---
@@ -219,7 +219,7 @@ def handle_image(msg):
 
 
 # --- Publish a message with QOS=1 ---
-def publishMessage(t, m, r):
+def publish_message(t, m, r):
     client.publish(
         topic   = t,
         payload = m,
