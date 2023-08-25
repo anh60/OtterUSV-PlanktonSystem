@@ -74,7 +74,6 @@ class _RootPageState extends State<RootPage> {
     pages = [
       StatusPage(mqtt),
       ImagesPage(mqtt),
-      const VehiclePage(),
     ];
 
     // Initialize MQTT Client
@@ -165,6 +164,7 @@ class _RootPageState extends State<RootPage> {
                         ),
 
                         // Vehicle page
+                        /*
                         NavigationRailDestination(
                           icon: Icon(
                             Icons.directions_boat,
@@ -172,6 +172,8 @@ class _RootPageState extends State<RootPage> {
                           ),
                           label: Text(''),
                         ),
+
+                        */
                       ],
                     ),
                   ),
