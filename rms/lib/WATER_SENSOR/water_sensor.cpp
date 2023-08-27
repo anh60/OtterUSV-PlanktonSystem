@@ -11,10 +11,16 @@
 #define WATER_PIN 4
 
 void ISR_WATER(){
-    set_sys_state(WATER_BIT, (~(get_sys_state() >> WATER_BIT) & 1));
+}
+
+bool readWater(){
+    if(digitalRead(WATER_PIN) == 1){
+        return true;
+    }
+    return false;
 }
 
 void water_sensor_init(){
     pinMode(WATER_PIN, INPUT);
-    attachInterrupt(digitalPinToInterrupt(WATER_PIN), ISR_WATER, CHANGE);
+    //attachInterrupt(digitalPinToInterrupt(WATER_PIN), ISR_WATER, RISING);
 }

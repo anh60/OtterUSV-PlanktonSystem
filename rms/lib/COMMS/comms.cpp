@@ -25,18 +25,18 @@ void transmit_status(){
 }
 
 static void handle_msg_pump(){
-    set_sys_state(PUMP_BIT, 1);
-    set_sys_state(VALVE_BIT, 0);
+    set_sys_state(PUMP_FLAG, 1);
+    set_sys_state(VALVE_FLAG, 0);
 }
 
 static void handle_msg_flush(){
-    set_sys_state(PUMP_BIT, 0);
-    set_sys_state(VALVE_BIT, 1);
+    set_sys_state(PUMP_FLAG, 0);
+    set_sys_state(VALVE_FLAG, 1);
 }
 
 static void handle_msg_stop(){
-    set_sys_state(PUMP_BIT, 0);
-    set_sys_state(VALVE_BIT, 0);
+    set_sys_state(PUMP_FLAG, 0);
+    set_sys_state(VALVE_FLAG, 0);
 }
 
 static void handle_msg_status(){

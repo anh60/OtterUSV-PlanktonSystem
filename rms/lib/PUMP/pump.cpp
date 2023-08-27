@@ -15,5 +15,5 @@ void pump_init(){
 }
 
 void switch_pump(){
-    digitalWrite(PUMP_PIN, (get_sys_state() >> PUMP_BIT) & 1);
+    digitalWrite(PUMP_PIN, (get_sys_state() >> PUMP_FLAG) & 1);
 }

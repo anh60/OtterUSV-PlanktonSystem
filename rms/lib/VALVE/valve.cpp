@@ -18,5 +18,5 @@ void valve_init(){
 }
 
 void switch_valve(){
-    digitalWrite(VALVE_PIN, (get_sys_state() >> VALVE_BIT) & 1);
+    digitalWrite(VALVE_PIN, (get_sys_state() >> VALVE_FLAG) & 1);
 }

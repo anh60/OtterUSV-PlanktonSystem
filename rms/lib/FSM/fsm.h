@@ -15,17 +15,17 @@
 */
 typedef enum
 {
-  PUMP_BIT,   // 0 - Pump           (0 = OFF, 1 = ON) 
-  VALVE_BIT,  // 1 - Valve          (0 = CLOSED, 1 = OPEN)
-  LEVEL_BIT,  // 2 - Level switch   (0 = NOT FULL, 1 = FULL)
-  WATER_BIT   // 3 - Liquid sensor  (0 = NO LEAK, 1 = LEAK)
-} status_bit;
+  PUMP_FLAG,   // 0 - Pump           (0 = OFF, 1 = ON) 
+  VALVE_FLAG,  // 1 - Valve          (0 = CLOSED, 1 = OPEN)
+  FULL_FLAG,  // 2 - Level switch   (0 = NOT FULL, 1 = FULL)
+  LEAK_FLAG   // 3 - Liquid sensor  (0 = NO LEAK, 1 = LEAK)
+} state_flags;
 
 void fsm_init();
 
 uint8_t get_sys_state();
 
-void set_sys_state(status_bit k, bool val);
+void set_sys_state(state_flags k, bool val);
 
 bool check_sys_state();
 
