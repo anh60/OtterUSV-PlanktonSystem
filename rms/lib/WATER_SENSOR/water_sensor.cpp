@@ -10,10 +10,30 @@
 
 #define WATER_PIN 4
 
-void ISR_WATER(){
+// CPU time when ISR is called
+uint32_t wT;
+
+// Flag raised when ISR is called
+bool checkWater;
+
+uint32_t get_water_time(){
+    return wT;
 }
 
-bool readWater(){
+void reset_water_flag(){
+    checkWater = false;
+}
+
+bool get_water_flag(){
+    return checkWater;
+}
+
+void isr_water(){
+    wT = millis();
+    checkWater = true;
+}
+
+bool read_water(){
     if(digitalRead(WATER_PIN) == 1){
         return true;
     }
@@ -22,5 +42,5 @@ bool readWater(){
 
 void water_sensor_init(){
     pinMode(WATER_PIN, INPUT);
-    //attachInterrupt(digitalPinToInterrupt(WATER_PIN), ISR_WATER, RISING);
+    attachInterrupt(digitalPinToInterrupt(WATER_PIN), isr_water, CHANGE);
 }

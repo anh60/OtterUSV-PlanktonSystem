@@ -10,8 +10,8 @@
 
 #define LEVEL_PIN 5
 
-void ISR_LEVEL(){
-}
+//void ISR_LEVEL(){
+//}
 
 bool readLevel(){
     if(digitalRead(LEVEL_PIN) == 0){

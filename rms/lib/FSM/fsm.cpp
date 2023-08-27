@@ -8,12 +8,12 @@
 #include "fsm.h"
 
 #include "level_switch.h"
+#include "water_sensor.h"
 
 // Timers (milliseconds)
 uint32_t pT;    // CPU time when pump start
 uint32_t vT;    // CPU time when valve starts
 uint32_t lT;    // CPU time when level switch is triggered
-uint32_t wT;    // CPU time when water sensors is triggered
 uint32_t cT;    // Current CPU time
 
 // Timer thresholds (milliseconds)
@@ -25,12 +25,10 @@ const uint32_t wMin = 1000;     // Water sensor min time
 // Flag to check level switch
 bool checkLevel = false;
 
-// Flag to check water sensor
-bool checkWater = false;
-
 // Current and next system state
 uint8_t curr_sys_state;
 uint8_t next_sys_state;
+
 
 /**
  * @brief Initialise state machine
@@ -41,6 +39,7 @@ void fsm_init(){
     next_sys_state = 0x00;
 }
 
+
 /**
  * @brief Get current state of system
  * 
@@ -50,11 +49,12 @@ uint8_t get_sys_state(){
     return curr_sys_state;
 }
 
+
 /**
- * @brief Sets a particular status bit to be updated to a desired value.
+ * @brief Sets a particular state flag to be updated to a desired value.
  * Changes are made to the "next_sys_state" variable.
  * 
- * @param k status bit to be written (status_bit enum)
+ * @param k state bit to be written (state_flag enum)
  * @param val value (0 or 1) to be written
  */
 void set_sys_state(state_flags k, bool val){
@@ -65,7 +65,12 @@ void set_sys_state(state_flags k, bool val){
     next_sys_state &= ~(1 << k);
 }
 
-void checkLevelSwitch(){
+
+/**
+ * @brief Manages the timer/flags associated with the level switch.
+ * 
+ */
+void manage_level_switch(){
     // If level switch has not been triggered
     if(checkLevel == false){
         // Check level switch
@@ -85,12 +90,17 @@ void checkLevelSwitch(){
     }
 }
 
-void checkPump(){
+
+/**
+ * @brief Manages the timer and flags/transitions associated with the pump
+ * 
+ */
+void manage_pump(){
     // Pump flags
     uint8_t pCurr = ((curr_sys_state >> PUMP_FLAG) & 1);
     uint8_t pNext = ((next_sys_state >> PUMP_FLAG) & 1);
 
-    // If pump flag changes to 1
+    // Pump state transition
     if((pCurr == 0) && (pNext == 1)){
 
         // Check if full, if true -> revert flag
@@ -104,15 +114,15 @@ void checkPump(){
         }
     }
 
-    // If pump flag is 1
+    // Pump state
     if((pCurr == 1) && (pNext == 1)){
 
         // Get current time
         cT = millis();
 
-        // If less than max time
-        if(cT - pT < pMax){
-            checkLevelSwitch();
+        // If less than max time, check level switch
+        if((cT - pT) < pMax){
+            manage_level_switch();
         }
 
         // If pMax reached
@@ -123,17 +133,22 @@ void checkPump(){
     }
 }
 
-void checkValve(){
+
+/**
+ * @brief Manages the timer and flags/transitions associated with the valve
+ * 
+ */
+void manage_valve(){
     // Valve flags
     uint8_t vCurr = ((curr_sys_state >> VALVE_FLAG) & 1);
     uint8_t vNext = ((next_sys_state >> VALVE_FLAG) & 1);
 
-    // If valve flag changes to 1
+    // Flush state transition
     if((vCurr == 0) && (vNext == 1)){
         vT = millis();
     }
 
-    // If valve flag is 1
+    // Flush state
     if((vCurr == 1) && (vNext == 1)){
         cT = millis();
         if((cT - vT) >= vMin){
@@ -143,32 +158,64 @@ void checkValve(){
     }
 }
 
-void checkFlags(){
+
+/**
+ * @brief Manages the flags and timer associated with the leak sensor
+ * 
+ */
+void manage_leak(){
+    // Leak flags
+    uint8_t lCurr = ((curr_sys_state >> LEAK_FLAG) & 1);
+
+    // If ISR was executed
+    if(get_water_flag() == true){
+
+        // Get current time
+        cT = millis();
+
+        // State of input when ISR was executed
+        bool pinState;
+
+        // If not in leak state, must be a rising edge
+        if(lCurr == 0){
+            pinState = true;
+        }
+        // If in leak state, must be a falling edge
+        else{
+            pinState = false;
+        }
+
+        // Check sensor after a short delay
+        if((cT - get_water_time()) >= wMin){
+            if(read_water() == pinState){
+                set_sys_state(LEAK_FLAG, pinState);
+            }
+            reset_water_flag();
+        }
+    }
+
+    // Leak state
+    if(lCurr == 1){
+        set_sys_state(PUMP_FLAG, 0);
+        set_sys_state(VALVE_FLAG, 0);
+    }
+}
+
+/**
+ * @brief Manages flags/transitions of FSM
+ * 
+ */
+void manage_flags(){
 
     // Manage pump state
-    checkPump();
+    manage_pump();
 
     // Manage valve state
-    checkValve();
+    manage_valve();
 
-    // Check leak sensor
-    if(checkWater == false){
-        if(readWater() == true){
-            wT = miilis();
-            checkWater = true;
-        }
-    }
+    // Manage leak sensor state
+    manage_leak();
 
-    // If sensor was triggered
-    else{
-        cT = millis();
-        // Check again after a short delay
-        if(((cT - wT) >= wMin) && (readLevel() == true)){
-            set_sys_state(PUMP_FLAG, 0);
-            set_sys_state(LEAK_FLAG, 1);
-            checkWater = false;
-        }
-    }
 }
 
 /**
@@ -178,7 +225,7 @@ void checkFlags(){
  * @return 0 (false)
  */
 bool check_sys_state(){
-    checkFlags();
+    manage_flags();
     if (curr_sys_state != next_sys_state){
         curr_sys_state = next_sys_state;
         return 1;

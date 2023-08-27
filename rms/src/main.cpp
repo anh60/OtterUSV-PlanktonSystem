@@ -15,21 +15,26 @@
 #include "water_sensor.h"
 
 void setup() {
-  fsm_init();
-  comms_init();
-  pump_init();
-  valve_init();
 
-  level_switch_init();
-  //water_sensor_init();
+  // Initialize peripherals
+  fsm_init();           // State machine
+  comms_init();         // UART/RS232 communication
+  pump_init();          // Pump
+  valve_init();         // Valve
+  level_switch_init();  // Level switch (reservoir measurement)
+  water_sensor_init();  // Water level sensor (leak detection)
 
 }
 
 void loop() {
 
+  // Check UART if control commands has been received
   check_ctrl_msg();
 
+  // Check if system state has changed
   if(check_sys_state()){
+
+    // Transmit system state over UART/RS232
     transmit_status();
   }
 

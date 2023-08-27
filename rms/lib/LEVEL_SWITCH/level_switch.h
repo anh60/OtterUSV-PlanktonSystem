@@ -10,7 +10,8 @@
 
 #include <Arduino.h>
 
-void level_switch_init();
 bool readLevel();
+
+void level_switch_init();
 
 #endif /* LEVEL_SWITCH_H_ */
