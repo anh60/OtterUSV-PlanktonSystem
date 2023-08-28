@@ -5,30 +5,27 @@
 * 2023
 */
 
-#include "fsm.h"
+//---------------------------- HEADERS -----------------------------------------
 
+#include <Arduino.h>
+#include "fsm.h"
+#include "pump.h"
+#include "valve.h"
 #include "level_switch.h"
 #include "water_sensor.h"
 
-// Timers (milliseconds)
-uint32_t pT;    // CPU time when pump start
-uint32_t vT;    // CPU time when valve starts
-uint32_t lT;    // CPU time when level switch is triggered
-uint32_t cT;    // Current CPU time
 
-// Timer thresholds (milliseconds)
-const uint32_t pMax = 30000;    // Pump max time
-const uint32_t vMin = 30000;    // Valve min time
-const uint32_t lMin = 1000;     // Level switch min time
-const uint32_t wMin = 1000;     // Water sensor min time
+//---------------------------- GLOBALS -----------------------------------------
 
-// Flag to check level switch
-bool checkLevel = false;
+// Current CPU time (milliseconds)
+uint32_t cT;    
 
 // Current and next system state
 uint8_t curr_sys_state;
 uint8_t next_sys_state;
 
+
+//---------------------------- FUNCTIONS ---------------------------------------
 
 /**
  * @brief Initialise state machine
@@ -67,32 +64,48 @@ void set_sys_state(state_flags k, bool val){
 
 
 /**
- * @brief Manages the timer/flags associated with the level switch.
+ * @brief Manages the flags associated with the level switch.
  * 
  */
 void manage_level_switch(){
     // If level switch has not been triggered
-    if(checkLevel == false){
+    if(get_level_flag() == false){
+
         // Check level switch
-        if((readLevel() == true)){
-            lT = millis();
-            checkLevel = true;
+        if((read_level() == true)){
+
+            // Start timer and set flag
+            start_level_timer();
         }
     }
+
     // If level switch was triggered
     else{
+
+        // Level switch start time
+        uint32_t lT = get_level_time();
+
+        // Level switch time limit
+        uint32_t lMin = get_level_limit();
+
         // Check again after a short delay
-        if(((cT - lT) >= lMin) && (readLevel() == true)){
+        if(((cT - lT) >= lMin) && (read_level() == true)){
+
+            // Clear pump flag
             set_sys_state(PUMP_FLAG, 0);
+
+            // Set full flag
             set_sys_state(FULL_FLAG, 1);
-            checkLevel = false;
+
+            // Set flag to 0
+            reset_level_flag();
         }
     }
 }
 
 
 /**
- * @brief Manages the timer and flags/transitions associated with the pump
+ * @brief Manages flags/transitions associated with the pump
  * 
  */
 void manage_pump(){
@@ -110,24 +123,34 @@ void manage_pump(){
 
         // If not full, start the timer
         else{
-            pT = millis();
+            start_pump_timer();
         }
     }
 
     // Pump state
     if((pCurr == 1) && (pNext == 1)){
 
-        // Get current time
+        // Pump start time
+        uint32_t pT = get_pump_time();
+
+        // Pump time limit
+        uint32_t pMax = get_pump_limit();
+
+        // Current time
         cT = millis();
 
-        // If less than max time, check level switch
+        // If less than limit, check level switch
         if((cT - pT) < pMax){
             manage_level_switch();
         }
 
-        // If pMax reached
+        // If limit reached
         else if ((cT - pT) >= pMax){
+
+            // Clear pump flag
             set_sys_state(PUMP_FLAG, 0);
+
+            // Set full flag
             set_sys_state(FULL_FLAG, 1);
         }
     }
@@ -135,7 +158,7 @@ void manage_pump(){
 
 
 /**
- * @brief Manages the timer and flags/transitions associated with the valve
+ * @brief Manages flags/transitions associated with the valve
  * 
  */
 void manage_valve(){
@@ -145,14 +168,28 @@ void manage_valve(){
 
     // Flush state transition
     if((vCurr == 0) && (vNext == 1)){
-        vT = millis();
+        start_valve_timer();
     }
 
     // Flush state
     if((vCurr == 1) && (vNext == 1)){
+
+        // Valve start time
+        uint32_t vT = get_valve_time();
+
+        // Valve time limit
+        uint32_t vMin = get_valve_limit();
+
+        // Current time
         cT = millis();
+
+        // If limit reached
         if((cT - vT) >= vMin){
+
+            // Clear valve flag
             set_sys_state(VALVE_FLAG, 0);
+
+            // Clear full flag
             set_sys_state(FULL_FLAG, 0);
         }
     }
@@ -169,8 +206,14 @@ void manage_leak(){
 
     // If ISR was executed
     if(get_water_flag() == true){
+        
+        // Water sensor start time
+        uint32_t wT = get_water_time();
 
-        // Get current time
+        // Water sensor time limit
+        uint32_t wMin = get_water_limit();
+
+        // Current time
         cT = millis();
 
         // State of input when ISR was executed
@@ -180,13 +223,14 @@ void manage_leak(){
         if(lCurr == 0){
             pinState = true;
         }
+
         // If in leak state, must be a falling edge
         else{
             pinState = false;
         }
 
         // Check sensor after a short delay
-        if((cT - get_water_time()) >= wMin){
+        if((cT - wT) >= wMin){
             if(read_water() == pinState){
                 set_sys_state(LEAK_FLAG, pinState);
             }
@@ -201,12 +245,12 @@ void manage_leak(){
     }
 }
 
+
 /**
- * @brief Manages flags/transitions of FSM
+ * @brief Manages states and transitions
  * 
  */
 void manage_flags(){
-
     // Manage pump state
     manage_pump();
 
@@ -215,33 +259,31 @@ void manage_flags(){
 
     // Manage leak sensor state
     manage_leak();
-
 }
 
+
 /**
- * @brief Checks if any external events has triggered a state change.
+ * @brief Checks if any events has triggered a state change
+ *        and sets the outputs.
  * 
  * @return 1 (true)
  * @return 0 (false)
  */
 bool check_sys_state(){
+    // Manage flags/state and transitions
     manage_flags();
+
+    // If state has changed
     if (curr_sys_state != next_sys_state){
+
+        // Update current state
         curr_sys_state = next_sys_state;
+
+        // Set outputs
+        set_pump((curr_sys_state >> PUMP_FLAG) & 1);
+        set_valve((curr_sys_state >> VALVE_FLAG) & 1);
+
         return 1;
     }
     return 0;
-}
-
-void reset_sys(){
-    // Flush reservoir
-    //
-    // Stop reservoir
-    // Stop pump
-    //
-    // Clear timers
-    //
-    // Confirm sensor values
-    //
-    // Set status = 0x00
 }

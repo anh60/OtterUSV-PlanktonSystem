@@ -8,8 +8,6 @@
 #ifndef FSM_H_
 #define FSM_H_
 
-#include <Arduino.h>
-
 /*
 * Defines bits of state variable
 */
@@ -28,7 +26,5 @@ uint8_t get_sys_state();
 void set_sys_state(state_flags k, bool val);
 
 bool check_sys_state();
-
-void reset_sys();
 
 #endif /* FSM_H_ */

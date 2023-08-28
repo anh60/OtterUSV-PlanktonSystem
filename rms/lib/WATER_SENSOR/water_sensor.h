@@ -8,7 +8,7 @@
 #ifndef WATER_SENSOR_H_
 #define WATER_SENSOR_H_
 
-#include <Arduino.h>
+uint32_t get_water_limit();
 
 uint32_t get_water_time();
 

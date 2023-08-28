@@ -5,8 +5,9 @@
 * 2023
 */
 
-#include <Arduino.h>
+//---------------------------- HEADERS -----------------------------------------
 
+#include <Arduino.h>
 #include "fsm.h"
 #include "comms.h"
 #include "pump.h"
@@ -14,30 +15,47 @@
 #include "level_switch.h"
 #include "water_sensor.h"
 
+
+//---------------------------- FUNCTIONS ---------------------------------------
+
+/**
+ * @brief Initialize modules
+ * 
+ */
 void setup() {
+  // Finite State Machine
+  fsm_init();
 
-  // Initialize peripherals
-  fsm_init();           // State machine
-  comms_init();         // UART/RS232 communication
-  pump_init();          // Pump
-  valve_init();         // Valve
-  level_switch_init();  // Level switch (reservoir measurement)
-  water_sensor_init();  // Water level sensor (leak detection)
+  // UART/RS232 communication
+  comms_init(); 
 
+  // Pump        
+  pump_init(); 
+
+  // Solenoid valve         
+  valve_init();
+
+  // Level switch (reservoir measurement)
+  level_switch_init();
+
+  // Water level sensor (leak detection)
+  water_sensor_init();  
 }
 
-void loop() {
 
-  // Check UART if control commands has been received
+/**
+ * @brief Main loop
+ * 
+ */
+void loop() {
+  // Check if control commands has been received
   check_ctrl_msg();
 
   // Check if system state has changed
   if(check_sys_state()){
 
-    // Transmit system state over UART/RS232
-    transmit_status();
-  }
+    // Transmit state over UART/RS232
+    transmit_state();
 
-  switch_pump();
-  switch_valve();
+  }
 }

@@ -8,10 +8,10 @@
 #ifndef COMMS_H_
 #define COMMS_H_
 
-#include <Arduino.h>
+void check_ctrl_msg();
+
+void transmit_state();
 
 void comms_init();
-void transmit_status();
-void check_ctrl_msg();
 
 #endif /* COMMS_H_ */

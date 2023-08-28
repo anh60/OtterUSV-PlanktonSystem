@@ -8,9 +8,14 @@
 #ifndef VALVE_H_
 #define VALVE_H_
 
-#include <Arduino.h>
+uint32_t get_valve_limit();
+
+void start_valve_timer();
+
+uint32_t get_valve_time();
+
+void set_valve(bool value);
 
 void valve_init();
-void switch_valve();
 
 #endif /* VALVE_H_ */

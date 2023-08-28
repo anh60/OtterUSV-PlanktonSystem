@@ -8,9 +8,17 @@
 #ifndef LEVEL_SWITCH_H_
 #define LEVEL_SWITCH_H_
 
-#include <Arduino.h>
+uint32_t get_level_limit();
 
-bool readLevel();
+void start_level_timer();
+
+uint32_t get_level_time();
+
+void reset_level_flag();
+
+bool get_level_flag();
+
+bool read_level();
 
 void level_switch_init();
 
