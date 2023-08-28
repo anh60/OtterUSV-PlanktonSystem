@@ -26,33 +26,36 @@ def check_sensor(val):
 
 
 def leak_thread_cb():
-    # If sensor output is HIGH
-    if(GPIO.input(gpio_num)):
 
-        print('1')
+    while True:
+        
+        # If sensor output is HIGH
+        if(GPIO.input(gpio_num)):
 
-        # If in leak state, do nothing
-        if((state.get_sys_state() >> state.status_flag.LEAK) & 1):
-            pass
+            print('1')
 
-        # If not in leak state, double check sensor value
+            # If in leak state, do nothing
+            if((state.get_sys_state() >> state.status_flag.LEAK) & 1):
+                pass
+
+            # If not in leak state, double check sensor value
+            else:
+                check_sensor(1)
+
+        # If sensor output is LOW
         else:
-            check_sensor(1)
 
-    # If sensor output is LOW
-    else:
+            print(0)
 
-        print(0)
+            # If in leak state, double check sensor value
+            if((state.get_sys_state() >> state.status_flag.LEAK) & 1):
+                check_sensor(0)
 
-        # If in leak state, double check sensor value
-        if((state.get_sys_state() >> state.status_flag.LEAK) & 1):
-            check_sensor(0)
+            # If not in leak state, do nothing
+            else:
+                pass
 
-        # If not in leak state, do nothing
-        else:
-            pass
-
-    time.sleep(0.1)
+        time.sleep(0.1)
 
 
 def init_leak_thread():
