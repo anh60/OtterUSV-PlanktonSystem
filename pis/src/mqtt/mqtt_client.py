@@ -25,6 +25,9 @@ client = mqtt.Client(client_id=clientname, clean_session=True)
 # Topics subscribed to by the PIS
 topics_sub = [
 
+    # Vehicle position
+    con.topic.VEHICLE_POS,
+
     # PIS control
     con.topic.CTRL_SAMPLE,
     con.topic.CTRL_IMAGE,
@@ -97,6 +100,10 @@ def on_message(client, userdata, message):
 # --- Filter incoming topics/messages in on_message callback ---
 def msg_handler(topic, msg):
 
+    # Vehicle position
+    if(topic == con.topic.VEHICLE_POS):
+        handle_pos(msg)
+
     # Sample
     if(topic == con.topic.CTRL_SAMPLE):
         handle_sample(msg)
@@ -144,6 +151,11 @@ def msg_handler(topic, msg):
     # Image from sample
     if(topic == con.topic.GET_IMAGE):
         handle_image(msg)
+
+
+# --- Vehicle position ---
+def handle_pos(msg):
+    sample.set_sample_pos(msg)
 
 
 # --- Sample ---

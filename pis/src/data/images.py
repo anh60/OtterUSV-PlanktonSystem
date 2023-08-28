@@ -34,13 +34,11 @@ image_request = False
 #---------------------------- FUNCTIONS ----------------------------------------
 
 # --- Creates a time/position tagged sample directory ---
-def create_sample_dir():
+def create_sample_dir(lat, lon):
     sample_time = time.strftime('%Y%m%d%H%M%S')
     sample_dir = samples_path2 + sample_time
     print(sample_dir)
 
-    lat = '63.5'
-    lon = '10.3'
     pos_file = sample_dir + '/' + lat + ',' + lon + '.txt'
 
     os.mkdir(sample_dir)

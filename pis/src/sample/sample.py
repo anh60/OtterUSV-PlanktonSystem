@@ -19,6 +19,7 @@ import rms.rms_com          as rms
 
 #---------------------------- GLOBALS ------------------------------------------
 
+# Sample states
 class sample_state(int, Enum):
     FILL = 0
     PUMP = 1
@@ -26,8 +27,13 @@ class sample_state(int, Enum):
     UPLOAD = 3
     FLUSH = 4
 
+# State variables
 curr_sample_state = 0
 next_sample_state = 0
+
+# Vehicle position
+lat = 0
+lon = 0
 
 # Number of samples
 sample_num = 0
@@ -49,11 +55,21 @@ image_taken = False
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
+def set_sample_pos(msg):
+    global lat, lon
+    try:
+        coordinates = msg.split(",")
+        lat = coordinates[0]
+        lon = coordinates[1]
+    except:
+        pass
+
+
 def set_sample_num(n):
     global sample_num, sample_dir
 
     sample_num = n
-    sample_dir = imgs.create_sample_dir()
+    sample_dir = imgs.create_sample_dir(lat, lon)
 
 
 # Filling reservoir

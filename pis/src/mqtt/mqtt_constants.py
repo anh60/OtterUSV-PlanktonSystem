@@ -11,6 +11,9 @@ broker = "broker.hivemq.com"
 
 class topic(str, Enum):
 
+    # --- Vehicle pos ---
+    VEHICLE_POS         = "planktoscope/vehicle/position"
+
     # --- Status topics ---
 
     # PIS and RMS status flags
