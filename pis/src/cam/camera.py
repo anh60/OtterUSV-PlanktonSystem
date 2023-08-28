@@ -254,17 +254,16 @@ def image_thread_cb():
         # If imaging flag = 1, execute thread
         if((state.get_sys_state() >> state.status_flag.IMAGING) & 1):
             
-            # If sampling, capture and store image
+            # If sampling, the flag is just for MQTT obvservation
             if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
-                image_path = imgs.create_image_path(curr_sample_dir)
-                capture_image(image_path)
+                pass
 
             # If not sampling, capture and publish image
             else:
                 capture_image(mqtt_image_path)
                 publish_image(mqtt_image_path)
                 
-            state.set_sys_state(state.status_flag.IMAGING, 0)
+                state.set_sys_state(state.status_flag.IMAGING, 0)
 
             time.sleep(0.1)
 

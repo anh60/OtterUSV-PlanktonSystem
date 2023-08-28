@@ -39,7 +39,7 @@ curr_sample = 0
 samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
 
 # Directory for current sample
-sample_dir = 0,
+sample_dir = 0
 
 # Flags for sending RMS commands only once
 fill_sent = False
@@ -92,8 +92,10 @@ def image():
     global next_sample_state, image_taken
 
     # Capture image
+    state.set_sys_state(state.status_flag.IMAGING, 1)
     image_path = imgs.create_image_path(sample_dir)
     cam.capture_image(image_path)
+    state.set_sys_state(state.status_flag.IMAGING, 0)
 
     # Set next state
     if(curr_sample >= sample_num):
@@ -125,7 +127,7 @@ def flush():
     # If reservoir empty
     if(((state.get_sys_state() >> state.status_flag.RMS_FULL) & 1) == 0):
         
-        # Remove water from payload
+        # Flush water from payload
         state.set_sys_state(state.status_flag.PUMP, 1)
         time.sleep(20)
         state.set_sys_state(state.status_flag.PUMP, 0)
