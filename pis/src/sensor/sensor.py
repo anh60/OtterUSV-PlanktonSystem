@@ -30,7 +30,7 @@ def leak_thread_cb():
     if(GPIO.input(gpio_num)):
 
         # If in leak state, do nothing
-        if((state.get_sys_state >> state.status_flag.LEAK) & 1):
+        if((state.get_sys_state() >> state.status_flag.LEAK) & 1):
             pass
 
         # If not in leak state, double check sensor value
@@ -41,7 +41,7 @@ def leak_thread_cb():
     else:
 
         # If in leak state, double check sensor value
-        if((state.get_sys_state >> state.status_flag.LEAK) & 1):
+        if((state.get_sys_state() >> state.status_flag.LEAK) & 1):
             check_sensor(0)
 
         # If not in leak state, do nothing
