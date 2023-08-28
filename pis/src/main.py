@@ -15,6 +15,7 @@ import mqtt.mqtt_client             as client
 import pump.pump                    as pump
 import cam.camera                   as cam
 import data.images                  as imgs
+import sensor.sensor                as sensor
 import sample.sample                as sample
 
 
@@ -27,6 +28,7 @@ rms.init_rms_thread()           # RMS communication thread
 pump.init_pump_thread()         # Pump thread
 cam.init_cam_thread()           # Camera imaging thread
 cam.init_cal_thread()           # Camera calibration thread
+sensor.init_leak_thread()       # Leak detection thread
 sample.init_sample_thread()     # Sample routine thread
 imgs.init_images_thread()       # Image file system thread
 
