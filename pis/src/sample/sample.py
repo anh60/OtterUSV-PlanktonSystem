@@ -54,7 +54,6 @@ def set_sample_num(n):
 
     sample_num = n
     sample_dir = imgs.create_sample_dir()
-    #cam.set_sample_dir(sample_dir)
 
 
 # Filling reservoir
@@ -92,6 +91,9 @@ def image():
     global next_sample_state, image_taken
 
     # Capture image
+    # Here the imaging flag is just set so it can be observed during the
+    # sample routine (request is ignored in the imaging thread when sampling).
+
     state.set_sys_state(state.status_flag.IMAGING, 1)
     image_path = imgs.create_image_path(sample_dir)
     cam.capture_image(image_path)
