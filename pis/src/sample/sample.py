@@ -32,8 +32,8 @@ curr_sample_state = 0
 next_sample_state = 0
 
 # Vehicle position
-lat = 0
-lon = 0
+lat = 63.41729
+lon = 10.40609
 
 # Number of samples
 sample_num = 0
@@ -50,7 +50,6 @@ sample_dir = 0
 # Flags for sending RMS commands only once
 fill_sent = False
 flush_sent = False
-image_taken = False
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
@@ -59,10 +58,11 @@ def set_sample_pos(msg):
     global lat, lon
     try:
         coordinates = msg.split(",")
-        lat = coordinates[0]
-        lon = coordinates[1]
+        lat = round(float(coordinates[0]), 5)
+        lon = round(float(coordinates[1]), 5)
     except:
-        pass
+        lat = 63.41729
+        lon = 10.40609
 
 
 def set_sample_num(n):
@@ -104,7 +104,7 @@ def pump():
 
 # Imaging a sample
 def image():
-    global next_sample_state, image_taken
+    global next_sample_state
 
     # Capture image
     # Here the imaging flag is just set so it can be observed during the
@@ -135,7 +135,7 @@ def upload():
 
 # Flushing reservoir
 def flush():
-    global next_sample_state, curr_sample, fill_sent, flush_sent, image_taken
+    global next_sample_state, curr_sample, fill_sent, flush_sent
 
     # Send FLUSH command
     if(flush_sent == False):
