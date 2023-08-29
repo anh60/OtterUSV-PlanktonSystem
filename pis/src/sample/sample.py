@@ -69,7 +69,7 @@ def set_sample_num(n):
     global sample_num, sample_dir
 
     sample_num = n
-    sample_dir = imgs.create_sample_dir(lat, lon)
+    sample_dir = imgs.create_sample_dir(str(lat), str(lon))
 
 
 # Filling reservoir
