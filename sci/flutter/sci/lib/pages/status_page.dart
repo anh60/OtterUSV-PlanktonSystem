@@ -48,16 +48,25 @@ class _StatusPageState extends State<StatusPage> {
         // Empty gap
         const SizedBox(width: 15),
 
-        // Status boxes and image (right)
+        // Scrollable column
         SingleChildScrollView(
           scrollDirection: Axis.vertical,
           clipBehavior: Clip.none,
           child: Column(
             children: [
+              // Empty gap
               const SizedBox(height: 15),
+
+              // Status boxes
               StatusBoxes(status, widget.mqtt),
+
+              // Empty gap
               const SizedBox(height: 15),
+
+              // Image
               MicroscopeImage(widget.mqtt.image, div, rightRatio),
+
+              // Empty gap
               const SizedBox(height: 15),
             ],
           ),

@@ -1,6 +1,0 @@
-C:/master_thesis/OtterUSV-PlanktonSystem/control_system/mqtt_test/build/CMakeFiles/ALL_BUILD.dir
-C:/master_thesis/OtterUSV-PlanktonSystem/control_system/mqtt_test/build/CMakeFiles/ZERO_CHECK.dir
-C:/master_thesis/OtterUSV-PlanktonSystem/control_system/mqtt_test/build/mqtt_client_test/CMakeFiles/mqtt_client_test.dir
-C:/master_thesis/OtterUSV-PlanktonSystem/control_system/mqtt_test/build/mqtt_client_test/CMakeFiles/ALL_BUILD.dir
-C:/master_thesis/OtterUSV-PlanktonSystem/control_system/mqtt_test/build/apps/CMakeFiles/main.dir
-C:/master_thesis/OtterUSV-PlanktonSystem/control_system/mqtt_test/build/apps/CMakeFiles/ALL_BUILD.dir
