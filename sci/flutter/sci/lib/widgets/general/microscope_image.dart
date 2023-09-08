@@ -29,6 +29,7 @@ class MicroscopeImage extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
+        /*
         boxShadow: [
           BoxShadow(
             color: Colors.blueGrey.withOpacity(1),
@@ -37,6 +38,7 @@ class MicroscopeImage extends StatelessWidget {
             offset: const Offset(0, 3),
           ),
         ],
+        */
       ),
       alignment: Alignment.center,
 

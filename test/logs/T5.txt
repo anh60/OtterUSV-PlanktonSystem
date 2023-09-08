@@ -1,0 +1,26 @@
+MQTT LOG 2023/09/08 17:20:41
+
+# [2023/09/08 17:20:41] [planktoscope/status/flags]
+0b10000
+# [2023/09/08 17:20:41] [planktoscope/status/connected]
+1
+# [2023/09/08 17:20:48] [planktoscope/status/flags]
+0b11000
+# [2023/09/08 17:20:53] [planktoscope/control/pump]
+1
+# [2023/09/08 17:20:57] [planktoscope/control/valve]
+1
+# [2023/09/08 17:21:02] [planktoscope/status/flags]
+0b10000
+# [2023/09/08 17:21:04] [planktoscope/control/pump]
+1
+# [2023/09/08 17:21:04] [planktoscope/status/flags]
+0b10001
+# [2023/09/08 17:21:06] [planktoscope/control/valve]
+1
+# [2023/09/08 17:21:07] [planktoscope/status/flags]
+0b10010
+# [2023/09/08 17:21:13] [planktoscope/control/stop]
+1
+# [2023/09/08 17:21:13] [planktoscope/status/flags]
+0b10000
