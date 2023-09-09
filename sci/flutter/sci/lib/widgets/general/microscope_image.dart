@@ -24,12 +24,9 @@ class MicroscopeImage extends StatelessWidget {
     // Container for wrapping image
     return Container(
       // Config
-      width: getContainerWidth(context, div, ratio),
-      height: getContainerWidth(context, div, ratio) * imageAspectRatio,
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
-        /*
         boxShadow: [
           BoxShadow(
             color: Colors.blueGrey.withOpacity(1),
@@ -38,9 +35,8 @@ class MicroscopeImage extends StatelessWidget {
             offset: const Offset(0, 3),
           ),
         ],
-        */
       ),
-      alignment: Alignment.center,
+      alignment: Alignment.topLeft,
 
       // Listen to mqtt image value
       child: ValueListenableBuilder<String>(
@@ -50,16 +46,20 @@ class MicroscopeImage extends StatelessWidget {
         builder: (BuildContext context, String value, Widget? child) {
           // If no image is transmitted
           if (value == '0') {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Loading image',
-                  style: TextStyle(color: darkerBlue, fontSize: 25),
-                ),
-                LoadingAnimationWidget.prograssiveDots(
-                    color: darkerBlue, size: 50),
-              ],
+            return SizedBox(
+              width: getAvailableWidth(context, div, ratio),
+              height: getImageHeight(context, div, ratio),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Loading image',
+                    style: TextStyle(color: darkerBlue, fontSize: 25),
+                  ),
+                  LoadingAnimationWidget.prograssiveDots(
+                      color: darkerBlue, size: 50),
+                ],
+              ),
             );
           }
 
@@ -76,6 +76,10 @@ class MicroscopeImage extends StatelessWidget {
             return ClipRRect(
               borderRadius: BorderRadius.circular(5),
               child: FadeInImage(
+                alignment: Alignment.topLeft,
+                fit: BoxFit.fill,
+                width: getAvailableWidth(context, div, ratio),
+                height: getImageHeight(context, div, ratio),
                 placeholder: MemoryImage(kTransparentImage),
                 image: MemoryImage(bytesImage),
                 fadeInDuration: const Duration(milliseconds: 100),

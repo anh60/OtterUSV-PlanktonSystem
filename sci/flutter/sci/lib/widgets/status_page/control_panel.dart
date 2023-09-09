@@ -25,12 +25,16 @@ class ControlPanel extends StatefulWidget {
 }
 
 class _ControlPanelState extends State<ControlPanel> {
-  // Text field controller
+  // Text field controllers
   TextEditingController sampleInputController = TextEditingController();
+  TextEditingController latInputController = TextEditingController();
+  TextEditingController lonInputController = TextEditingController();
 
   void resetButtonPressed() {}
 
   void sampleButtonPressed() {
+    //widget.mqtt.publishMessage(topics.SAMPLE_POS,
+    //    ('${latInputController.text},${lonInputController.text}'));
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE, sampleInputController.text);
     sampleInputController.clear();
   }
@@ -51,17 +55,13 @@ class _ControlPanelState extends State<ControlPanel> {
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE_PUMP, '1');
   }
 
-  void cameraButtonPressed() {
-    widget.mqtt.image.value = '0';
-    widget.mqtt.publishMessage(topics.CTRL_IMAGE, '1');
-  }
-
   void stopPumpButtonPressed() {
     widget.mqtt.publishMessage(topics.CTRL_STOP, '1');
   }
 
-  void samplePumpButtonPressed() {
-    widget.mqtt.publishMessage(topics.CTRL_SAMPLE_PUMP, '1');
+  void cameraButtonPressed() {
+    widget.mqtt.image.value = '0';
+    widget.mqtt.publishMessage(topics.CTRL_IMAGE, '1');
   }
 
   Color setTitleColor(bool value) {
@@ -106,6 +106,16 @@ class _ControlPanelState extends State<ControlPanel> {
                 ),
                 color: setTitleColor(manualSampling),
               ),
+
+              // Latitude text field
+              const SizedBox(height: buttonSpacing),
+              OutlinedTextField(
+                  latInputController, 'Latitude', !manualSampling),
+
+              // Longitude text field
+              const SizedBox(height: buttonSpacing),
+              OutlinedTextField(
+                  lonInputController, 'Longitude', !manualSampling),
 
               // N-Samples text field
               const SizedBox(height: buttonSpacing),

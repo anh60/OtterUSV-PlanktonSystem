@@ -24,13 +24,14 @@ class StatusBoxes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       // Configuration
-      width: getContainerWidth(context, div, rightRatio),
+      width: getAvailableWidth(context, div, rightRatio),
       height: 325,
 
       // Horizontal scroll
       child: ListView(
+        //clipBehavior: Clip.none,
         scrollDirection: Axis.horizontal,
         children: [
           // PIS container

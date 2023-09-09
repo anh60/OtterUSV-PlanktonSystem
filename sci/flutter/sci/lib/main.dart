@@ -10,6 +10,7 @@
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sci/controllers/mqtt_controller.dart';
 import 'package:sci/constants.dart';
 import 'package:sci/pages/status_page.dart';
@@ -19,7 +20,9 @@ import 'package:sci/pages/vehicle_page.dart';
 //---------------------------- MAIN --------------------------------------------
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft])
+      .then((value) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

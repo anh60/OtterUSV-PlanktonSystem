@@ -26,6 +26,14 @@ class StatusContainer extends StatelessWidget {
         color: darkBlue,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.withOpacity(1),
+            spreadRadius: 3,
+            blurRadius: 9,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       constraints: const BoxConstraints(
         maxWidth: xMax,

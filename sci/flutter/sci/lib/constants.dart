@@ -52,10 +52,14 @@ abstract class topics {
 }
 
 // Returns the available width for right container
-double getContainerWidth(BuildContext context, double div, double ratio) {
+double getAvailableWidth(BuildContext context, double div, double ratio) {
   return ((((MediaQuery.of(context).size.width) / div) * ratio) -
       (40) -
       (15 / 2));
+}
+
+double getImageHeight(BuildContext context, double div, double ratio) {
+  return getAvailableWidth(context, div, ratio) * imageAspectRatio;
 }
 
 // Image aspect ratio

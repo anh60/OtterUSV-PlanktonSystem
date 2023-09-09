@@ -146,7 +146,10 @@ class _ImagesPageState extends State<ImagesPage> {
           leading: setTileIcon(images[index], index),
 
           // Title of tile (image capture time)
-          title: Text(formatDateTime(images[index])),
+          title: Text(
+            formatDateTime(images[index]),
+            style: const TextStyle(fontSize: 12.5),
+          ),
 
           // Make empty space on left side
           contentPadding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
@@ -310,6 +313,18 @@ class _ImagesPageState extends State<ImagesPage> {
     }
   }
 
+  // Get available height for the info panel (below image)
+  double getInfoHeight(BuildContext context) {
+    double imageHeight = getImageHeight(context, div, rightRatio);
+    double availableSpace =
+        MediaQuery.of(context).size.height - imageHeight - 45;
+
+    if (availableSpace > 185) {
+      return availableSpace;
+    }
+    return 185;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -369,9 +384,12 @@ class _ImagesPageState extends State<ImagesPage> {
                             formatDateTime(samples[index]),
                             style: const TextStyle(
                               color: lightBlue,
-                              fontSize: 15,
+                              fontSize: 12.5,
                             ),
                           ),
+
+                          tilePadding:
+                              const EdgeInsets.only(left: 10, right: 10),
 
                           // Allow only one to be open at a time
                           key: Key(selectedFolder.toString()),
@@ -428,8 +446,8 @@ class _ImagesPageState extends State<ImagesPage> {
               // Image and map
               Container(
                 // Config
-                width: getContainerWidth(context, div, rightRatio),
-                height: getContainerWidth(context, div, rightRatio) *
+                width: getAvailableWidth(context, div, rightRatio),
+                height: getAvailableWidth(context, div, rightRatio) *
                     imageAspectRatio,
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
@@ -452,7 +470,8 @@ class _ImagesPageState extends State<ImagesPage> {
 
               // Image info
               Container(
-                width: getContainerWidth(context, div, rightRatio),
+                height: getInfoHeight(context),
+                width: getAvailableWidth(context, div, rightRatio),
                 decoration: BoxDecoration(
                   color: darkBlue,
                   shape: BoxShape.rectangle,
@@ -469,15 +488,18 @@ class _ImagesPageState extends State<ImagesPage> {
 
                 // Split container content horizontally
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // --- Status tabs (time and pos) ---
                     Container(
                       padding: const EdgeInsets.all(15),
                       constraints: BoxConstraints(
                           maxWidth:
-                              getContainerWidth(context, div, rightRatio) / 2),
+                              (getAvailableWidth(context, div, rightRatio) /
+                                      3) *
+                                  2),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           // Date
                           StringStatusTab(
@@ -510,68 +532,73 @@ class _ImagesPageState extends State<ImagesPage> {
                     ),
 
                     // --- Toggle switch (image/map) ---
-                    Container(
-                      alignment: Alignment.center,
-                      constraints: BoxConstraints(
-                          maxWidth:
-                              getContainerWidth(context, div, rightRatio) / 2),
-                      child: ToggleButtons(
-                        isSelected: toggleButtonState,
-                        onPressed: (int index) {
-                          for (int i = 0; i < toggleButtonState.length; i++) {
-                            if (i == index) {
-                              toggleButtonState[i] = true;
-                            } else {
-                              toggleButtonState[i] = false;
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ToggleButtons(
+                          direction: Axis.vertical,
+                          isSelected: toggleButtonState,
+                          onPressed: (int index) {
+                            for (int i = 0; i < toggleButtonState.length; i++) {
+                              if (i == index) {
+                                toggleButtonState[i] = true;
+                              } else {
+                                toggleButtonState[i] = false;
+                              }
                             }
-                          }
-                          setState(() {});
-                        },
+                            setState(() {});
+                          },
 
-                        // Colors
-                        borderColor: lightBlue,
-                        selectedColor: lightBlue,
-                        color: darkerBlue,
-                        fillColor: darkerBlue,
-                        splashColor: Colors.blue,
-                        selectedBorderColor: lightBlue,
-                        hoverColor: const Color.fromARGB(92, 144, 220, 255),
+                          // Colors
+                          borderColor: lightBlue,
+                          selectedColor: lightBlue,
+                          color: darkerBlue,
+                          fillColor: darkerBlue,
+                          splashColor: Colors.blue,
+                          selectedBorderColor: lightBlue,
+                          hoverColor: const Color.fromARGB(92, 144, 220, 255),
 
-                        // Border
-                        renderBorder: true,
-                        borderWidth: 1,
-                        borderRadius: BorderRadius.circular(10),
+                          // Border
+                          renderBorder: true,
+                          borderWidth: 1,
+                          borderRadius: BorderRadius.circular(10),
 
-                        // Content
-                        children: const [
-                          SizedBox(
-                            width: 100,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text('Image'),
-                                Icon(
-                                  Icons.image,
-                                  size: 25,
-                                ),
-                              ],
+                          // Content
+                          children: const [
+                            SizedBox(
+                              height: 75,
+                              width: 75,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  //Text('Image'),
+                                  Icon(
+                                    Icons.image,
+                                    size: 25,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 100,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text('Map'),
-                                Icon(
-                                  Icons.map,
-                                  size: 25,
-                                ),
-                              ],
+                            SizedBox(
+                              height: 75,
+                              width: 75,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  //Text('Map'),
+                                  Icon(
+                                    Icons.map,
+                                    size: 25,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                        const SizedBox(width: 15),
+                      ],
                     ),
                   ],
                 ),
