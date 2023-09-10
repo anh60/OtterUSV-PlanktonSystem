@@ -6,16 +6,16 @@
  * 2023
  */
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:sci/widgets/general/microscope_image.dart';
 import 'package:sci/widgets/images_page/string_status_tab.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:sci/constants.dart';
 import 'package:sci/widgets/general/container_scaled.dart';
 import 'package:sci/controllers/mqtt_controller.dart';
+import 'package:sci/controllers/image_controller.dart';
 
 class ImagesPage extends StatefulWidget {
   final MQTTController mqtt;
@@ -26,15 +26,6 @@ class ImagesPage extends StatefulWidget {
 }
 
 class _ImagesPageState extends State<ImagesPage> {
-  // Page layout constants
-  static const double div = 3;
-  static const double leftRatio = 1;
-  static const double rightRatio = 2;
-  static const double boxMargin = 15;
-
-  // String printed when loading images
-  String loading = 'Loading';
-
   // Current active folder and file indexes
   int selectedFolder = -1;
   int selectedFile = -1;
@@ -211,6 +202,7 @@ class _ImagesPageState extends State<ImagesPage> {
   }
 
   // Build image
+  /*
   Widget buildImage() {
     return ValueListenableBuilder<String>(
       // Listen to image value received over mqtt
@@ -255,6 +247,7 @@ class _ImagesPageState extends State<ImagesPage> {
       },
     );
   }
+  */
 
   // Build map markers
   List<Marker> buildMarkerList() {
@@ -304,9 +297,9 @@ class _ImagesPageState extends State<ImagesPage> {
 
   // Check toggle button state
   Widget checkToggleButton(List<bool> buttonState) {
-    if (buttonState[0] == true) {
+    if (buttonState[0]) {
       mapReady = false;
-      return buildImage();
+      return MicroscopeImage(widget.mqtt.data_image, div, rightRatio);
     } else {
       mapReady = true;
       return buildMap();
@@ -315,13 +308,19 @@ class _ImagesPageState extends State<ImagesPage> {
 
   // Get available height for the info panel (below image)
   double getInfoHeight(BuildContext context) {
+    // Calculate image height
     double imageHeight = getImageHeight(context, div, rightRatio);
+
+    // Calculate available space
     double availableSpace =
         MediaQuery.of(context).size.height - imageHeight - 45;
 
+    // If there is enough space, stretch to fit screen
     if (availableSpace > 185) {
       return availableSpace;
     }
+
+    // If not, force minimum size
     return 185;
   }
 
