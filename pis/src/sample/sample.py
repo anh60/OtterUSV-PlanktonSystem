@@ -59,7 +59,7 @@ def set_sample_pos(msg):
     print('pos received')
     try:
         print('splitting pos')
-        coordinates = str(msg).split(",")
+        coordinates = str(msg.decode("utf-8")).split(",")
 
         print('setting pos')
         lat = round(float(coordinates[0]), 5)
