@@ -1,0 +1,54 @@
+MQTT LOG 2023/09/10 18:37:41
+
+# [2023/09/10 18:37:53] [planktoscope/control/sample]
+3
+# [2023/09/10 18:37:53] [planktoscope/status/flags]
+0b100000
+# [2023/09/10 18:37:53] [planktoscope/status/flags]
+0b100001
+# [2023/09/10 18:38:16] [planktoscope/status/flags]
+0b100100
+# [2023/09/10 18:38:16] [planktoscope/status/flags]
+0b1100100
+# [2023/09/10 18:38:26] [planktoscope/status/flags]
+0b10100100
+# [2023/09/10 18:38:28] [planktoscope/status/flags]
+0b1100100
+# [2023/09/10 18:38:33] [planktoscope/status/flags]
+0b10100100
+# [2023/09/10 18:38:36] [planktoscope/status/flags]
+0b1100100
+# [2023/09/10 18:38:41] [planktoscope/status/flags]
+0b10100100
+# [2023/09/10 18:38:43] [planktoscope/status/flags]
+0b100100
+# [2023/09/10 18:38:43] [planktoscope/data/samples]
+  20230910183745
+# [2023/09/10 18:38:43] [planktoscope/status/flags]
+0b100110
+# [2023/09/10 18:39:13] [planktoscope/status/flags]
+0b100000
+# [2023/09/10 18:39:14] [planktoscope/status/flags]
+0b1100000
+# [2023/09/10 18:39:33] [planktoscope/status/flags]
+0b10000
+# [2023/09/10 18:39:45] [planktoscope/data/get_images]
+20230910183745
+# [2023/09/10 18:39:46] [planktoscope/data/images]
+  20230910183833
+  20230910183818
+  20230910183826
+  63.41729
+  10.40609
+# [2023/09/10 18:39:48] [planktoscope/data/get_image]
+20230910183818
+# [2023/09/10 18:39:49] [planktoscope/data/image]
+96456 bytes
+# [2023/09/10 18:39:50] [planktoscope/data/get_image]
+20230910183826
+# [2023/09/10 18:39:50] [planktoscope/data/image]
+75088 bytes
+# [2023/09/10 18:39:52] [planktoscope/data/get_image]
+20230910183833
+# [2023/09/10 18:39:52] [planktoscope/data/image]
+75088 bytes

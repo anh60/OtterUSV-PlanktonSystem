@@ -145,6 +145,17 @@ class MQTTController with ChangeNotifier {
     );
   }
 
+  void pubRetainedMessage(String t, String m) {
+    final builder = MqttClientPayloadBuilder();
+    builder.addString(m);
+    client.publishMessage(
+      t,
+      MqttQos.atLeastOnce,
+      builder.payload!,
+      retain: true,
+    );
+  }
+
   void filterMessages(String t, String m) {
     switch (t) {
       case topics.STATUS_CONNECTED:

@@ -16,6 +16,9 @@ const int mqtt_broker_port = 1883;
 
 // MQTT Topics
 abstract class topics {
+  // Vehicle position
+  static const String VEHICLE_POS = "planktoscope/vehicle/position";
+
   // Status
   static const String STATUS_FLAGS = "planktoscope/status/flags";
   static const String STATUS_CONNECTED = "planktoscope/status/connected";

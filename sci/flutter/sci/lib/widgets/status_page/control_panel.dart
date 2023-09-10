@@ -32,9 +32,14 @@ class _ControlPanelState extends State<ControlPanel> {
 
   void resetButtonPressed() {}
 
+  void sendPosButtonPressed() {
+    widget.mqtt.pubRetainedMessage(topics.VEHICLE_POS,
+        ('${latInputController.text},${lonInputController.text}'));
+    latInputController.clear();
+    lonInputController.clear();
+  }
+
   void sampleButtonPressed() {
-    //widget.mqtt.publishMessage(topics.SAMPLE_POS,
-    //    ('${latInputController.text},${lonInputController.text}'));
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE, sampleInputController.text);
     sampleInputController.clear();
   }
@@ -117,6 +122,12 @@ class _ControlPanelState extends State<ControlPanel> {
               OutlinedTextField(
                   lonInputController, 'Longitude', !manualSampling),
 
+              // Reset Button
+              const SizedBox(height: buttonSpacing),
+              OutlinedButtonDark(sendPosButtonPressed, 'Send', !manualSampling),
+
+              const SizedBox(height: buttonSpacing),
+
               // N-Samples text field
               const SizedBox(height: buttonSpacing),
               OutlinedTextField(
@@ -125,10 +136,6 @@ class _ControlPanelState extends State<ControlPanel> {
               // Start sampling button
               const SizedBox(height: buttonSpacing),
               OutlinedButtonDark(sampleButtonPressed, 'Start', !manualSampling),
-
-              // Reset Button
-              const SizedBox(height: buttonSpacing),
-              OutlinedButtonDark(resetButtonPressed, 'Reset', !manualSampling),
 
               // Manual control switch
               const SizedBox(height: 20),

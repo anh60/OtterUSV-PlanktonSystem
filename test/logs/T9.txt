@@ -1,49 +1,22 @@
-MQTT LOG 2023/09/10 17:02:26
+MQTT LOG 2023/09/10 17:55:43
 
-# [2023/09/10 17:02:26] [planktoscope/status/flags]
-0b10100
-# [2023/09/10 17:02:26] [planktoscope/status/connected]
-1
-# [2023/09/10 17:02:26] [planktoscope/calibrate/photo]
-455756 bytes
-# [2023/09/10 17:02:26] [planktoscope/calibrate/currpos]
-5000
-# [2023/09/10 17:02:26] [planktoscope/calibrate/currled]
+# [2023/09/10 17:55:43] [planktoscope/calibrate/currled]
 1.0
-# [2023/09/10 17:02:26] [planktoscope/data/images]
-  20230909234002
-  20230909234009
-  20230909234016
-  63.41729
-  10.40609
-# [2023/09/10 17:02:26] [planktoscope/data/samples]
-  20230824224707
-  20230828171624
-  20230902142510
-  20230825005346
-  20230825143308
-  20230909233928
-  20230902142224
-  20230825153254
-  20230825144623
-  20230825004214
-  20230828184519
-  20230824224934
-  20230825011350
-  20230829184555
-  20230825153102
-  20230828185334
-# [2023/09/10 17:02:26] [planktoscope/data/image]
-455808 bytes
-# [2023/09/10 17:02:31] [planktoscope/calibrate/nextled]
+# [2023/09/10 17:55:48] [planktoscope/calibrate/nextled]
 5
-# [2023/09/10 17:02:32] [planktoscope/status/flags]
+# [2023/09/10 17:55:48] [planktoscope/status/flags]
 0b100000100
-# [2023/09/10 17:02:32] [planktoscope/status/flags]
+# [2023/09/10 17:55:48] [planktoscope/status/flags]
 0b10100
-# [2023/09/10 17:02:32] [planktoscope/calibrate/currled]
+# [2023/09/10 17:55:48] [planktoscope/calibrate/currled]
 5.0
-# [2023/09/10 17:02:37] [planktoscope/calibrate/nextled]
+# [2023/09/10 17:55:53] [planktoscope/calibrate/nextled]
 a
-# [2023/09/10 17:02:45] [planktoscope/calibrate/nextled]
+# [2023/09/10 17:55:58] [planktoscope/calibrate/nextled]
 150
+# [2023/09/10 17:55:58] [planktoscope/status/flags]
+0b100000100
+# [2023/09/10 17:55:58] [planktoscope/status/flags]
+0b10100
+# [2023/09/10 17:55:59] [planktoscope/calibrate/currled]
+100

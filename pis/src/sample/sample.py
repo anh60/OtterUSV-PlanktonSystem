@@ -56,8 +56,12 @@ flush_sent = False
 
 def set_sample_pos(msg):
     global lat, lon
+    print('pos received')
     try:
+        print('splitting pos')
         coordinates = msg.split(",")
+
+        print('setting pos')
         lat = round(float(coordinates[0]), 5)
         lon = round(float(coordinates[1]), 5)
     except:
