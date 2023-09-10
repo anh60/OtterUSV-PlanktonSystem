@@ -1,0 +1,10 @@
+MQTT LOG 2023/09/10 16:48:45
+
+# [2023/09/10 16:48:49] [planktoscope/control/capture_image]
+1
+# [2023/09/10 16:48:50] [planktoscope/status/flags]
+0b10000100
+# [2023/09/10 16:48:54] [planktoscope/status/flags]
+0b10100
+# [2023/09/10 16:48:54] [planktoscope/calibrate/photo]
+455756 bytes

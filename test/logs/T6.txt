@@ -1,0 +1,16 @@
+MQTT LOG 2023/09/10 16:23:23
+
+# [2023/09/10 16:23:28] [planktoscope/control/pump]
+1
+# [2023/09/10 16:23:29] [planktoscope/status/flags]
+0b10001
+# [2023/09/10 16:23:52] [planktoscope/status/flags]
+0b10100
+# [2023/09/10 16:24:01] [planktoscope/control/sample_pump]
+1
+# [2023/09/10 16:24:02] [planktoscope/status/flags]
+0b1000100
+# [2023/09/10 16:24:25] [planktoscope/control/stop]
+1
+# [2023/09/10 16:24:26] [planktoscope/status/flags]
+0b10100

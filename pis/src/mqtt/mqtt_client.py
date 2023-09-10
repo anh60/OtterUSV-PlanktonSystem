@@ -161,8 +161,11 @@ def handle_pos(msg):
 # --- Sample ---
 def handle_sample(msg):
     if((state.get_sys_state() >> state.status_flag.READY) & 1):
-        sample.set_sample_num(int(msg))
-        state.set_sys_state(state.status_flag.SAMPLING, 1)
+        try:
+            sample.set_sample_num(int(msg))
+            state.set_sys_state(state.status_flag.SAMPLING, 1)
+        except:
+            pass
 
 
 # --- Pump on ---
@@ -205,14 +208,20 @@ def handle_cal_image(msg):
 
 # --- Lens position ---
 def handle_lens(msg):
-    cam.set_lens_position(int(msg))
-    state.set_sys_state(state.status_flag.CALIBRATING, 1)
+    try:
+        cam.set_lens_position(int(msg))
+        state.set_sys_state(state.status_flag.CALIBRATING, 1)
+    except:
+        pass
 
 
 # --- LED Brightness ---
 def handle_led(msg):
-    cam.set_led_brightness(float(msg))
-    state.set_sys_state(state.status_flag.CALIBRATING, 1)
+    try:
+        cam.set_led_brightness(float(msg))
+        state.set_sys_state(state.status_flag.CALIBRATING, 1)
+    except:
+        pass
 
 
 # --- List of samples ---

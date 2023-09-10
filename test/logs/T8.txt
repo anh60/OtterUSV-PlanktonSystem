@@ -1,0 +1,20 @@
+MQTT LOG 2023/09/10 16:55:01
+
+# [2023/09/10 16:55:01] [planktoscope/calibrate/currpos]
+10000
+# [2023/09/10 16:55:03] [planktoscope/calibrate/nextpos]
+5000
+# [2023/09/10 16:55:03] [planktoscope/status/flags]
+0b100000100
+# [2023/09/10 16:55:19] [planktoscope/calibrate/currpos]
+5000
+# [2023/09/10 16:55:19] [planktoscope/status/flags]
+0b10100
+# [2023/09/10 16:55:29] [planktoscope/calibrate/nextpos]
+4000
+# [2023/09/10 16:55:30] [planktoscope/status/flags]
+0b100000100
+# [2023/09/10 16:55:30] [planktoscope/calibrate/currpos]
+5000
+# [2023/09/10 16:55:30] [planktoscope/status/flags]
+0b10100
