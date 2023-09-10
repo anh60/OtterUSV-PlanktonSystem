@@ -64,7 +64,9 @@ def set_sample_pos(msg):
         print('setting pos')
         lat = round(float(coordinates[0]), 5)
         lon = round(float(coordinates[1]), 5)
+        print('it worked')
     except:
+        print('didnt work')
         lat = 63.41729
         lon = 10.40609
 
