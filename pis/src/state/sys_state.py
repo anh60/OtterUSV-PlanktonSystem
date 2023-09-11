@@ -187,6 +187,8 @@ def check_mqtt_queue():
 def check_sys_state():
     global curr_sys_state, next_sys_state
 
+    check_mqtt_queue()
+
     # If state has changed
     if (curr_sys_state != next_sys_state):
         
