@@ -178,7 +178,7 @@ def handle_mqtt_msg(topic, msg):
 # --- Check MQTT message queue ---
 def check_mqtt_queue():
     topics, msgs = client.get_msgs()
-    if(topics > 0):
+    if(len(topics) > 0):
         handle_mqtt_msg(topics[0], msgs[0])
         client.dequeue_msgs()
         
