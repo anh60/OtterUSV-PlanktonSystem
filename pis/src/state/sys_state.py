@@ -12,6 +12,10 @@ import threading
 import time
 
 import mqtt.mqtt_client as client
+import sample.sample    as sample
+import rms.rms_com      as rms
+import cam.camera       as cam
+import data.images      as imgs
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -55,6 +59,129 @@ def set_sys_state(flag, val):
     else:
         next_sys_state &= (~(1 << flag))
 
+# --- Vehicle position ---
+def handle_pos(msg):
+    sample.set_sample_pos(msg)
+
+
+# --- Sample ---
+def handle_sample(msg):
+    if((get_sys_state() >> status_flag.READY) & 1):
+        try:
+            sample.set_sample_num(int(msg))
+            set_sys_state(status_flag.SAMPLING, 1)
+        except:
+            pass
+
+
+# --- Pump on ---
+def handle_pump(msg):
+    if((get_sys_state() >> status_flag.READY) & 1):
+        set_sys_state(status_flag.PUMP, 1)
+
+
+# --- Pump off ---
+def handle_stop(msg):
+    if((get_sys_state() >> status_flag.SAMPLING) & 1):
+        pass
+    elif((get_sys_state() >> status_flag.PUMP) & 1):
+        set_sys_state(status_flag.PUMP, 0)
+
+
+# --- RMS FILL ---
+def handle_rms_fill(msg):
+    if((get_sys_state() >> status_flag.READY) & 1):
+        rms.send_fill()
+
+
+# --- RMS FLUSH ---
+def handle_rms_flush(msg):
+    if((get_sys_state() >> status_flag.READY) & 1):
+        rms.send_flush()
+
+
+# --- RMS STOP (force IDLE) ---
+def handle_rms_stop(msg):
+    if((get_sys_state() >> status_flag.READY) & 1):
+        rms.send_stop()
+
+
+# --- Capture image ---
+def handle_cal_image(msg):
+    if((get_sys_state() >> status_flag.READY) & 1):
+        set_sys_state(status_flag.IMAGING, 1)
+
+
+# --- Lens position ---
+def handle_lens(msg):
+    try:
+        cam.set_lens_position(int(msg))
+        set_sys_state(status_flag.CALIBRATING, 1)
+    except:
+        pass
+
+
+# --- LED Brightness ---
+def handle_led(msg):
+    try:
+        cam.set_led_brightness(float(msg))
+        set_sys_state(status_flag.CALIBRATING, 1)
+    except:
+        pass
+
+
+# --- List of samples ---
+def handle_samples(msg):
+    imgs.publish_samples()
+
+
+# --- List of images from sample ---
+def handle_images(msg):
+    imgs.set_curr_sample(msg)
+
+
+# --- Image from sample ---
+def handle_image(msg):
+    imgs.set_curr_image(msg)
+
+
+# --- Handle MQTT message ---
+def handle_mqtt_msg(topic, msg):
+    if(topic == client.con.topic.VEHICLE_POS):
+        handle_pos(msg)
+    if(topic == client.con.topic.CTRL_SAMPLE):
+        handle_sample(msg)
+    if(topic == client.con.topic.CTRL_SAMPLE_PUMP):
+        handle_pump(msg)
+    if(topic == client.con.topic.CTRL_STOP):
+        handle_stop(msg)
+    if(topic == client.con.topic.CTRL_RMS_FILL):
+        handle_rms_fill(msg)
+    if(topic == client.con.topic.CTRL_RMS_FLUSH):
+        handle_rms_flush(msg)
+    if(topic == client.con.topic.CTRL_RMS_STOP):
+        handle_rms_stop(msg)
+    if(topic == client.con.topic.CTRL_IMAGE):
+        handle_cal_image(msg)
+    if(topic == client.con.topic.CAL_NEXTPOS):
+        handle_lens(msg)
+    if(topic == client.con.topic.CAL_NEXTLED):
+        handle_led(msg)
+    if(topic == client.con.topic.GET_SAMPLES):
+        handle_samples(msg)
+    if(topic == client.con.topic.GET_IMAGES):
+        handle_images(msg)
+    if(topic == client.con.topic.GET_IMAGE):
+        handle_image(msg)
+
+
+# --- Check MQTT message queue ---
+def check_mqtt_queue():
+    topics, msgs = client.get_msgs()
+    if(topics > 0):
+        handle_mqtt_msg(topics[0], msgs[0])
+        client.dequeue_msgs()
+        
 
 # --- Check for a state change ---
 def check_sys_state():

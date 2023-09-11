@@ -9,11 +9,6 @@
 
 import paho.mqtt.client             as mqtt
 import mqtt.mqtt_constants          as con
-import state.sys_state              as state
-import rms.rms_com                  as rms
-import sample.sample                as sample
-import cam.camera                   as cam
-import data.images                  as imgs
 
 
 #---------------------------- GLOBALS ------------------------------------------
@@ -28,27 +23,33 @@ topics_sub = [
     # Vehicle position
     con.topic.VEHICLE_POS,
 
-    # PIS control
+    # PIS sample routine
     con.topic.CTRL_SAMPLE,
+
+    # PIS config
+    con.topic.CAL_NEXTPOS,
+    con.topic.CAL_NEXTLED,
+
+    # PIS manual control
     con.topic.CTRL_IMAGE,
     con.topic.CTRL_SAMPLE_PUMP,
     con.topic.CTRL_STOP,
 
-    # PIS calibration
-    con.topic.CAL_NEXTPOS,
-    con.topic.CAL_NEXTLED,
-
-    # RMS control
+    # RMS manual control
     con.topic.CTRL_RMS_FILL,
     con.topic.CTRL_RMS_FLUSH,
     con.topic.CTRL_RMS_STOP,
 
-    # Image file system
+    # Images file system
     con.topic.GET_SAMPLES,
     con.topic.GET_IMAGES,
     con.topic.GET_IMAGE
     
 ]
+
+# MQTT data received queue
+topics = []
+messages = []
 
 
 #---------------------------- FUNCTIONS ----------------------------------------
@@ -92,151 +93,11 @@ def on_connect(client, userdata, flags, rc):
 
 # --- On-message received callback function ---
 def on_message(client, userdata, message):
-    msg = message.payload
+    global topics, messages
     topic = message.topic
-    msg_handler(topic, msg)
-
-
-# --- Filter incoming topics/messages in on_message callback ---
-def msg_handler(topic, msg):
-
-    # Vehicle position
-    if(topic == con.topic.VEHICLE_POS):
-        handle_pos(msg)
-
-    # Sample
-    if(topic == con.topic.CTRL_SAMPLE):
-        handle_sample(msg)
-
-    # Pump on
-    if(topic == con.topic.CTRL_SAMPLE_PUMP):
-        handle_pump(msg)
-
-    # Pump off
-    if(topic == con.topic.CTRL_STOP):
-        handle_stop(msg)
-
-    # RMS FILL
-    if(topic == con.topic.CTRL_RMS_FILL):
-        handle_rms_fill(msg)
-
-    # RMS FLUSH
-    if(topic == con.topic.CTRL_RMS_FLUSH):
-        handle_rms_flush(msg)
-
-    # RMS STOP (force IDLE)
-    if(topic == con.topic.CTRL_RMS_STOP):
-        handle_rms_stop(msg)
-
-    # Capture image
-    if(topic == con.topic.CTRL_IMAGE):
-        handle_cal_image(msg)
-
-    # Lens position
-    if(topic == con.topic.CAL_NEXTPOS):
-        handle_lens(msg)
-
-    # Led brightness
-    if(topic == con.topic.CAL_NEXTLED):
-        handle_led(msg)
-
-    # List of samples
-    if(topic == con.topic.GET_SAMPLES):
-        handle_samples(msg)
-
-    # List of images from sample
-    if(topic == con.topic.GET_IMAGES):
-        handle_images(msg)
-
-    # Image from sample
-    if(topic == con.topic.GET_IMAGE):
-        handle_image(msg)
-
-
-# --- Vehicle position ---
-def handle_pos(msg):
-    sample.set_sample_pos(msg)
-
-
-# --- Sample ---
-def handle_sample(msg):
-    if((state.get_sys_state() >> state.status_flag.READY) & 1):
-        try:
-            sample.set_sample_num(int(msg))
-            state.set_sys_state(state.status_flag.SAMPLING, 1)
-        except:
-            pass
-
-
-# --- Pump on ---
-def handle_pump(msg):
-    if((state.get_sys_state() >> state.status_flag.READY) & 1):
-        state.set_sys_state(state.status_flag.PUMP, 1)
-
-
-# --- Pump off ---
-def handle_stop(msg):
-    if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
-        pass
-    elif((state.get_sys_state() >> state.status_flag.PUMP) & 1):
-        state.set_sys_state(state.status_flag.PUMP, 0)
-
-
-# --- RMS FILL ---
-def handle_rms_fill(msg):
-    if((state.get_sys_state() >> state.status_flag.READY) & 1):
-        rms.send_fill()
-
-
-# --- RMS FLUSH ---
-def handle_rms_flush(msg):
-    if((state.get_sys_state() >> state.status_flag.READY) & 1):
-        rms.send_flush()
-
-
-# --- RMS STOP (force IDLE) ---
-def handle_rms_stop(msg):
-    if((state.get_sys_state() >> state.status_flag.READY) & 1):
-        rms.send_stop()
-
-
-# --- Capture image ---
-def handle_cal_image(msg):
-    if((state.get_sys_state() >> state.status_flag.READY) & 1):
-        state.set_sys_state(state.status_flag.IMAGING, 1)
-
-
-# --- Lens position ---
-def handle_lens(msg):
-    try:
-        cam.set_lens_position(int(msg))
-        state.set_sys_state(state.status_flag.CALIBRATING, 1)
-    except:
-        pass
-
-
-# --- LED Brightness ---
-def handle_led(msg):
-    try:
-        cam.set_led_brightness(float(msg))
-        state.set_sys_state(state.status_flag.CALIBRATING, 1)
-    except:
-        pass
-
-
-# --- List of samples ---
-def handle_samples(msg):
-    imgs.publish_samples()
-
-
-# --- List of images from sample ---
-def handle_images(msg):
-    imgs.set_curr_sample(msg)
-
-
-# --- Image from sample ---
-def handle_image(msg):
-    imgs.set_curr_image(msg)
+    msg = message.payload
+    topics.append(topic)
+    messages.append(msg)
 
 
 # --- Publish a message with QOS=1 ---
@@ -247,3 +108,15 @@ def publish_message(t, m, r):
         qos     = 1,
         retain  = r
     )
+
+# --- Get topic/message queues ---
+def get_msgs():
+    global topics, messages
+    return topics, messages
+
+
+# --- Dequeue first element in topic/message queue ---
+def dequeue_msgs():
+    global topics, messages
+    topics.pop(0)
+    messages.pop(0)
