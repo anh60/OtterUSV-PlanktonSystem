@@ -33,7 +33,6 @@ topics_sub = [
     # PIS manual control
     con.topic.CTRL_IMAGE,
     con.topic.CTRL_SAMPLE_PUMP,
-    con.topic.CTRL_STOP,
 
     # RMS manual control
     con.topic.CTRL_RMS_FILL,

@@ -74,7 +74,7 @@ def handle_sample(msg):
             pass
 
 
-# --- Pump on ---
+# --- Pump ---
 def handle_pump(msg):
     msg = msg.decode("utf-8")
     if(msg == '1'):
@@ -87,34 +87,26 @@ def handle_pump(msg):
             set_sys_state(status_flag.PUMP, 0)
 
 
-# --- Pump off ---
-def handle_stop(msg):
-    if((get_sys_state() >> status_flag.SAMPLING) & 1):
-        pass
-    elif((get_sys_state() >> status_flag.PUMP) & 1):
-        set_sys_state(status_flag.PUMP, 0)
-
-
 # --- RMS FILL ---
-def handle_rms_fill(msg):
+def handle_rms_fill():
     if((get_sys_state() >> status_flag.READY) & 1):
         rms.send_fill()
 
 
 # --- RMS FLUSH ---
-def handle_rms_flush(msg):
+def handle_rms_flush():
     if((get_sys_state() >> status_flag.READY) & 1):
         rms.send_flush()
 
 
-# --- RMS STOP (force IDLE) ---
-def handle_rms_stop(msg):
+# --- RMS STOP ---
+def handle_rms_stop():
     if((get_sys_state() >> status_flag.READY) & 1):
         rms.send_stop()
 
 
 # --- Capture image ---
-def handle_cal_image(msg):
+def handle_cal_image():
     if((get_sys_state() >> status_flag.READY) & 1):
         set_sys_state(status_flag.IMAGING, 1)
 
@@ -138,7 +130,7 @@ def handle_led(msg):
 
 
 # --- List of samples ---
-def handle_samples(msg):
+def handle_samples():
     imgs.publish_samples()
 
 
@@ -160,22 +152,20 @@ def handle_mqtt_msg(topic, msg):
         handle_sample(msg)
     if(topic == client.con.topic.CTRL_SAMPLE_PUMP):
         handle_pump(msg)
-    if(topic == client.con.topic.CTRL_STOP):
-        handle_stop(msg)
     if(topic == client.con.topic.CTRL_RMS_FILL):
-        handle_rms_fill(msg)
+        handle_rms_fill()
     if(topic == client.con.topic.CTRL_RMS_FLUSH):
-        handle_rms_flush(msg)
+        handle_rms_flush()
     if(topic == client.con.topic.CTRL_RMS_STOP):
-        handle_rms_stop(msg)
+        handle_rms_stop()
     if(topic == client.con.topic.CTRL_IMAGE):
-        handle_cal_image(msg)
+        handle_cal_image()
     if(topic == client.con.topic.CAL_NEXTPOS):
         handle_lens(msg)
     if(topic == client.con.topic.CAL_NEXTLED):
         handle_led(msg)
     if(topic == client.con.topic.GET_SAMPLES):
-        handle_samples(msg)
+        handle_samples()
     if(topic == client.con.topic.GET_IMAGES):
         handle_images(msg)
     if(topic == client.con.topic.GET_IMAGE):
