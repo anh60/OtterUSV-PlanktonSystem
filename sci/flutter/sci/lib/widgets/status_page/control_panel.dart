@@ -32,39 +32,39 @@ class _ControlPanelState extends State<ControlPanel> {
 
   void resetButtonPressed() {}
 
-  void sendPosButtonPressed() {
+  void sendPosButton() {
     widget.mqtt.pubRetainedMessage(topics.VEHICLE_POS,
         ('${latInputController.text},${lonInputController.text}'));
     latInputController.clear();
     lonInputController.clear();
   }
 
-  void sampleButtonPressed() {
+  void sampleButton() {
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE, sampleInputController.text);
     sampleInputController.clear();
   }
 
-  void pumpButtonPressed() {
+  void rmsFillButton() {
     widget.mqtt.publishMessage(topics.CTRL_RMS_PUMP, '1');
   }
 
-  void valveButtonPressed() {
+  void rmsFlushButton() {
     widget.mqtt.publishMessage(topics.CTRL_RMS_VALVE, '1');
   }
 
-  void stopButtonPressed() {
+  void rmsStopButton() {
     widget.mqtt.publishMessage(topics.CTRL_RMS_STOP, '1');
   }
 
-  void littlePumpButtonPressed() {
+  void startPumpButton() {
     widget.mqtt.publishMessage(topics.CTRL_SAMPLE_PUMP, '1');
   }
 
-  void stopPumpButtonPressed() {
-    widget.mqtt.publishMessage(topics.CTRL_STOP, '1');
+  void stopPumpButton() {
+    widget.mqtt.publishMessage(topics.CTRL_SAMPLE_PUMP, '0');
   }
 
-  void cameraButtonPressed() {
+  void cameraButton() {
     widget.mqtt.image.value = '0';
     widget.mqtt.publishMessage(topics.CTRL_IMAGE, '1');
   }
@@ -124,7 +124,7 @@ class _ControlPanelState extends State<ControlPanel> {
 
               // Reset Button
               const SizedBox(height: buttonSpacing),
-              OutlinedButtonDark(sendPosButtonPressed, 'Send', !manualSampling),
+              OutlinedButtonDark(sendPosButton, 'Send', !manualSampling),
 
               const SizedBox(height: buttonSpacing),
 
@@ -135,7 +135,7 @@ class _ControlPanelState extends State<ControlPanel> {
 
               // Start sampling button
               const SizedBox(height: buttonSpacing),
-              OutlinedButtonDark(sampleButtonPressed, 'Start', !manualSampling),
+              OutlinedButtonDark(sampleButton, 'Start', !manualSampling),
 
               // Manual control switch
               const SizedBox(height: 20),
@@ -166,7 +166,7 @@ class _ControlPanelState extends State<ControlPanel> {
               // Fill reservoir button
               const SizedBox(height: buttonSpacing),
               OutlinedButtonDark(
-                pumpButtonPressed,
+                rmsFillButton,
                 'Fill',
                 !manualControl,
               ),
@@ -174,7 +174,7 @@ class _ControlPanelState extends State<ControlPanel> {
               // Flush reservoir button
               const SizedBox(height: buttonSpacing),
               OutlinedButtonDark(
-                valveButtonPressed,
+                rmsFlushButton,
                 'Flush',
                 !manualControl,
               ),
@@ -182,7 +182,7 @@ class _ControlPanelState extends State<ControlPanel> {
               // Stop button (rms idle)
               const SizedBox(height: buttonSpacing),
               OutlinedButtonDark(
-                stopButtonPressed,
+                rmsStopButton,
                 'Stop',
                 !manualControl,
               ),
@@ -205,7 +205,7 @@ class _ControlPanelState extends State<ControlPanel> {
               // P-scope pump button
               const SizedBox(height: buttonSpacing),
               OutlinedButtonDark(
-                littlePumpButtonPressed,
+                startPumpButton,
                 'Pump',
                 !manualControl,
               ),
@@ -213,7 +213,7 @@ class _ControlPanelState extends State<ControlPanel> {
               // P-scope camera button
               const SizedBox(height: buttonSpacing),
               OutlinedButtonDark(
-                cameraButtonPressed,
+                cameraButton,
                 'Camera',
                 !manualControl,
               ),
@@ -221,7 +221,7 @@ class _ControlPanelState extends State<ControlPanel> {
               // P-scope stop button
               const SizedBox(height: buttonSpacing),
               OutlinedButtonDark(
-                stopPumpButtonPressed,
+                stopPumpButton,
                 'Stop',
                 !manualControl,
               ),

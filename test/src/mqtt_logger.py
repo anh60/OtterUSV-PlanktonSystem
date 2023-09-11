@@ -9,6 +9,7 @@
 
 from enum import Enum
 import time
+import numpy as np
 import paho.mqtt.client             as mqtt
 import mqtt_constants               as con
 
@@ -85,6 +86,10 @@ sys_state = 0
 # Message queue: string element = {timestamp,topic,data}
 msgs = []
 
+timestamps   = []
+topics       = []
+messages     = []
+
 
 #---------------------------- FUNCTIONS ----------------------------------------
 
@@ -118,10 +123,16 @@ def on_connect(client, userdata, flags, rc):
 
 # --- On-message received callback function ---
 def on_message(client, userdata, message):
+    global timestamps, topics, messages
+    # Get values
     timestamp = time.strftime('%Y/%m/%d %H:%M:%S')
     topic = str(message.topic)
-    msg = str(message.payload)
-    msgs.append(timestamp + ',' + topic + ',' + msg)
+    message = str(message.payload)
+
+    # Enqueue values
+    timestamps.append(timestamp)
+    topics.append(topic)
+    messages.append(message)
 
 
 # --- Init ---
@@ -133,29 +144,27 @@ f.close()
 
 # --- Main thread ---
 while(True):
-    if(len(msgs) > 0):
-        # Split the CSVs
-        data = msgs[0].split(',', maxsplit=2)
+    if(len(topics) > 0):
 
         # Extract the three elements
-        timestamp = data[0]
-        topic = data[1]
-        msg = (data[2])[2:-1]
-
+        timestamp = timestamps[0]
+        topic = topics[0]
+        message = (messages[0])[2:-1]
+        
+        # Open the file in append mode
         f = open(filename, 'a')
 
         # Log the timestamp/topic received
         string = "#" + " ["+timestamp+"]" + " ["+topic+"]"
         f.write("\n" + string)
 
-
-        # Log the data
+        # Log the payload/message
         if((topic == con.topic.IMAGE) or (topic == con.topic.DATA_IMAGE)):
-            f.write("\n" + str(len(msg)) + " bytes")
+            f.write("\n" + str(len(message)) + " bytes")
 
         elif((topic == con.topic.DATA_SAMPLES) or (topic == con.topic.DATA_IMAGES)):
             try:
-                values = msg.split(',')
+                values = message.split(',')
                 for value in values:
                     f.write("\n  " + value)
             except:
@@ -163,14 +172,16 @@ while(True):
 
         elif(topic == con.topic.STATUS_FLAGS):
             try:
-                f.write("\n" + bin(int(msg)))
+                f.write("\n" + bin(int(message)))
             except:
                 pass
         
         else:
-            f.write("\n" + msg)
+            f.write("\n" + message)
 
-        msgs.pop(0)
+        timestamps.pop(0)
+        topics.pop(0)
+        messages.pop(0)
         f.close()
     else:
         time.sleep(0.001)

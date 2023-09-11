@@ -76,8 +76,15 @@ def handle_sample(msg):
 
 # --- Pump on ---
 def handle_pump(msg):
-    if((get_sys_state() >> status_flag.READY) & 1):
-        set_sys_state(status_flag.PUMP, 1)
+    msg = msg.decode("utf-8")
+    if(msg == '1'):
+        if((get_sys_state() >> status_flag.READY) & 1):
+            set_sys_state(status_flag.PUMP, 1)
+    if(msg == '0'):
+        if((get_sys_state() >> status_flag.SAMPLING) & 1):
+            pass
+        else:
+            set_sys_state(status_flag.PUMP, 0)
 
 
 # --- Pump off ---
