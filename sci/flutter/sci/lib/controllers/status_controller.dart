@@ -1,4 +1,6 @@
 // ignore: slash_for_doc_comments
+import 'package:flutter/material.dart';
+
 /**
  * status_controller.dart
  * 
@@ -59,7 +61,10 @@ const int leak = 9;
 
 //---------------------------- CONTROLLER --------------------------------------
 
-class StatusController {
+class StatusController with ChangeNotifier {
+  ValueNotifier<List<bool>> statusMapToggle =
+      ValueNotifier<List<bool>>([true, false]);
+
   StatusByte pscope = StatusByte('PIS', pscopeLabels, 0);
   StatusByte rms = StatusByte('RMS', rmsLabels, 0);
 

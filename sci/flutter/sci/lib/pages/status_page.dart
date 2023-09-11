@@ -43,7 +43,7 @@ class _StatusPageState extends State<StatusPage> {
         const SizedBox(width: 15),
 
         // Control panel (left)
-        ControlPanel(widget.mqtt),
+        ControlPanel(widget.mqtt, status),
 
         // Empty gap
         const SizedBox(width: 15),
@@ -68,6 +68,16 @@ class _StatusPageState extends State<StatusPage> {
 
               // Empty gap
               const SizedBox(height: 15),
+
+              /*
+              ValueListenableBuilder<List<bool>>(
+                valueListenable: status.statusMapToggle,
+                builder:
+                    (BuildContext context, List<bool> value, Widget? child) {
+                  return Text(value[0].toString() + value[1].toString());
+                },
+              ),
+              */
             ],
           ),
         ),

@@ -17,8 +17,9 @@ import '../general/outlined_text_field.dart';
 
 class ControlPanel extends StatefulWidget {
   final MQTTController mqtt;
+  final StatusController status;
 
-  const ControlPanel(this.mqtt, {super.key});
+  ControlPanel(this.mqtt, this.status, {super.key});
 
   @override
   State<ControlPanel> createState() => _ControlPanelState();
@@ -29,6 +30,9 @@ class _ControlPanelState extends State<ControlPanel> {
   TextEditingController sampleInputController = TextEditingController();
   TextEditingController latInputController = TextEditingController();
   TextEditingController lonInputController = TextEditingController();
+
+  // State of the toggle switch
+  List<bool> toggleButtonState = [true, false];
 
   void resetButtonPressed() {}
 
@@ -224,6 +228,101 @@ class _ControlPanelState extends State<ControlPanel> {
                 stopPumpButton,
                 'Stop',
                 !manualControl,
+              ),
+
+              // Title over buttons
+              const SizedBox(height: 20),
+              Text(
+                'Vehicle',
+                style: TextStyle(
+                  color: setTitleColor(true),
+                ),
+              ),
+              Container(
+                constraints: const BoxConstraints(
+                  maxHeight: 1,
+                ),
+                color: setTitleColor(true),
+              ),
+
+              // --- Toggle switch (image/map) ---
+              const SizedBox(height: buttonSpacing),
+
+              Wrap(
+                spacing: buttonSpacing,
+                runSpacing: buttonSpacing,
+                children: <Widget>[
+                  ToggleButtons(
+                    direction: Axis.vertical,
+                    isSelected: toggleButtonState,
+                    onPressed: (int index) {
+                      for (int i = 0; i < toggleButtonState.length; i++) {
+                        if (i == index) {
+                          toggleButtonState[i] = true;
+                        } else {
+                          toggleButtonState[i] = false;
+                        }
+                      }
+                      widget.status.statusMapToggle.value = toggleButtonState;
+                      setState(() {});
+                    },
+
+                    // Colors
+                    borderColor: lightBlue,
+                    selectedColor: lightBlue,
+                    color: darkerBlue,
+                    fillColor: darkerBlue,
+                    splashColor: Colors.blue,
+                    selectedBorderColor: lightBlue,
+                    hoverColor: const Color.fromARGB(92, 144, 220, 255),
+
+                    // Border
+                    renderBorder: true,
+                    borderWidth: 1,
+                    borderRadius: BorderRadius.circular(10),
+
+                    // Content
+                    children: const [
+                      SizedBox(
+                        height: 53,
+                        width: 50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            //Text('Image'),
+                            Icon(
+                              Icons.image,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 53,
+                        width: 50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            //Text('Map'),
+                            Icon(
+                              Icons.map,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      OutlinedTextField(latInputController, 'Latitude', false),
+                      const SizedBox(height: buttonSpacing),
+                      OutlinedTextField(latInputController, 'Longitude', false),
+                      const SizedBox(height: buttonSpacing),
+                      OutlinedButtonDark(() => null, 'Add', false)
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

@@ -11,6 +11,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sci/widgets/general/microscope_image.dart';
+import 'package:sci/widgets/general/outlined_toggle_switch.dart';
 import 'package:sci/widgets/images_page/string_status_tab.dart';
 import 'package:sci/constants.dart';
 import 'package:sci/widgets/general/container_scaled.dart';
@@ -531,74 +532,67 @@ class _ImagesPageState extends State<ImagesPage> {
                     ),
 
                     // --- Toggle switch (image/map) ---
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ToggleButtons(
-                          direction: Axis.vertical,
-                          isSelected: toggleButtonState,
-                          onPressed: (int index) {
-                            for (int i = 0; i < toggleButtonState.length; i++) {
-                              if (i == index) {
-                                toggleButtonState[i] = true;
-                              } else {
-                                toggleButtonState[i] = false;
-                              }
-                            }
-                            setState(() {});
-                          },
+                    ToggleButtons(
+                      direction: Axis.vertical,
+                      isSelected: toggleButtonState,
+                      onPressed: (int index) {
+                        for (int i = 0; i < toggleButtonState.length; i++) {
+                          if (i == index) {
+                            toggleButtonState[i] = true;
+                          } else {
+                            toggleButtonState[i] = false;
+                          }
+                        }
+                        setState(() {});
+                      },
 
-                          // Colors
-                          borderColor: lightBlue,
-                          selectedColor: lightBlue,
-                          color: darkerBlue,
-                          fillColor: darkerBlue,
-                          splashColor: Colors.blue,
-                          selectedBorderColor: lightBlue,
-                          hoverColor: const Color.fromARGB(92, 144, 220, 255),
+                      // Colors
+                      borderColor: lightBlue,
+                      selectedColor: lightBlue,
+                      color: darkerBlue,
+                      fillColor: darkerBlue,
+                      splashColor: Colors.blue,
+                      selectedBorderColor: lightBlue,
+                      hoverColor: const Color.fromARGB(92, 144, 220, 255),
 
-                          // Border
-                          renderBorder: true,
-                          borderWidth: 1,
-                          borderRadius: BorderRadius.circular(10),
+                      // Border
+                      renderBorder: true,
+                      borderWidth: 1,
+                      borderRadius: BorderRadius.circular(10),
 
-                          // Content
-                          children: const [
-                            SizedBox(
-                              height: 75,
-                              width: 75,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  //Text('Image'),
-                                  Icon(
-                                    Icons.image,
-                                    size: 25,
-                                  ),
-                                ],
+                      // Content
+                      children: const [
+                        SizedBox(
+                          height: 75,
+                          width: 75,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              //Text('Image'),
+                              Icon(
+                                Icons.image,
+                                size: 25,
                               ),
-                            ),
-                            SizedBox(
-                              height: 75,
-                              width: 75,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  //Text('Map'),
-                                  Icon(
-                                    Icons.map,
-                                    size: 25,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 15),
+                        SizedBox(
+                          height: 75,
+                          width: 75,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              //Text('Map'),
+                              Icon(
+                                Icons.map,
+                                size: 25,
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
+                    const SizedBox(width: 15),
                   ],
                 ),
               ),
