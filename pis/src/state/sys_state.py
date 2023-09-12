@@ -26,7 +26,7 @@ next_sys_state = 0
 
 
 # Flags
-class status_flag(int, Enum):
+class state_flag(int, Enum):
     
     # RMS
     RMS_PUMP        = 0
@@ -59,92 +59,96 @@ def set_sys_state(flag, val):
     else:
         next_sys_state &= (~(1 << flag))
 
-# --- Vehicle position ---
+
+# --- MQTT Vehicle position ---
 def handle_pos(msg):
     sample.set_sample_pos(msg)
 
 
-# --- Sample ---
+# --- MQTT Sample ---
 def handle_sample(msg):
-    if((get_sys_state() >> status_flag.READY) & 1):
+    if((get_sys_state() >> state_flag.READY) & 1):
         try:
-            sample.set_sample_num(int(msg))
-            set_sys_state(status_flag.SAMPLING, 1)
+            # Make sure the pump is off
+            set_sys_state(state_flag.PUMP, 0)
+
+            # Initialize sample
+            sample.sample_config(int(msg))
+
+            # Raise flag
+            set_sys_state(state_flag.SAMPLING, 1)
         except:
             pass
 
 
-# --- Pump ---
+# --- MQTT Pump ---
 def handle_pump(msg):
     msg = msg.decode("utf-8")
-    if(msg == '1'):
-        if((get_sys_state() >> status_flag.READY) & 1):
-            set_sys_state(status_flag.PUMP, 1)
-    if(msg == '0'):
-        if((get_sys_state() >> status_flag.SAMPLING) & 1):
-            pass
-        else:
-            set_sys_state(status_flag.PUMP, 0)
+    if((get_sys_state() >> state_flag.READY) & 1):
+        if(msg == '1'):
+            set_sys_state(state_flag.PUMP, 1)
+        if(msg == '0'):
+            set_sys_state(state_flag.PUMP, 0)
 
 
-# --- RMS FILL ---
+# --- MQTT RMS FILL ---
 def handle_rms_fill():
-    if((get_sys_state() >> status_flag.READY) & 1):
+    if((get_sys_state() >> state_flag.READY) & 1):
         rms.send_fill()
 
 
-# --- RMS FLUSH ---
+# --- MQTT RMS FLUSH ---
 def handle_rms_flush():
-    if((get_sys_state() >> status_flag.READY) & 1):
+    if((get_sys_state() >> state_flag.READY) & 1):
         rms.send_flush()
 
 
-# --- RMS STOP ---
+# --- MQTT RMS STOP ---
 def handle_rms_stop():
-    if((get_sys_state() >> status_flag.READY) & 1):
+    if((get_sys_state() >> state_flag.READY) & 1):
         rms.send_stop()
 
 
-# --- Capture image ---
+# --- MQTT Capture image ---
 def handle_cal_image():
-    if((get_sys_state() >> status_flag.READY) & 1):
-        set_sys_state(status_flag.IMAGING, 1)
+    if((get_sys_state() >> state_flag.READY) & 1):
+        set_sys_state(state_flag.IMAGING, 1)
 
 
-# --- Lens position ---
+# --- MQTT Lens position ---
 def handle_lens(msg):
     try:
         cam.set_lens_position(int(msg))
-        set_sys_state(status_flag.CALIBRATING, 1)
+        set_sys_state(state_flag.CALIBRATING, 1)
     except:
         pass
 
 
-# --- LED Brightness ---
+# --- MQTT LED Brightness ---
 def handle_led(msg):
     try:
         cam.set_led_brightness(float(msg))
-        set_sys_state(status_flag.CALIBRATING, 1)
+        set_sys_state(state_flag.CALIBRATING, 1)
     except:
         pass
 
 
-# --- List of samples ---
+# --- MQTT List of samples ---
 def handle_samples():
     imgs.publish_samples()
 
 
-# --- List of images from sample ---
+# --- MQTT List of images from sample ---
 def handle_images(msg):
     imgs.set_curr_sample(msg)
 
 
-# --- Image from sample ---
+# --- MQTT Image from sample ---
 def handle_image(msg):
     imgs.set_curr_image(msg)
 
 
-# --- Handle MQTT message ---
+# --- MQTT Handle message ---
 def handle_mqtt_msg(topic, msg):
     if(topic == client.con.topic.VEHICLE_POS):
         handle_pos(msg)
@@ -174,9 +178,15 @@ def handle_mqtt_msg(topic, msg):
 
 # --- Check MQTT message queue ---
 def check_mqtt_queue():
+    # Get message queue
     topics, msgs = client.get_msgs()
+
+    # If queue not empty
     if(len(topics) > 0):
+        # Filter and handle first message in queue
         handle_mqtt_msg(topics[0], msgs[0])
+
+        # Dequeue first element
         client.dequeue_msgs()
         
 
@@ -184,6 +194,7 @@ def check_mqtt_queue():
 def check_sys_state():
     global curr_sys_state, next_sys_state
 
+    # Check for received MQTT messages
     check_mqtt_queue()
 
     # If state has changed
@@ -191,26 +202,26 @@ def check_sys_state():
         
         # If anything is active, ready = 0
         if(
-            ((next_sys_state >> status_flag.SAMPLING) & 1)      or \
-            ((next_sys_state >> status_flag.PUMP) & 1)          or \
-            ((next_sys_state >> status_flag.IMAGING) & 1)       or \
-            ((next_sys_state >> status_flag.CALIBRATING) & 1)   or \
-            ((next_sys_state >> status_flag.LEAK) & 1)
+            ((next_sys_state >> state_flag.SAMPLING) & 1)      or \
+            #((next_sys_state >> status_flag.PUMP) & 1)          or \
+            #((next_sys_state >> status_flag.IMAGING) & 1)       or \
+            #((next_sys_state >> status_flag.CALIBRATING) & 1)   or \
+            ((next_sys_state >> state_flag.LEAK) & 1)
         ):
-            set_sys_state(status_flag.READY, 0)
+            set_sys_state(state_flag.READY, 0)
 
         # If not, ready = 1
         else:
-            set_sys_state(status_flag.READY, 1)
+            set_sys_state(state_flag.READY, 1)
 
-        # If there is a leak, block other flags
-        if((next_sys_state >> status_flag.LEAK) & 1):
-            set_sys_state(status_flag.SAMPLING, 0)
-            set_sys_state(status_flag.PUMP, 0)
-            set_sys_state(status_flag.IMAGING, 0)
-            set_sys_state(status_flag.CALIBRATING, 0)
+        # If there is a leak, block flag transitions
+        if((next_sys_state >> state_flag.LEAK) & 1):
+            set_sys_state(state_flag.SAMPLING, 0)
+            set_sys_state(state_flag.PUMP, 0)
+            set_sys_state(state_flag.IMAGING, 0)
+            set_sys_state(state_flag.CALIBRATING, 0)
         
-        # Update state
+        # Update current state
         curr_sys_state = next_sys_state
         return True
     
@@ -229,7 +240,7 @@ def publish_state(state):
     
 
 # --- Callback for state thread ---
-def status_thread_cb():
+def state_thread_cb():
     while True:
         if(check_sys_state()):
             publish_state(get_sys_state())
@@ -239,6 +250,6 @@ def status_thread_cb():
 
 # --- Initialize state thread ---
 def init_state_thread():
-    status_thread = threading.Thread(target = status_thread_cb)
+    status_thread = threading.Thread(target = state_thread_cb)
     status_thread.daemon = True
     status_thread.start()

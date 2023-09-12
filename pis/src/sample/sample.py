@@ -65,7 +65,7 @@ def set_sample_pos(msg):
         lon = 10.40609
 
 
-def set_sample_num(n):
+def sample_config(n):
     global sample_num, sample_dir
 
     sample_num = n
@@ -82,7 +82,7 @@ def fill():
         fill_sent = True
 
     # If reservoir full
-    if(((state.get_sys_state() >> state.status_flag.RMS_FULL) & 1) == 1):
+    if(((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1) == 1):
         next_sample_state = sample_state.PUMP
 
 
@@ -91,12 +91,12 @@ def pump():
     global next_sample_state, curr_sample
 
     curr_sample += 1
-    state.set_sys_state(state.status_flag.PUMP, 1)
+    state.set_sys_state(state.state_flag.PUMP, 1)
     if(curr_sample == 1):
         time.sleep(10)
     else:
         time.sleep(5)
-    state.set_sys_state(state.status_flag.PUMP, 0)
+    state.set_sys_state(state.state_flag.PUMP, 0)
 
     # Set next state
     next_sample_state = sample_state.IMAGE
@@ -110,10 +110,10 @@ def image():
     # Here the imaging flag is just set so it can be observed during the
     # sample routine (request is ignored in the imaging thread when sampling).
 
-    state.set_sys_state(state.status_flag.IMAGING, 1)
+    state.set_sys_state(state.state_flag.IMAGING, 1)
     image_path = imgs.create_image_path(sample_dir)
     cam.capture_image(image_path)
-    state.set_sys_state(state.status_flag.IMAGING, 0)
+    state.set_sys_state(state.state_flag.IMAGING, 0)
 
     # Set next state
     if(curr_sample >= sample_num):
@@ -143,12 +143,12 @@ def flush():
         flush_sent = True
 
     # If reservoir empty
-    if(((state.get_sys_state() >> state.status_flag.RMS_FULL) & 1) == 0):
+    if(((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1) == 0):
         
         # Flush water from payload
-        state.set_sys_state(state.status_flag.PUMP, 1)
+        state.set_sys_state(state.state_flag.PUMP, 1)
         time.sleep(20)
-        state.set_sys_state(state.status_flag.PUMP, 0)
+        state.set_sys_state(state.state_flag.PUMP, 0)
 
         # Reset thread
         curr_sample = 0
@@ -157,7 +157,7 @@ def flush():
         next_sample_state = sample_state.FILL
 
         # Clear sampling flag
-        state.set_sys_state(state.status_flag.SAMPLING, 0)
+        state.set_sys_state(state.state_flag.SAMPLING, 0)
 
         time.sleep(0.1)
 
@@ -192,7 +192,7 @@ def sample_state_handler():
 
 def sample_thread_cb():
     while True:
-        if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
+        if((state.get_sys_state() >> state.state_flag.SAMPLING) & 1):
             sample_state_handler()
         else:
             time.sleep(0.1)

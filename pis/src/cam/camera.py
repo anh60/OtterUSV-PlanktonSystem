@@ -241,10 +241,10 @@ def image_thread_cb():
     while True:
 
         # If imaging flag = 1, execute thread
-        if((state.get_sys_state() >> state.status_flag.IMAGING) & 1):
+        if((state.get_sys_state() >> state.state_flag.IMAGING) & 1):
             
             # If sampling, the flag is just for observing over MQTT
-            if((state.get_sys_state() >> state.status_flag.SAMPLING) & 1):
+            if((state.get_sys_state() >> state.state_flag.SAMPLING) & 1):
                 pass
 
             # If not sampling, capture and publish image to 'image' topic
@@ -252,7 +252,7 @@ def image_thread_cb():
                 capture_image(mqtt_image_path)
                 publish_image(mqtt_image_path)
                 
-                state.set_sys_state(state.status_flag.IMAGING, 0)
+                state.set_sys_state(state.state_flag.IMAGING, 0)
 
             time.sleep(0.1)
 
@@ -268,7 +268,7 @@ def cal_thread_cb():
     while True:
 
         # If calibration flag = 1, execute thread
-        if(((state.get_sys_state() >> state.status_flag.CALIBRATING) & 1) == 1):
+        if(((state.get_sys_state() >> state.state_flag.CALIBRATING) & 1) == 1):
 
             # If new position
             if(curr_pos != next_pos):
@@ -286,7 +286,7 @@ def cal_thread_cb():
                     curr_brightness, next_brightness
                 )
 
-            state.set_sys_state(state.status_flag.CALIBRATING, 0)
+            state.set_sys_state(state.state_flag.CALIBRATING, 0)
 
             time.sleep(0.1)
 

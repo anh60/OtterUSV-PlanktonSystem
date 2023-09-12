@@ -49,7 +49,7 @@ cam.publish_led_brightness(cam.get_led_brightness())
 imgs.publish_samples()
 
 # Set ready flag
-state.set_sys_state(state.status_flag.READY, 1)
+state.set_sys_state(state.state_flag.READY, 1)
 
 # Loop main thread
 while True:

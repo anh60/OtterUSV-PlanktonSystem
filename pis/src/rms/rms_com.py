@@ -38,10 +38,10 @@ ser = serial.Serial(port, baud, timeout=0)
 #---------------------------- FUNCTIONS ----------------------------------------
 
 def set_rms_flags(s):
-    state.set_sys_state(state.status_flag.RMS_PUMP,  ((s >> 0) & 1))
-    state.set_sys_state(state.status_flag.RMS_VALVE, ((s >> 1) & 1))
-    state.set_sys_state(state.status_flag.RMS_FULL,  ((s >> 2) & 1))
-    state.set_sys_state(state.status_flag.RMS_LEAK,  ((s >> 3) & 1))
+    state.set_sys_state(state.state_flag.RMS_PUMP,  ((s >> 0) & 1))
+    state.set_sys_state(state.state_flag.RMS_VALVE, ((s >> 1) & 1))
+    state.set_sys_state(state.state_flag.RMS_FULL,  ((s >> 2) & 1))
+    state.set_sys_state(state.state_flag.RMS_LEAK,  ((s >> 3) & 1))
 
 
 def send_fill():
