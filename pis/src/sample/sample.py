@@ -210,7 +210,7 @@ def sample_state_handler():
     global curr_sample_state, sample_error
 
     # Check for an error
-    if(sample_error):
+    if(sample_error == True):
         sample_error = False
         state.set_sys_state(state.state_flag.SAMPLING, 0)
         time.sleep(0.1)
