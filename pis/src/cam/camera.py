@@ -38,7 +38,7 @@ posfile = '../data/position.txt'
 ledFile = '../data/brightness.txt'
 
 # Min/max positions of camera lens (micrometers)
-min_pos = 5000
+min_pos = 500
 max_pos = 40000
 
 # Current and new(mqtt) camera position
