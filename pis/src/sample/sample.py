@@ -97,16 +97,21 @@ def sample_config(n):
 def fill():
     global next_sample_state, fill_sent, rms_pump_timer, sample_error
 
+    pumpState = ((state.get_sys_state() >> state.state_flag.RMS_PUMP) & 1)
+
     if(fill_sent == False):
         # Send FILL command
         rms.send_fill()
         rms_pump_timer = time.perf_counter()
         fill_sent = True
     else:
-        # Check timer for pump error
-        if(((state.get_sys_state() >> state.state_flag.RMS_PUMP) & 1) == 0):
-            if((time.perf_counter() - rms_pump_timer) >= rms_error_timeout):
+        # Check timer for valve error
+        elapsed_time = time.perf_counter() - rms_pump_timer
+        if(elapsed_time >= rms_error_timeout):
+            if(pumpState == 0):
                 sample_error = True
+            else:
+                pass
 
     # If reservoir full
     if(((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1) == 1):
@@ -174,6 +179,8 @@ def flush():
     global fill_sent, flush_sent
     global sample_error, rms_pump_timer, rms_valve_timer
 
+    valveState = ((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1)
+
     # Send FLUSH command
     if(flush_sent == False):
         rms.send_flush()
@@ -181,9 +188,12 @@ def flush():
         flush_sent = True
     else:
         # Check timer for valve error
-        if(((state.get_sys_state() >> state.state_flag.RMS_VALVE) & 1) == 0):
-            if((time.perf_counter() - rms_valve_timer) >= rms_error_timeout):
+        elapsed_time = time.perf_counter() - rms_valve_timer
+        if(elapsed_time >= rms_error_timeout):
+            if(valveState == 0):
                 sample_error = True
+            else:
+                pass
 
     # If reservoir empty
     if(((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1) == 0):
@@ -207,11 +217,16 @@ def flush():
 
 # --- State machine ---
 def sample_state_handler():
-    global curr_sample_state, sample_error
+    global curr_sample_state, next_sample_state, sample_error
+    global curr_sample, fill_sent, flush_sent
 
     # Check for an error
     if(sample_error == True):
         sample_error = False
+        curr_sample = 0
+        fill_sent = False
+        flush_sent = False
+        next_sample_state = sample_state.FILL
         state.set_sys_state(state.state_flag.SAMPLING, 0)
         time.sleep(0.1)
 
