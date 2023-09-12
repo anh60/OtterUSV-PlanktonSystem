@@ -107,7 +107,7 @@ def fill():
     else:
         # Check timer for valve error
         elapsed_time = time.perf_counter() - rms_pump_timer
-        if(elapsed_time >= rms_error_timeout):
+        if(elapsed_time <= rms_error_timeout):
             if(pumpState == 0):
                 sample_error = True
             else:
@@ -189,7 +189,7 @@ def flush():
     else:
         # Check timer for valve error
         elapsed_time = time.perf_counter() - rms_valve_timer
-        if(elapsed_time >= rms_error_timeout):
+        if(elapsed_time <= rms_error_timeout):
             if(valveState == 0):
                 sample_error = True
             else:
