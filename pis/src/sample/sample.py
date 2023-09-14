@@ -7,6 +7,7 @@
 
 #---------------------------- PACKAGES -----------------------------------------
 
+import shutil
 import threading
 import time
 from enum import Enum
@@ -268,7 +269,11 @@ def sample_state_handler():
 
     # Check for an error
     if(sample_error == True):
-        imgs.remove_sample_dir(sample_dir)
+        #imgs.remove_sample_dir(sample_dir)
+        try:
+            shutil.rmtree(dir)
+        except:
+            pass
         reset_sample_thread()
 
     # Check for a state transition, and update state
