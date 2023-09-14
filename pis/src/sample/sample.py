@@ -197,9 +197,8 @@ def upload():
 
 # --- Flushing reservoir state ---
 def flush():
-    global next_sample_state, curr_sample
-    global rms_fill_sent, rms_flush_sent, rms_pump_verified, rms_valve_verified
-    global sample_error, rms_pump_timer, rms_valve_timer
+    global rms_flush_sent, rms_valve_verified, rms_valve_timer
+    global sample_error
 
     valve_flag = ((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1)
 
@@ -265,10 +264,10 @@ def sample_state_handler():
     global curr_sample_state, next_sample_state, sample_error
     global curr_sample, rms_fill_sent, rms_flush_sent
     global rms_pump_verified, rms_valve_verified
+    global sample_dir
 
     # Check for an error
     if(sample_error == True):
-        global sample_dir
         imgs.remove_sample_dir(sample_dir)
         reset_sample_thread()
 
