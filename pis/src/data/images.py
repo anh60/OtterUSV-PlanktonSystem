@@ -8,6 +8,7 @@
 #---------------------------- PACKAGES -----------------------------------------
 
 import base64
+import shutil
 import threading
 import os
 import time
@@ -37,7 +38,6 @@ image_request = False
 def create_sample_dir(lat, lon):
     sample_time = time.strftime('%Y%m%d%H%M%S')
     sample_dir = samples_path2 + sample_time
-    print(sample_dir)
 
     pos_file = sample_dir + '/' + lat + ',' + lon + '.txt'
 
@@ -45,6 +45,13 @@ def create_sample_dir(lat, lon):
     open(pos_file, 'a').close()
 
     return sample_dir
+
+# --- Removes a time/position tagged sample directory ---
+def remove_sample_dir(dir):
+    try:
+        shutil.rmtree(dir)
+    except:
+        pass
 
 
 # --- Generates a filename for an image within a sample ---
