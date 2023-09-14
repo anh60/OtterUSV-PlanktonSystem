@@ -49,7 +49,7 @@ def create_sample_dir(lat, lon):
 # --- Removes a time/position tagged sample directory ---
 def remove_sample_dir(dir):
     try:
-        shutil.rmtree(dir)
+        shutil.rmtree(dir, ignore_errors=True)
     except:
         pass
 
