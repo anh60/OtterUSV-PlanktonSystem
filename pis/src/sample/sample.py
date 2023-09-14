@@ -235,32 +235,42 @@ def flush():
         state.set_sys_state(state.state_flag.PUMP, 0)
 
         # Reset thread
+        reset_sample_thread()
+
+
+# --- Reset the sample routine variables ---
+def reset_sample_thread():
+        global curr_sample, sample_error
+        global rms_fill_sent, rms_flush_sent
+        global rms_pump_verified, rms_valve_verified
+        global next_sample_state
+
+        # Reset thread
         curr_sample = 0
         rms_fill_sent = False
         rms_flush_sent = False
         rms_pump_verified = False
+        rms_valve_verified = False
+        sample_error = False
         next_sample_state = sample_state.FILL
 
         # Clear sampling flag
         state.set_sys_state(state.state_flag.SAMPLING, 0)
-
         time.sleep(0.1)
+
 
 
 # --- State machine ---
 def sample_state_handler():
     global curr_sample_state, next_sample_state, sample_error
     global curr_sample, rms_fill_sent, rms_flush_sent
+    global rms_pump_verified, rms_valve_verified
 
     # Check for an error
     if(sample_error == True):
-        sample_error = False
-        curr_sample = 0
-        rms_fill_sent = False
-        rms_flush_sent = False
-        next_sample_state = sample_state.FILL
-        state.set_sys_state(state.state_flag.SAMPLING, 0)
-        time.sleep(0.1)
+        global sample_dir
+        imgs.remove_sample_dir(sample_dir)
+        reset_sample_thread()
 
     # Check for a state transition, and update state
     if(next_sample_state != curr_sample_state):
