@@ -55,14 +55,14 @@ sample_dir = 0
 sample_error = False
 
 # Fill state flags
-rms_fill_sent = False
-rms_pump_verified = False
-rms_pump_timer = 0
+rms_fill_sent       = False
+rms_pump_verified   = False
+rms_pump_timer      = 0
 
 # Flush state flags
-rms_flush_sent = False
-rms_valve_on   = False
-rms_valve_timer = 0
+rms_flush_sent      = False
+rms_valve_verified  = False
+rms_valve_timer     = 0
 
 # RMS communication max wait time
 rms_error_timeout = 5
@@ -198,23 +198,31 @@ def upload():
 # --- Flushing reservoir state ---
 def flush():
     global next_sample_state, curr_sample
-    global rms_fill_sent, rms_flush_sent, rms_pump_verified
+    global rms_fill_sent, rms_flush_sent, rms_pump_verified, rms_valve_verified
     global sample_error, rms_pump_timer, rms_valve_timer
 
-    valveState = ((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1)
+    valve_flag = ((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1)
 
     # Send FLUSH command
     if(rms_flush_sent == False):
         rms.send_flush()
         rms_valve_timer = time.perf_counter()
         rms_flush_sent = True
-    else:
-        # Check timer for valve error
-        elapsed_time = time.perf_counter() - rms_valve_timer
-        if(elapsed_time >= rms_error_timeout):
-            if(valveState == 0):
-                pass
-                #sample_error = True
+
+    # If sent, but valve flag has not been verified
+    elif(rms_valve_verified == False):
+
+        # If valve flag is 1, set the verified flag
+        if(valve_flag == 1):
+            rms_valve_verified = True
+
+        # If valve flag is 0, check the timer
+        else:
+            elapsed_time = time.perf_counter() - rms_valve_verified
+
+            # If timer exceeds timout value, raise error flag
+            if(elapsed_time >= rms_error_timeout):
+                sample_error = True
             else:
                 pass
 

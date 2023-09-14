@@ -18,7 +18,7 @@ kit = MotorKit(i2c=board.I2C())
 def pump_thread_cb():
     while True:
         if((state.get_sys_state() >> state.state_flag.PUMP) & 1):
-            kit.motor3.throttle = -0.9
+            kit.motor3.throttle = -0.7
         else:
             kit.motor3.throttle = None
         time.sleep(0.01)
