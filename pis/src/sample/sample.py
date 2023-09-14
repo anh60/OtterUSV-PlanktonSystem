@@ -125,8 +125,7 @@ def fill():
 
             # If timer exceeds timout value, raise error flag
             if(elapsed_time >= rms_error_timeout):
-                #sample_error = True
-                pass
+                sample_error = True
             else:
                 pass
 
@@ -199,7 +198,7 @@ def upload():
 # --- Flushing reservoir state ---
 def flush():
     global next_sample_state, curr_sample
-    global rms_fill_sent, rms_flush_sent
+    global rms_fill_sent, rms_flush_sent, rms_pump_verified
     global sample_error, rms_pump_timer, rms_valve_timer
 
     valveState = ((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1)
@@ -231,6 +230,7 @@ def flush():
         curr_sample = 0
         rms_fill_sent = False
         rms_flush_sent = False
+        rms_pump_verified = False
         next_sample_state = sample_state.FILL
 
         # Clear sampling flag
