@@ -11,7 +11,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sci/widgets/general/microscope_image.dart';
-import 'package:sci/widgets/general/outlined_button_dark.dart';
 import 'package:sci/widgets/images_page/string_status_tab.dart';
 import 'package:sci/constants.dart';
 import 'package:sci/widgets/general/container_scaled.dart';
@@ -124,8 +123,8 @@ class _ImagesPageState extends State<ImagesPage> {
   }
 
   // Creates the tiles(images) displayed when a sample(folder) is clicked
-  List<Material> buildImageTiles(List<String> images) {
-    List<Material> tilesList = [];
+  List<Widget> buildImageTiles(List<String> images) {
+    List<Widget> tilesList = [];
     for (int index = 0; index < images.length; index++) {
       // Wrapped in a Material widget to preserve animations/colors
       Material tile = Material(
@@ -148,7 +147,7 @@ class _ImagesPageState extends State<ImagesPage> {
           ),
 
           // Make empty space on left side
-          contentPadding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+          contentPadding: const EdgeInsets.only(left: 30),
 
           // Mark as selected if current index matches
           selected: (index == selectedFile),
@@ -194,65 +193,31 @@ class _ImagesPageState extends State<ImagesPage> {
       );
       // Append tile to list
       tilesList.add(tile);
+      tilesList.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10, right: 10, top: 10),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: deleteButton,
+              icon: const Icon(Icons.delete),
+              label: const Text('Remove'),
+              style: TextButton.styleFrom(foregroundColor: lightBlue),
+            ),
+          ),
+        ),
+      );
     }
     return tilesList;
   }
 
   // Check if the sample list is empty
   int checkIfSamples(List<String> sampleList) {
-    if (sampleList[0] == '0') {
+    if (sampleList[0] == '') {
       return 0;
     }
     return sampleList.length;
   }
-
-  // Build image
-  /*
-  Widget buildImage() {
-    return ValueListenableBuilder<String>(
-      // Listen to image value received over mqtt
-      valueListenable: widget.mqtt.data_image,
-
-      // Build and display image
-      builder: (BuildContext context, String value, Widget? child) {
-        // If no image is transmitted
-        if (value == '0') {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Loading image',
-                style: TextStyle(color: darkerBlue, fontSize: 25),
-              ),
-              LoadingAnimationWidget.prograssiveDots(
-                  color: darkerBlue, size: 50),
-            ],
-          );
-        }
-
-        // If not multiple of four, append n "="
-        else {
-          if (value.length % 4 > 0) {
-            value += '=' * (4 - value.length % 4);
-          }
-
-          // Convert Base64 String to Image object
-          var bytesImage = const Base64Decoder().convert(value);
-
-          // Return image with rounded edges
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: FadeInImage(
-              placeholder: MemoryImage(kTransparentImage),
-              image: MemoryImage(bytesImage),
-              fadeInDuration: const Duration(milliseconds: 100),
-            ),
-          );
-        }
-      },
-    );
-  }
-  */
 
   // Build map markers
   List<Marker> buildMarkerList() {
@@ -492,7 +457,7 @@ class _ImagesPageState extends State<ImagesPage> {
 
                 // Split container content horizontally
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // --- Status tabs (time and pos) ---
                     Container(
@@ -536,71 +501,63 @@ class _ImagesPageState extends State<ImagesPage> {
                     ),
 
                     // --- Toggle switch (image/map) ---
-                    Row(
-                      children: [
-                        OutlinedButtonDark(deleteButton, 'Delete', false),
-                        const SizedBox(width: 15),
-                        ToggleButtons(
-                          direction: Axis.vertical,
-                          isSelected: toggleButtonState,
-                          onPressed: (int index) {
-                            for (int i = 0; i < toggleButtonState.length; i++) {
-                              if (i == index) {
-                                toggleButtonState[i] = true;
-                              } else {
-                                toggleButtonState[i] = false;
-                              }
-                            }
-                            setState(() {});
-                          },
+                    ToggleButtons(
+                      direction: Axis.vertical,
+                      isSelected: toggleButtonState,
+                      onPressed: (int index) {
+                        for (int i = 0; i < toggleButtonState.length; i++) {
+                          if (i == index) {
+                            toggleButtonState[i] = true;
+                          } else {
+                            toggleButtonState[i] = false;
+                          }
+                        }
+                        setState(() {});
+                      },
 
-                          // Colors
-                          borderColor: lightBlue,
-                          selectedColor: lightBlue,
-                          color: darkerBlue,
-                          fillColor: darkerBlue,
-                          splashColor: Colors.blue,
-                          selectedBorderColor: lightBlue,
-                          hoverColor: const Color.fromARGB(92, 144, 220, 255),
+                      // Colors
+                      borderColor: lightBlue,
+                      selectedColor: lightBlue,
+                      color: darkerBlue,
+                      fillColor: darkerBlue,
+                      splashColor: Colors.blue,
+                      selectedBorderColor: lightBlue,
+                      hoverColor: const Color.fromARGB(92, 144, 220, 255),
 
-                          // Border
-                          renderBorder: true,
-                          borderWidth: 1,
-                          borderRadius: BorderRadius.circular(10),
+                      // Border
+                      renderBorder: true,
+                      borderWidth: 1,
+                      borderRadius: BorderRadius.circular(10),
 
-                          // Content
-                          children: const [
-                            SizedBox(
-                              height: 75,
-                              width: 75,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  //Text('Image'),
-                                  Icon(
-                                    Icons.image,
-                                    size: 25,
-                                  ),
-                                ],
+                      // Content
+                      children: const [
+                        SizedBox(
+                          height: 75,
+                          width: 75,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              //Text('Image'),
+                              Icon(
+                                Icons.image,
+                                size: 25,
                               ),
-                            ),
-                            SizedBox(
-                              height: 75,
-                              width: 75,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  //Text('Map'),
-                                  Icon(
-                                    Icons.map,
-                                    size: 25,
-                                  ),
-                                ],
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 75,
+                          width: 75,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              //Text('Map'),
+                              Icon(
+                                Icons.map,
+                                size: 25,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),

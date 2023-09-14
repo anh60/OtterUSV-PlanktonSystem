@@ -231,6 +231,7 @@ class _ControlPanelState extends State<ControlPanel> {
               ),
 
               // Title over buttons
+              /*
               const SizedBox(height: 20),
               Text(
                 'Vehicle',
@@ -247,7 +248,7 @@ class _ControlPanelState extends State<ControlPanel> {
 
               // --- Toggle switch (image/map) ---
               const SizedBox(height: buttonSpacing),
-
+              */
               /*
               Wrap(
                 spacing: buttonSpacing,

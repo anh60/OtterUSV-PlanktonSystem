@@ -60,7 +60,8 @@ topics_sub = [
     con.topic.GET_IMAGE,
     con.topic.DATA_IMAGE,
     con.topic.DATA_IMAGES,
-    con.topic.DATA_SAMPLES
+    con.topic.DATA_SAMPLES,
+    con.topic.RM_SAMPLE
 ]
 
 # System state flags

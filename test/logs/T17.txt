@@ -1,0 +1,39 @@
+MQTT LOG 2023/09/10 19:30:38
+
+
+# [2023/09/10 19:30:42] [planktoscope/vehicle/position]
+63.373247,10.034475
+# [2023/09/10 19:30:53] [planktoscope/control/sample]
+1
+# [2023/09/10 19:30:53] [planktoscope/status/flags]
+0b100000
+# [2023/09/10 19:30:53] [planktoscope/status/flags]
+0b100001
+# [2023/09/10 19:31:17] [planktoscope/status/flags]
+0b100100
+# [2023/09/10 19:31:17] [planktoscope/status/flags]
+0b1100100
+# [2023/09/10 19:31:27] [planktoscope/status/flags]
+0b10100100
+# [2023/09/10 19:31:29] [planktoscope/data/samples]
+  20230910193045
+# [2023/09/10 19:31:29] [planktoscope/status/flags]
+0b100100
+# [2023/09/10 19:31:29] [planktoscope/status/flags]
+0b100110
+# [2023/09/10 19:31:59] [planktoscope/status/flags]
+0b100000
+# [2023/09/10 19:31:59] [planktoscope/status/flags]
+0b1100000
+# [2023/09/10 19:32:19] [planktoscope/status/flags]
+0b10000
+# [2023/09/10 19:32:26] [planktoscope/data/get_images]
+20230910193045
+# [2023/09/10 19:32:26] [planktoscope/data/images]
+  20230910193119
+  63.37325
+  10.03448
+# [2023/09/10 19:32:29] [planktoscope/data/get_image]
+20230910193119
+# [2023/09/10 19:32:30] [planktoscope/data/image]
+96456 bytes

@@ -67,4 +67,6 @@ class topic(str, Enum):
     DATA_IMAGES         = "planktoscope/data/images"
     DATA_IMAGE          = "planktoscope/data/image"
 
+    RM_SAMPLE           = "planktoscope/data/rm_samples"
+
     
