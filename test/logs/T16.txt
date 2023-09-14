@@ -1,0 +1,14 @@
+MQTT LOG 2023/09/14 20:13:10
+
+# [2023/09/14 20:13:11] [planktoscope/data/samples]
+  20230914200432
+  20230914183612
+# [2023/09/14 20:13:16] [planktoscope/control/sample]
+1
+# [2023/09/14 20:13:17] [planktoscope/status/flags]
+0b100000
+# [2023/09/14 20:13:21] [planktoscope/data/samples]
+  20230914200432
+  20230914183612
+# [2023/09/14 20:13:22] [planktoscope/status/flags]
+0b10000
