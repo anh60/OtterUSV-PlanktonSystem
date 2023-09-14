@@ -248,6 +248,7 @@ class _ControlPanelState extends State<ControlPanel> {
               // --- Toggle switch (image/map) ---
               const SizedBox(height: buttonSpacing),
 
+              /*
               Wrap(
                 spacing: buttonSpacing,
                 runSpacing: buttonSpacing,
@@ -313,6 +314,7 @@ class _ControlPanelState extends State<ControlPanel> {
                       ),
                     ],
                   ),
+                  
                   Column(
                     children: [
                       OutlinedTextField(latInputController, 'Latitude', false),
@@ -322,8 +324,10 @@ class _ControlPanelState extends State<ControlPanel> {
                       OutlinedButtonDark(() => null, 'Add', false)
                     ],
                   ),
+                
                 ],
               ),
+              */
             ],
           ),
         ),

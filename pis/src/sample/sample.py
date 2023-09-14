@@ -51,16 +51,20 @@ samples_path = '/home/pi/OtterUSV-PlanktonSystem/pis/data/db_images/'
 # Directory for current sample
 sample_dir = 0
 
-# Flags for sending RMS commands only once
-fill_sent = False
-flush_sent = False
-
 # Flag when an error has occured
 sample_error = False
 
-# Timer for checking errors
+# Fill state flags
+rms_fill_sent = False
+rms_pump_verified = False
 rms_pump_timer = 0
+
+# Flush state flags
+rms_flush_sent = False
+rms_valve_on   = False
 rms_valve_timer = 0
+
+# RMS communication max wait time
 rms_error_timeout = 5
 
 
@@ -93,22 +97,34 @@ def sample_config(n):
         sample_error = True
 
 
-# --- Filling reservoir state ---
+# --- Fill reservoir state ---
 def fill():
-    global next_sample_state, fill_sent, rms_pump_timer, sample_error
+    global next_sample_state, sample_error
+    global rms_fill_sent, rms_pump_verified, rms_pump_timer
 
-    pumpState = ((state.get_sys_state() >> state.state_flag.RMS_PUMP) & 1)
+    pump_flag = ((state.get_sys_state() >> state.state_flag.RMS_PUMP) & 1)
 
-    if(fill_sent == False):
-        # Send FILL command
+    # If FILL command has not been sent yet
+    if(rms_fill_sent == False):
+
+        # Send fill command and set timer/flag
         rms.send_fill()
         rms_pump_timer = time.perf_counter()
-        fill_sent = True
-    else:
-        # Check timer for valve error
-        elapsed_time = time.perf_counter() - rms_pump_timer
-        if(elapsed_time <= rms_error_timeout):
-            if(pumpState == 0):
+        rms_fill_sent = True
+
+    # If sent, but pump flag has not been verified
+    elif(rms_pump_verified == False):
+
+        # If pump flag is 1, set the verified flag
+        if(pump_flag == 1):
+            rms_pump_verified = True
+
+        # If pump flag is 0, check the timer
+        else:
+            elapsed_time = time.perf_counter() - rms_pump_timer
+
+            # If timer exceeds timout value, raise error flag
+            if(elapsed_time >= rms_error_timeout):
                 #sample_error = True
                 pass
             else:
@@ -119,26 +135,32 @@ def fill():
         next_sample_state = sample_state.PUMP
 
 
-# --- Pumping sample from reservoir state ---
+# --- Pump sample from reservoir state ---
 def pump():
     global next_sample_state, curr_sample
 
+    # Increment sample number
     curr_sample += 1
+
+    # Activate pump
     state.set_sys_state(state.state_flag.PUMP, 1)
 
-    # If first sample
+    # If first sample, pump for a longer period
     if(curr_sample == 1):
-        # Sleep for extended time
         time.sleep(pump_init_time)
+
+    # If not, pump for a shorter period
     else:
         time.sleep(pump_time)
+
+    # Deactivate pump
     state.set_sys_state(state.state_flag.PUMP, 0)
 
     # Set next state
     next_sample_state = sample_state.IMAGE
 
 
-# --- Imaging a sample state ---
+# --- Imaging state ---
 def image():
     global next_sample_state
 
@@ -177,16 +199,16 @@ def upload():
 # --- Flushing reservoir state ---
 def flush():
     global next_sample_state, curr_sample
-    global fill_sent, flush_sent
+    global rms_fill_sent, rms_flush_sent
     global sample_error, rms_pump_timer, rms_valve_timer
 
     valveState = ((state.get_sys_state() >> state.state_flag.RMS_FULL) & 1)
 
     # Send FLUSH command
-    if(flush_sent == False):
+    if(rms_flush_sent == False):
         rms.send_flush()
         rms_valve_timer = time.perf_counter()
-        flush_sent = True
+        rms_flush_sent = True
     else:
         # Check timer for valve error
         elapsed_time = time.perf_counter() - rms_valve_timer
@@ -207,8 +229,8 @@ def flush():
 
         # Reset thread
         curr_sample = 0
-        fill_sent = False
-        flush_sent = False
+        rms_fill_sent = False
+        rms_flush_sent = False
         next_sample_state = sample_state.FILL
 
         # Clear sampling flag
@@ -220,14 +242,14 @@ def flush():
 # --- State machine ---
 def sample_state_handler():
     global curr_sample_state, next_sample_state, sample_error
-    global curr_sample, fill_sent, flush_sent
+    global curr_sample, rms_fill_sent, rms_flush_sent
 
     # Check for an error
     if(sample_error == True):
         sample_error = False
         curr_sample = 0
-        fill_sent = False
-        flush_sent = False
+        rms_fill_sent = False
+        rms_flush_sent = False
         next_sample_state = sample_state.FILL
         state.set_sys_state(state.state_flag.SAMPLING, 0)
         time.sleep(0.1)
