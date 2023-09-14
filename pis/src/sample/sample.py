@@ -271,7 +271,7 @@ def sample_state_handler():
     if(sample_error == True):
         #imgs.remove_sample_dir(sample_dir)
         try:
-            shutil.rmtree(dir)
+            shutil.rmtree(dir, ignore_errors=True)
         except:
             pass
         reset_sample_thread()
