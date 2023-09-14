@@ -42,7 +42,10 @@ topics_sub = [
     # Images file system
     con.topic.GET_SAMPLES,
     con.topic.GET_IMAGES,
-    con.topic.GET_IMAGE
+    con.topic.GET_IMAGE,
+
+    con.topic.RM_SAMPLE,
+    con.topic.RM_IMAGE
     
 ]
 

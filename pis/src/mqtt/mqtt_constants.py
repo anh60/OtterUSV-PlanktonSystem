@@ -58,13 +58,16 @@ class topic(str, Enum):
     # --- Images file system ---
 
     # Commands
-    GET_SAMPLES        = "planktoscope/data/get_samples"
-    GET_IMAGES         = "planktoscope/data/get_images"
-    GET_IMAGE          = "planktoscope/data/get_image"  
+    GET_SAMPLES         = "planktoscope/data/get_samples"
+    GET_IMAGES          = "planktoscope/data/get_images"
+    GET_IMAGE           = "planktoscope/data/get_image"  
 
     # Data
     DATA_SAMPLES        = "planktoscope/data/samples"
     DATA_IMAGES         = "planktoscope/data/images"
     DATA_IMAGE          = "planktoscope/data/image"
+
+    RM_SAMPLE           = "planktoscope/data/rm_samples"
+    RM_IMAGE            = "planktoscope/data/rm_image"
 
     

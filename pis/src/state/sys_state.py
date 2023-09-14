@@ -148,6 +148,18 @@ def handle_image(msg):
     imgs.set_curr_image(msg)
 
 
+# --- MQTT remove a sample directory ---
+def handle_rm_sample(msg):
+    try:
+        msg = msg.decode("utf-8")
+        target_dir = imgs.samples_path2 + msg
+    except:
+        pass
+
+    imgs.remove_sample_dir(target_dir)
+    imgs.publish_samples()
+
+
 # --- MQTT Handle message ---
 def handle_mqtt_msg(topic, msg):
     if(topic == client.con.topic.VEHICLE_POS):
@@ -174,6 +186,8 @@ def handle_mqtt_msg(topic, msg):
         handle_images(msg)
     if(topic == client.con.topic.GET_IMAGE):
         handle_image(msg)
+    if(topic == client.con.topic.RM_SAMPLE):
+        handle_rm_sample(msg)
 
 
 # --- Check MQTT message queue ---

@@ -11,7 +11,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sci/widgets/general/microscope_image.dart';
-import 'package:sci/widgets/general/outlined_toggle_switch.dart';
+import 'package:sci/widgets/general/outlined_button_dark.dart';
 import 'package:sci/widgets/images_page/string_status_tab.dart';
 import 'package:sci/constants.dart';
 import 'package:sci/widgets/general/container_scaled.dart';
@@ -34,6 +34,9 @@ class _ImagesPageState extends State<ImagesPage> {
   // Current sample selected
   String currSample = '';
 
+  // Current image selected
+  String currImage = '';
+
   // Map
   MapController mapController = MapController();
   bool mapReady = false;
@@ -44,15 +47,16 @@ class _ImagesPageState extends State<ImagesPage> {
   String sampleTime = '';
   String imageTime = '';
 
-  // Current image selected
-  String currImage = '';
-
   // Position
   String lat = '';
   String lon = '';
 
   // List of markers (holds default position on startup)
   List<LatLng> markerList = [LatLng(63.43048272294254, 10.395004330455816)];
+
+  void deleteButton() {
+    widget.mqtt.publishMessage(topics.RM_SAMPLE, currSample);
+  }
 
   // State of the toggle switch
   List<bool> toggleButtonState = [true, false];
@@ -532,63 +536,71 @@ class _ImagesPageState extends State<ImagesPage> {
                     ),
 
                     // --- Toggle switch (image/map) ---
-                    ToggleButtons(
-                      direction: Axis.vertical,
-                      isSelected: toggleButtonState,
-                      onPressed: (int index) {
-                        for (int i = 0; i < toggleButtonState.length; i++) {
-                          if (i == index) {
-                            toggleButtonState[i] = true;
-                          } else {
-                            toggleButtonState[i] = false;
-                          }
-                        }
-                        setState(() {});
-                      },
+                    Row(
+                      children: [
+                        OutlinedButtonDark(deleteButton, 'Delete', false),
+                        const SizedBox(width: 15),
+                        ToggleButtons(
+                          direction: Axis.vertical,
+                          isSelected: toggleButtonState,
+                          onPressed: (int index) {
+                            for (int i = 0; i < toggleButtonState.length; i++) {
+                              if (i == index) {
+                                toggleButtonState[i] = true;
+                              } else {
+                                toggleButtonState[i] = false;
+                              }
+                            }
+                            setState(() {});
+                          },
 
-                      // Colors
-                      borderColor: lightBlue,
-                      selectedColor: lightBlue,
-                      color: darkerBlue,
-                      fillColor: darkerBlue,
-                      splashColor: Colors.blue,
-                      selectedBorderColor: lightBlue,
-                      hoverColor: const Color.fromARGB(92, 144, 220, 255),
+                          // Colors
+                          borderColor: lightBlue,
+                          selectedColor: lightBlue,
+                          color: darkerBlue,
+                          fillColor: darkerBlue,
+                          splashColor: Colors.blue,
+                          selectedBorderColor: lightBlue,
+                          hoverColor: const Color.fromARGB(92, 144, 220, 255),
 
-                      // Border
-                      renderBorder: true,
-                      borderWidth: 1,
-                      borderRadius: BorderRadius.circular(10),
+                          // Border
+                          renderBorder: true,
+                          borderWidth: 1,
+                          borderRadius: BorderRadius.circular(10),
 
-                      // Content
-                      children: const [
-                        SizedBox(
-                          height: 75,
-                          width: 75,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              //Text('Image'),
-                              Icon(
-                                Icons.image,
-                                size: 25,
+                          // Content
+                          children: const [
+                            SizedBox(
+                              height: 75,
+                              width: 75,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  //Text('Image'),
+                                  Icon(
+                                    Icons.image,
+                                    size: 25,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 75,
-                          width: 75,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              //Text('Map'),
-                              Icon(
-                                Icons.map,
-                                size: 25,
+                            ),
+                            SizedBox(
+                              height: 75,
+                              width: 75,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  //Text('Map'),
+                                  Icon(
+                                    Icons.map,
+                                    size: 25,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

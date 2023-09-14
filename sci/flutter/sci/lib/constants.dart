@@ -52,6 +52,9 @@ abstract class topics {
   static const String DATA_SAMPLES = "planktoscope/data/samples";
   static const String DATA_IMAGES = "planktoscope/data/images";
   static const String DATA_IMAGE = "planktoscope/data/image";
+
+  static const String RM_SAMPLE = "planktoscope/data/rm_samples";
+  static const String RM_IMAGE = "planktoscope/data/rm_image";
 }
 
 // Returns the available width for right container
