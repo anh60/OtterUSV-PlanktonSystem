@@ -11,6 +11,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sci/widgets/general/microscope_image.dart';
+import 'package:sci/widgets/images_page/sample_map.dart';
 import 'package:sci/widgets/images_page/string_status_tab.dart';
 import 'package:sci/constants.dart';
 import 'package:sci/widgets/general/container_scaled.dart';
@@ -53,6 +54,7 @@ class _ImagesPageState extends State<ImagesPage> {
   // List of markers (holds default position on startup)
   List<LatLng> markerList = [LatLng(63.43048272294254, 10.395004330455816)];
 
+  // Sample delete button callback
   void deleteButton() {
     widget.mqtt.publishMessage(topics.RM_SAMPLE, currSample);
   }
@@ -122,6 +124,43 @@ class _ImagesPageState extends State<ImagesPage> {
     return const Icon(Icons.image);
   }
 
+  // When an image til is tapped callback
+  void onImageTapped(int index, List<String> images) {
+    // If loading, ignore tap
+    if (images[index] == loading) {
+      return;
+    }
+
+    // Notify image listener to wait for a new image
+    widget.mqtt.data_image.value = '0';
+
+    // Set selected image index to index of selected image
+    selectedFile = index;
+
+    // Set current image name to selected image name
+    currImage = images[index];
+
+    // Set values to be displayed below image/map
+    sampleTime = currSample;
+    imageTime = currImage;
+    latitude = lat;
+    longitude = lon;
+
+    // Set map marker to current sample coordinates
+    LatLng marker = LatLng(double.parse(lat), double.parse(lon));
+    markerList.removeAt(0);
+    markerList.add(marker);
+
+    // Move camera to coordinates if active
+    if (mapReady) {
+      mapController.move(marker, mapController.zoom);
+    }
+    setState(() {});
+
+    // Request selected image
+    widget.mqtt.publishMessage(topics.GET_IMAGE, currImage);
+  }
+
   // Creates the tiles(images) displayed when a sample(folder) is clicked
   List<Widget> buildImageTiles(List<String> images) {
     List<Widget> tilesList = [];
@@ -143,7 +182,7 @@ class _ImagesPageState extends State<ImagesPage> {
           // Title of tile (image capture time)
           title: Text(
             formatDateTime(images[index]),
-            style: const TextStyle(fontSize: 12.5),
+            style: const TextStyle(fontSize: mainFontSize),
           ),
 
           // Make empty space on left side
@@ -154,40 +193,7 @@ class _ImagesPageState extends State<ImagesPage> {
 
           // When tile is clicked
           onTap: () {
-            setState(() {
-              // If loading, ignore tap
-              if (images[index] == loading) {
-                return;
-              }
-
-              // Notify image listener to wait for a new image
-              widget.mqtt.data_image.value = '0';
-
-              // Set selected image index to index of selected image
-              selectedFile = index;
-
-              // Set current image name to selected image name
-              currImage = images[index];
-
-              // Set values to be displayed below image/map
-              sampleTime = currSample;
-              imageTime = currImage;
-              latitude = lat;
-              longitude = lon;
-
-              // Set map marker to current sample coordinates
-              LatLng marker = LatLng(double.parse(lat), double.parse(lon));
-              markerList.removeAt(0);
-              markerList.add(marker);
-
-              // Move camera to coordinates if active
-              if (mapReady) {
-                mapController.move(marker, mapController.zoom);
-              }
-            });
-
-            // Request selected image
-            widget.mqtt.publishMessage(topics.GET_IMAGE, currImage);
+            onImageTapped(index, images);
           },
         ),
       );
@@ -219,52 +225,6 @@ class _ImagesPageState extends State<ImagesPage> {
     return sampleList.length;
   }
 
-  // Build map markers
-  List<Marker> buildMarkerList() {
-    List<Marker> markers = markerList
-        .map((point) => Marker(
-              point: point,
-              width: 60,
-              height: 60,
-              builder: (context) => const Icon(
-                Icons.location_searching,
-                size: 20,
-                color: darkBlue,
-              ),
-            ))
-        .toList();
-    return markers;
-  }
-
-  // build map
-  Widget buildMap() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(5),
-      child: FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-          zoom: 10,
-          center: markerList[0],
-          minZoom: 8,
-          maxZoom: 18,
-          keepAlive: true,
-        ),
-        children: [
-          TileLayer(
-            minZoom: 1,
-            maxZoom: 18,
-            backgroundColor: lightBlue,
-            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            subdomains: const ['a', 'b', 'c'],
-          ),
-          MarkerLayer(
-            markers: buildMarkerList(),
-          ),
-        ],
-      ),
-    );
-  }
-
   // Check toggle button state
   Widget checkToggleButton(List<bool> buttonState) {
     if (buttonState[0]) {
@@ -272,7 +232,7 @@ class _ImagesPageState extends State<ImagesPage> {
       return MicroscopeImage(widget.mqtt.data_image, div, rightRatio);
     } else {
       mapReady = true;
-      return buildMap();
+      return SampleMap(mapController, markerList);
     }
   }
 
@@ -353,7 +313,7 @@ class _ImagesPageState extends State<ImagesPage> {
                             formatDateTime(samples[index]),
                             style: const TextStyle(
                               color: lightBlue,
-                              fontSize: 12.5,
+                              fontSize: mainFontSize,
                             ),
                           ),
 
@@ -401,7 +361,7 @@ class _ImagesPageState extends State<ImagesPage> {
         ),
 
         // Empty gap
-        const SizedBox(width: 15),
+        const SizedBox(width: containerGap),
 
         // Image/map and data (right)
         SingleChildScrollView(
@@ -410,32 +370,24 @@ class _ImagesPageState extends State<ImagesPage> {
           child: Column(
             children: [
               // Empty gap
-              const SizedBox(height: 15),
+              const SizedBox(height: containerGap),
 
               // Image and map
               Container(
                 // Config
                 width: getAvailableWidth(context, div, rightRatio),
-                height: getAvailableWidth(context, div, rightRatio) *
-                    imageAspectRatio,
+                height: getImageHeight(context, div, rightRatio),
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blueGrey.withOpacity(1),
-                      spreadRadius: 3,
-                      blurRadius: 9,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+                  borderRadius: BorderRadius.circular(rSmall),
+                  boxShadow: [containerShadow],
                 ),
                 alignment: Alignment.center,
                 child: checkToggleButton(toggleButtonState),
               ),
 
               // Empty gap
-              const SizedBox(height: 15),
+              const SizedBox(height: containerGap),
 
               // Image info
               Container(
@@ -444,15 +396,8 @@ class _ImagesPageState extends State<ImagesPage> {
                 decoration: BoxDecoration(
                   color: darkBlue,
                   shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blueGrey.withOpacity(1),
-                      spreadRadius: 3,
-                      blurRadius: 9,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+                  borderRadius: BorderRadius.circular(rSmall),
+                  boxShadow: [containerShadow],
                 ),
 
                 // Split container content horizontally
@@ -477,7 +422,7 @@ class _ImagesPageState extends State<ImagesPage> {
                           ),
 
                           // Vertical gap
-                          const SizedBox(height: 15),
+                          const SizedBox(height: containerGap),
 
                           // Time
                           StringStatusTab(
@@ -486,13 +431,13 @@ class _ImagesPageState extends State<ImagesPage> {
                           ),
 
                           // Vertical gap
-                          const SizedBox(height: 15),
+                          const SizedBox(height: containerGap),
 
                           // Latitude
                           StringStatusTab('Latitude', latitude),
 
                           // Vertical gap
-                          const SizedBox(height: 15),
+                          const SizedBox(height: containerGap),
 
                           // Longitude
                           StringStatusTab('Longitude', longitude),
@@ -527,7 +472,7 @@ class _ImagesPageState extends State<ImagesPage> {
                       // Border
                       renderBorder: true,
                       borderWidth: 1,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(rBig),
 
                       // Content
                       children: const [
@@ -537,7 +482,6 @@ class _ImagesPageState extends State<ImagesPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              //Text('Image'),
                               Icon(
                                 Icons.image,
                                 size: 25,
@@ -551,7 +495,6 @@ class _ImagesPageState extends State<ImagesPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              //Text('Map'),
                               Icon(
                                 Icons.map,
                                 size: 25,
@@ -561,13 +504,13 @@ class _ImagesPageState extends State<ImagesPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(width: 15),
+                    const SizedBox(width: containerGap),
                   ],
                 ),
               ),
 
               // Empty gap
-              const SizedBox(height: 15),
+              const SizedBox(height: containerGap),
             ],
           ),
         ),

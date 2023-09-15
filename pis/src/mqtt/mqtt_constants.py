@@ -11,10 +11,8 @@ broker = "broker.hivemq.com"
 
 class topic(str, Enum):
 
-    # --- Vehicle pos ---
+    # Vehicle position
     VEHICLE_POS         = "planktoscope/vehicle/position"
-
-    # --- Status topics ---
 
     # PIS and RMS status flags
     STATUS_FLAGS        = "planktoscope/status/flags"
@@ -22,26 +20,19 @@ class topic(str, Enum):
     # connected flag (last will)
     STATUS_CONNECTED    = "planktoscope/status/connected"
 
-
-    # --- Control topics ---
-
     # Begin sampling routine
     CTRL_SAMPLE         = "planktoscope/control/sample"
 
     # Capture new image and publish
     CTRL_IMAGE          = "planktoscope/control/capture_image"
 
-    # 5v pump on/off
+    # 5v pump
     CTRL_SAMPLE_PUMP    = "planktoscope/control/sample_pump"
-    CTRL_STOP           = "planktoscope/control/stop"
     
-    # RMS fill, flush, stop (manual control)
+    # RMS fill, flush, stop
     CTRL_RMS_FILL       = "planktoscope/control/pump"
     CTRL_RMS_FLUSH      = "planktoscope/control/valve"
     CTRL_RMS_STOP       = "planktoscope/control/stop"
-
-
-    # --- Calibration topics ---
 
     # Camera currPos, newpos
     CAL_CURRPOS         = "planktoscope/calibrate/currpos"
@@ -54,9 +45,6 @@ class topic(str, Enum):
     # Image from picamera
     IMAGE               = "planktoscope/calibrate/photo"
 
-
-    # --- Images file system ---
-
     # Commands
     GET_SAMPLES         = "planktoscope/data/get_samples"
     GET_IMAGES          = "planktoscope/data/get_images"
@@ -66,8 +54,6 @@ class topic(str, Enum):
     DATA_SAMPLES        = "planktoscope/data/samples"
     DATA_IMAGES         = "planktoscope/data/images"
     DATA_IMAGE          = "planktoscope/data/image"
-
     RM_SAMPLE           = "planktoscope/data/rm_samples"
-    RM_IMAGE            = "planktoscope/data/rm_image"
 
     
