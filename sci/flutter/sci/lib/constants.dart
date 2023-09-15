@@ -57,11 +57,12 @@ abstract class topics {
   static const String RM_IMAGE = "planktoscope/data/rm_image";
 }
 
+const double navRailWidth = 100;
+
 // Returns the available width for right container
 double getAvailableWidth(BuildContext context, double div, double ratio) {
-  return ((((MediaQuery.of(context).size.width) / div) * ratio) -
-      (40) -
-      (15 / 2));
+  double width = MediaQuery.of(context).size.width - navRailWidth - 45;
+  return (((width / div) * ratio)); // - (40) - (15 / 2));
 }
 
 double getImageHeight(BuildContext context, double div, double ratio) {
@@ -76,3 +77,4 @@ const Color darkBlue = Color.fromARGB(255, 77, 90, 114);
 const Color darkerBlue = Color.fromARGB(255, 54, 67, 92);
 const Color lightBlue = Color.fromARGB(255, 169, 216, 255);
 const Color lighterBlue = Color.fromARGB(255, 200, 220, 255);
+const Color backgroundBlue = Color.fromARGB(206, 193, 238, 255);

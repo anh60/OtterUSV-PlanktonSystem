@@ -193,21 +193,21 @@ class _ImagesPageState extends State<ImagesPage> {
       );
       // Append tile to list
       tilesList.add(tile);
-      tilesList.add(
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10, right: 10, top: 10),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: TextButton.icon(
-              onPressed: deleteButton,
-              icon: const Icon(Icons.delete),
-              label: const Text('Remove'),
-              style: TextButton.styleFrom(foregroundColor: lightBlue),
-            ),
+    }
+    tilesList.add(
+      Padding(
+        padding: const EdgeInsets.only(bottom: 10, right: 10, top: 10),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+            onPressed: deleteButton,
+            icon: const Icon(Icons.delete),
+            label: const Text('Remove'),
+            style: TextButton.styleFrom(foregroundColor: lightBlue),
           ),
         ),
-      );
-    }
+      ),
+    );
     return tilesList;
   }
 
@@ -439,8 +439,8 @@ class _ImagesPageState extends State<ImagesPage> {
 
               // Image info
               Container(
-                height: getInfoHeight(context),
                 width: getAvailableWidth(context, div, rightRatio),
+                height: getInfoHeight(context),
                 decoration: BoxDecoration(
                   color: darkBlue,
                   shape: BoxShape.rectangle,
