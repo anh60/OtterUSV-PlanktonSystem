@@ -9,7 +9,6 @@
 
 from enum import Enum
 import time
-import numpy as np
 import paho.mqtt.client             as mqtt
 import mqtt_constants               as con
 
@@ -84,9 +83,7 @@ class status_flag(int, Enum):
 # System state
 sys_state = 0
 
-# Message queue: string element = {timestamp,topic,data}
-msgs = []
-
+# Message queue
 timestamps   = []
 topics       = []
 messages     = []

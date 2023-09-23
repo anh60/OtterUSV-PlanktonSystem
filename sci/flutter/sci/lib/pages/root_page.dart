@@ -4,15 +4,16 @@ import 'package:sci/controllers/mqtt_controller.dart';
 import 'package:sci/constants.dart';
 import 'package:sci/pages/status_page.dart';
 import 'package:sci/pages/images_page.dart';
+import 'package:sci/widgets/root_page/connected_icon.dart';
 
-//---------------------------- FUNCTIONS ---------------------------------------
+//---------------------------- FUNCTIONS/GLOBALS -------------------------------
 
-// Set the connection status symbol
-Icon setConnectionIcon(int connection) {
-  if (connection == 1) {
-    return const Icon(Icons.wifi, color: Colors.green);
-  }
-  return const Icon(Icons.wifi_off, color: Colors.red);
+// Width of navigation rail
+const double navRailWidth = 50;
+
+// Height of navigation rail
+double getNavRailHeight(BuildContext context) {
+  return (MediaQuery.of(context).size.height - (containerGap * 2));
 }
 
 //---------------------------- WIDGET ------------------------------------------
@@ -61,84 +62,63 @@ class _RootPageState extends State<RootPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           // Sidebar
-          ValueListenableBuilder<String>(
-            // Listens to changes on the 'connected' flag over MQTT
-            valueListenable: mqtt.status_connected,
-            builder: (BuildContext context, String value, Widget? child) {
-              int connection = int.parse(value);
-              return SingleChildScrollView(
-                // Container for setting size of NavigationRail
-                child: Container(
-                  height: (MediaQuery.of(context).size.height - 30),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blueGrey.withOpacity(1),
-                        spreadRadius: 3,
-                        blurRadius: 9,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+          SingleChildScrollView(
+            child: Container(
+              height: getNavRailHeight(context),
+              decoration: BoxDecoration(
+                boxShadow: [containerShadow],
+                borderRadius: BorderRadius.circular(rSmall),
+              ),
 
-                  // Make edges curved
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(5),
-                      bottomRight: Radius.circular(5),
-                    ),
-
-                    // Build NavigationRail
-                    child: NavigationRail(
-                      minWidth: navRailWidth,
-                      backgroundColor: darkBlue,
-                      elevation: 10,
-                      trailing: Expanded(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: setConnectionIcon(connection),
-                          ),
-                        ),
-                      ),
-
-                      // Set current page with selected button
-                      selectedIndex: currentPage,
-
-                      // On button press
-                      onDestinationSelected: (int index) {
-                        setState(() {
-                          currentPage = index;
-                        });
-                      },
-
-                      // Mapping buttons to destinations (pages)
-                      destinations: const <NavigationRailDestination>[
-                        // Status page
-                        NavigationRailDestination(
-                          icon: Icon(
-                            Icons.info,
-                            color: lightBlue,
-                          ),
-                          label: Text(''),
-                        ),
-
-                        // Images page
-                        NavigationRailDestination(
-                          icon: Icon(
-                            Icons.photo_library,
-                            color: lightBlue,
-                          ),
-                          label: Text(''),
-                        ),
-                      ],
-                    ),
-                  ),
+              // Make edges curved
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(rSmall),
+                  bottomRight: Radius.circular(rSmall),
                 ),
-              );
-            },
+
+                // Build NavigationRail
+                child: NavigationRail(
+                  minWidth: navRailWidth,
+                  backgroundColor: darkBlue,
+                  elevation: containerElevation,
+
+                  // Connection Icon
+                  trailing: ConnectedIcon(mqtt),
+
+                  // Set current page with selected button
+                  selectedIndex: currentPage,
+
+                  // On button press
+                  onDestinationSelected: (int index) {
+                    setState(() {
+                      currentPage = index;
+                    });
+                  },
+
+                  // Mapping buttons to destinations (pages)
+                  destinations: const <NavigationRailDestination>[
+                    // Status page
+                    NavigationRailDestination(
+                      icon: Icon(
+                        Icons.info,
+                        color: lightBlue,
+                      ),
+                      label: Text(''),
+                    ),
+
+                    // Images page
+                    NavigationRailDestination(
+                      icon: Icon(
+                        Icons.photo_library,
+                        color: lightBlue,
+                      ),
+                      label: Text(''),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
 
           // Current page, wrapped with animation

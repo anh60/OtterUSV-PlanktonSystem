@@ -19,34 +19,19 @@ client = mqtt.Client(client_id=clientname, clean_session=True)
 
 # Topics subscribed to by the PIS
 topics_sub = [
-
-    # Vehicle position
     con.topic.VEHICLE_POS,
-
-    # PIS sample routine
     con.topic.CTRL_SAMPLE,
-
-    # PIS config
     con.topic.CAL_NEXTPOS,
     con.topic.CAL_NEXTLED,
-
-    # PIS manual control
     con.topic.CTRL_IMAGE,
     con.topic.CTRL_SAMPLE_PUMP,
-
-    # RMS manual control
     con.topic.CTRL_RMS_FILL,
     con.topic.CTRL_RMS_FLUSH,
     con.topic.CTRL_RMS_STOP,
-
-    # Images file system
     con.topic.GET_SAMPLES,
     con.topic.GET_IMAGES,
     con.topic.GET_IMAGE,
-
-    con.topic.RM_SAMPLE,
-    con.topic.RM_IMAGE
-    
+    con.topic.RM_SAMPLE
 ]
 
 # MQTT data received queue
