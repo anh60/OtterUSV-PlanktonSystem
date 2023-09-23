@@ -3,6 +3,8 @@ Automatic water sampling and plankton imaging system for the Otter USV.
 
 
 # Relevant folders
+
+```bash
 ├───pis                             # Plankton Imaging System
 │   ├───data                        # Persistant data (only on RPI)
 │   └───src                         # Source code
@@ -34,3 +36,4 @@ Automatic water sampling and plankton imaging system for the Otter USV.
 └───test                            # System tests (documented in report)
     ├───logs                          # Test logs
     └───src                           # Test/logging script
+```
